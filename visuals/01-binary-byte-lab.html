@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Binary Byte Lab — EE321</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; }
+    body { max-width: 820px; margin: 2rem auto; padding: 0 1rem; color: #172033; }
+    h1 { margin-bottom: .3rem; }
+    .intro { color: #526078; margin-top: 0; }
+    .bits { display: grid; grid-template-columns: repeat(8, minmax(48px, 1fr)); gap: .5rem; margin: 1.5rem 0; }
+    .bit { border: 1px solid #bcc8d8; border-radius: .7rem; padding: .55rem .2rem; text-align: center; background: #f6f8fb; }
+    .bit button { display: block; width: 100%; border: 0; background: transparent; color: #15264a; font-size: 1.7rem; font-weight: 750; cursor: pointer; }
+    .bit button:focus-visible, .preset:focus-visible { outline: 3px solid #f0a330; outline-offset: 2px; }
+    .bit .weight { color: #526078; font-size: .85rem; }
+    .bit.msb { border-color: #d28a24; }
+    .bit.lsb { border-color: #3b75c5; }
+    .presets { display: flex; flex-wrap: wrap; gap: .6rem; }
+    .preset { border: 1px solid #9aabc2; border-radius: .5rem; padding: .5rem .8rem; background: white; cursor: pointer; }
+    .results { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: .75rem; margin-top: 1.2rem; }
+    .result { background: #f1f5fb; border-radius: .7rem; padding: .9rem; }
+    .label { display: block; color: #526078; font-size: .85rem; }
+    output { font-size: 1.35rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #sum { overflow-wrap: anywhere; font-size: 1rem; }
+    .note { border-left: 4px solid #3b75c5; padding: .6rem .8rem; background: #f6f8fb; margin-top: 1.2rem; }
+    @media (max-width: 520px) { .bits { gap: .25rem; } .bit { padding: .4rem 0; } }
+  </style>
+</head>
+<body>
+  <h1>Binary Byte Lab</h1>
+  <p class="intro">EE321 · Toggle any bit. Compare the same 8 bits as unsigned and two's-complement numbers.</p>
+
+  <div id="bits" class="bits" aria-label="Eight-bit value"></div>
+  <div class="presets" aria-label="Example values">
+    <button class="preset" data-value="83">Load 53₁₆ (83 unsigned)</button>
+    <button class="preset" data-value="226">Load E2₁₆ (−30 signed)</button>
+    <button class="preset" data-value="0">Clear</button>
+  </div>
+
+  <section class="results" aria-live="polite">
+    <div class="result"><span class="label">Binary</span><output id="binary"></output></div>
+    <div class="result"><span class="label">Hexadecimal</span><output id="hex"></output></div>
+    <div class="result"><span class="label">Unsigned (0–255)</span><output id="unsigned"></output></div>
+    <div class="result"><span class="label">8-bit two's complement (−128–127)</span><output id="signed"></output></div>
+    <div class="result" style="grid-column: 1 / -1"><span class="label">Place-value sum</span><output id="sum"></output></div>
+  </section>
+
+  <p class="note"><strong>Key idea:</strong> the bits are the stored pattern; “unsigned” and “two's complement” are two different ways to interpret it.</p>
+
+  <script>
+    const bits = Array(8).fill(0);
+    const container = document.getElementById('bits');
+    const weights = [128, 64, 32, 16, 8, 4, 2, 1];
+
+    function render() {
+      container.replaceChildren();
+      bits.forEach((value, index) => {
+        const position = 7 - index;
+        const cell = document.createElement('div');
+        cell.className = 'bit' + (position === 7 ? ' msb' : '') + (position === 0 ? ' lsb' : '');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = String(value);
+        button.setAttribute('aria-label', `Bit ${position}, value ${value}; toggle`);
+        button.setAttribute('aria-pressed', String(Boolean(value)));
+        button.addEventListener('click', () => { bits[index] ^= 1; render(); });
+        const weight = document.createElement('span');
+        weight.className = 'weight';
+        weight.textContent = position === 7 ? 'MSB · 128' : position === 0 ? 'LSB · 1' : `2^${position} · ${weights[index]}`;
+        cell.append(button, weight);
+        container.append(cell);
+      });
+
+      const unsignedValue = bits.reduce((total, bit, index) => total + bit * weights[index], 0);
+      const signedValue = bits[0] ? unsignedValue - 256 : unsignedValue;
+      const terms = bits.map((bit, index) => bit ? String(weights[index]) : null).filter(Boolean);
+      document.getElementById('binary').textContent = bits.join('');
+      document.getElementById('hex').textContent = `0x${unsignedValue.toString(16).toUpperCase().padStart(2, '0')}`;
+      document.getElementById('unsigned').textContent = String(unsignedValue);
+      document.getElementById('signed').textContent = String(signedValue);
+      document.getElementById('sum').textContent = terms.length ? terms.join(' + ') + ` = ${unsignedValue}` : '0';
+    }
+
+    document.querySelectorAll('.preset').forEach(button => {
+      button.addEventListener('click', () => {
+        const value = Number(button.dataset.value);
+        bits.forEach((_, index) => { bits[index] = (value >> (7 - index)) & 1; });
+        render();
+      });
+    });
+
+    bits.forEach((_, index) => { bits[index] = (83 >> (7 - index)) & 1; });
+    render();
+  </script>
+</body>
+</html>

@@ -23,6 +23,11 @@ when it is in scope and its material is available.
 - Original HTML/SVG visualizations made for studying.
 - A topic map and references to the official course sources.
 
+## Start here
+
+- [Lesson 1 — Bits, bytes, binary, and hexadecimal](lessons/01-digital-foundations.md)
+- [Interactive binary-byte lab](visuals/01-binary-byte-lab.html)
+
 Official lecture slides, textbooks, exam scans/answer keys, and quiz exports are
 not copied into this repository. Please obtain course materials through their
 authorized source. Quiz exports can contain personal response data.
