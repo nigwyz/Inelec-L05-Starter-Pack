@@ -1,38 +1,29 @@
-# Inelec L05 — Computer Architecture
+# Inelec L05 Starter Pack
 
-A collaborative study hub for EE321 Computer Architecture. The goal is to build
-understanding from the digital-design foundations through the CPU topics currently
-covered in the supplied course material, then verify it by solving past controls
-without relying on answer keys.
+A public, collaborative study workspace for Inelec L05. It is intended for
+original explanations, practice, and visualizations that classmates can learn
+from and improve together.
 
-## Study path
+## Study areas
 
-1. Digital-design review: number representation, logic, combinational/sequential
-   circuits, ALU, and tri-state buses.
-2. Top-level computer: CPU, memory, I/O, buses, instructions, and performance.
-3. CPU: register organization, instruction execution, stacks, interrupts, and
-   processor examples.
+- [Computer Architecture (EE321)](Computer%20Architecture/README.md) — active
+  study path, currently through the supplied CPU chapter.
+- Electromagnetic Field Theory (EE361) — original study notes and visualizations
+  will be added as we create them.
 
-The course-material folder currently contains slides through Chapter 3 (CPU).
-The instructor's course outline lists Control Unit as Chapter 4; we will add it
-when it is in scope and its material is available.
+## Sharing policy
 
-## What belongs here
+This repository contains original study material only. Official textbooks,
+lecture slides, exam scans and answer keys, recitation handouts/solution scans,
+raw quiz exports, photos containing classmates, and downloaded videos are kept
+out of the public repo unless their owners have explicitly cleared public
+redistribution and any identifiable people have consented.
 
-- Original explanations, worked examples, and practice questions.
-- Original HTML/SVG visualizations made for studying.
-- A topic map and references to the official course sources.
+Use the course's authorized source for the original handouts and reference
+materials. Do not add personal data, credentials, or files from `Inelec L05`
+without checking this policy and the `.gitignore` first.
 
-## Start here
+## Contributing
 
-- [Lesson 1 — Bits, bytes, binary, and hexadecimal](lessons/01-digital-foundations.md)
-- [Interactive binary-byte lab](visuals/01-binary-byte-lab.html)
-
-Official lecture slides, textbooks, exam scans/answer keys, and quiz exports are
-not copied into this repository. Please obtain course materials through their
-authorized source. Quiz exports can contain personal response data.
-
-## Collaboration
-
-Open an issue or pull request for a correction, a clearer explanation, or an
-original practice problem. Show the reasoning, not only the final answer.
+Add original explanations, worked examples, practice questions, and standalone
+HTML/SVG visualizations. Explain the reasoning so others can learn from it.

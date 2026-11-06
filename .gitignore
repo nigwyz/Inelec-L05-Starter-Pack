@@ -1,8 +1,12 @@
-# Original course files stay local; this repo is for our study notes and visuals.
-/Books/
-/Slides/
-/Controls With Solution/
-/Quiz/
+# Official/third-party course material stays local unless redistribution is cleared.
+/Computer Architecture/Books/
+/Computer Architecture/Slides/
+/Computer Architecture/Controls With Solution/
+/Computer Architecture/Quiz/
+/EMF/Recitations/
+/EMF/Recitation Solution/
+/EMF/Examples/
+/EMF/photo_2026-11-04_00-27-34.jpg
 
 # Local credentials and machine-specific files
 .env
