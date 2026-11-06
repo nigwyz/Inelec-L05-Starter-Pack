@@ -1,0 +1,12 @@
+# Original course files stay local; this repo is for our study notes and visuals.
+/Books/
+/Slides/
+/Controls With Solution/
+/Quiz/
+
+# Local credentials and machine-specific files
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
