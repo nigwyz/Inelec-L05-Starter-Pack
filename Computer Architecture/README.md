@@ -25,8 +25,21 @@ when it is in scope and its material is available.
 
 ## Start here
 
+- **[Full interactive study site](docs/index.html)** — follows the professor's
+  slides Chapter 1 → 2 → 3, with visualizations and past-control practice.
 - [Lesson 1 — Bits, bytes, binary, and hexadecimal](lessons/01-digital-foundations.md)
 - [Interactive binary-byte lab](visuals/01-binary-byte-lab.html)
+
+### Running the site locally
+
+```bash
+cd "Computer Architecture/docs"
+python3 -m http.server 8000
+# then open http://localhost:8000
+```
+
+No build step and no external dependencies. The site can also be published with
+GitHub Pages using the `docs/` folder.
 
 Official lecture slides, textbooks, exam scans/answer keys, and quiz exports are
 not copied into this repository. Please obtain course materials through their

@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 1 — Review of Digital Design | EE321 Companion</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Ch. 1 — Digital Design</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EE321 Companion<small>Computer Architecture</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch1.html" class="active"><span class="num">01</span>Digital design</a>
+      <a href="ch2.html"><span class="num">02</span>Top-level computer</a>
+      <a href="ch3.html"><span class="num">03</span>CPU</a>
+      <div class="nav-label">Practice</div>
+      <a href="practice.html"><span class="num">✎</span>Past-control practice</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Chapter 1</span>
+      <h1>Review of Digital Design</h1>
+      <p class="lede">Everything above the transistor, explained from the bottom up: how bits represent numbers, how gates compute, how circuits remember, and how CMOS builds it all.</p>
+    </header>
+
+    <div class="toc">
+      <strong>On this page</strong>
+      <ol>
+        <li><a href="#digital">Digital systems</a></li>
+        <li><a href="#logic-values">Logic values vs. physical values</a></li>
+        <li><a href="#binary">Binary representation</a></li>
+        <li><a href="#signed">Signed numbers and two’s complement</a></li>
+        <li><a href="#comb">Combinational logic</a></li>
+        <li><a href="#build">MUX, decoder, tri-state, adders, ALU</a></li>
+        <li><a href="#seq">Sequential circuits</a></li>
+        <li><a href="#families">Logic families and CMOS</a></li>
+        <li><a href="#exam">Exam connections</a></li>
+      </ol>
+    </div>
+
+    <!-- ================= 1. DIGITAL SYSTEMS ================= -->
+    <section class="topic" id="digital">
+      <h2><span class="kicker">1</span>Digital systems</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p1-1" data-progress="ch1-digital">
+        <label for="p1-1">I can explain analog vs. digital and why computers use digital circuits.
+          <span class="done-meta">Slides 3–7 · Stallings §11.1</span></label>
+      </div>
+
+      <p>An <strong>analog</strong> signal can take any value in a continuous range: a microphone voltage, a temperature, a light level. A <strong>digital</strong> (logic) signal is restricted to a small set of discrete values—in binary logic, just two: <code>0</code> and <code>1</code>, also written <code>L</code> (low) and <code>H</code> (high).</p>
+
+      <p>The real world is analog, so a system that talks to it needs converters: an <strong>ADC</strong> (analog-to-digital converter) on the way in, and a <strong>DAC</strong> (digital-to-analog converter) on the way out.</p>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Why digital wins</h3>
+          <ul class="clean">
+            <li>Easy to design with Boolean algebra</li>
+            <li>High performance and small size</li>
+            <li>Robust to noise: a small disturbance does not change a 0 into a 1</li>
+            <li>Low cost through integration</li>
+            <li>Easy to store, copy, and process</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Design styles</h3>
+          <ul class="clean">
+            <li><strong>Software:</strong> a program runs on a processor (µP, µC, DSP, GPU)</li>
+            <li><strong>Hardware:</strong> a circuit is built as PCB, ASIC, or programmable logic (PLD/CPLD/FPGA)</li>
+            <li><strong>Hardware/software:</strong> both, partitioned by the designer</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Bits, bytes, and bit-vectors</h3>
+      <p>A <strong>bit</strong> is one binary digit. A group of bits is a <strong>bit-vector</strong>. In a bit-vector, the <strong>MSB</strong> (most significant bit) is the leftmost bit and the <strong>LSB</strong> (least significant bit) is the rightmost. Eight bits form a <strong>byte</strong>.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Unit</th><th>Equals</th><th>In bits</th></tr></thead>
+          <tbody>
+            <tr><td>1 byte</td><td>8 bits</td><td>8</td></tr>
+            <tr><td>1 Kbyte</td><td>1024 bytes</td><td>8192</td></tr>
+            <tr><td>1 Mbyte</td><td>1024 Kbyte = 1 048 576 bytes</td><td>8 388 608</td></tr>
+            <tr><td>1 Gbyte</td><td>1024 Mbyte</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>For the example <code>10011101</code>: the MSB is the leftmost <code>1</code>, the LSB is the rightmost <code>1</code>. Try the bit lab below and watch how position determines weight.</p>
+
+      <div class="viz" id="viz-bitlab">
+        <div class="viz-head"><span class="vt">Interactive · Bit place values</span><span class="vh">click any bit</span></div>
+        <div class="viz-body"></div>
+      </div>
+    </section>
+
+    <!-- ================= 2. LOGIC VALUES ================= -->
+    <section class="topic" id="logic-values">
+      <h2><span class="kicker">2</span>Logic values vs. physical values</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p1-2" data-progress="ch1-levels">
+        <label for="p1-2">I can define V<sub>OH</sub>, V<sub>OL</sub>, V<sub>IH</sub>, V<sub>IL</sub> and compute a noise margin.
+          <span class="done-meta">Slides 8–10 · Stallings §11.2</span></label>
+      </div>
+
+      <p>A logic <code>1</code> is not one exact voltage—it is a <em>range</em>. The datasheet guarantees:</p>
+      <ul class="clean">
+        <li><strong>V<sub>OH</sub></strong>: minimum output voltage that still counts as High.</li>
+        <li><strong>V<sub>OL</sub></strong>: maximum output voltage that still counts as Low.</li>
+        <li><strong>V<sub>IH</sub></strong>: minimum input voltage guaranteed to be read as High.</li>
+        <li><strong>V<sub>IL</sub></strong>: maximum input voltage guaranteed to be read as Low.</li>
+      </ul>
+
+      <p>This creates a forbidden band between <code>V<sub>IL</sub></code> and <code>V<sub>IH</sub></code>. A receiver is not required to interpret a voltage there, which is exactly what gives digital circuits their noise immunity.</p>
+
+      <p><strong>Noise margins</strong> measure how much disturbance the link can survive:</p>
+      <pre><code>NM_H = V_OH(min) − V_IH(min)
+NM_L = V_IL(max) − V_OL(max)</code></pre>
+
+      <p>For the slide’s 5 V HCMOS example: <code>V<sub>OL</sub> = 0.26 V</code>, <code>V<sub>OH</sub> = 4.48 V</code>, <code>V<sub>IL</sub> = 1 V</code>, <code>V<sub>IH</sub> = 3.5 V</code>.</p>
+      <pre><code>NM_L = 1.00 − 0.26 = 0.74 V
+NM_H = 4.48 − 3.50 = 0.98 V</code></pre>
+      <p class="small muted">The slide prints 0.96 V for NM<sub>H</sub>; the arithmetic gives 0.98 V. Use the formula and your own subtraction—this is exactly the kind of discrepancy you should re-derive instead of memorizing.</p>
+
+      <div class="viz" id="viz-noise">
+        <div class="viz-head"><span class="vt">Interactive · Voltage levels and noise margins</span><span class="vh">drag the sliders</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <div class="exam">
+        <strong>Exam link.</strong> A quiz question asked for the minimum and maximum noise margin from a 74LS348 datasheet. The method is always the same: find V<sub>OH</sub>/V<sub>OL</sub> and V<sub>IH</sub>/V<sub>IL</sub>, then subtract.
+      </div>
+    </section>
+
+    <!-- ================= 3. BINARY ================= -->
+    <section class="topic" id="binary">
+      <h2><span class="kicker">3</span>Binary representation</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p1-3" data-progress="ch1-binary">
+        <label for="p1-3">I can convert between decimal, binary, and hex without a calculator.
+          <span class="done-meta">Slides 11–16 · Stallings §9.2–9.5</span></label>
+      </div>
+
+      <h3>Positional notation</h3>
+      <p>In a positional system each digit is multiplied by a power of the base. Decimal <code>57</code> means <code>5×10 + 7</code>. Binary works the same way with base 2:</p>
+      <pre><code>N = a_k a_(k−1) … a_1 a_0  (base 2)
+N = Σ a_i × 2^i        with a_i ∈ {0, 1}</code></pre>
+      <p>So <code>1101₂ = 1×2³ + 1×2² + 0×2¹ + 1×2⁰ = 8 + 4 + 0 + 1 = 13</code>.</p>
+
+      <h3>Decimal → binary by repeated division</h3>
+      <p>Divide by 2 repeatedly and read the remainders from the last one to the first. For 53:</p>
+      <pre><code>53 ÷ 2 = 26  remainder 1   ← LSB
+26 ÷ 2 = 13  remainder 0
+13 ÷ 2 =  6  remainder 1
+ 6 ÷ 2 =  3  remainder 0
+ 3 ÷ 2 =  1  remainder 1
+ 1 ÷ 2 =  0  remainder 1   ← MSB
+
+53₁₀ = 110101₂</code></pre>
+
+      <h3>Hexadecimal is shorthand for bits</h3>
+      <p>Group bits in fours and convert each nibble to one hex digit. This is why a byte is always exactly two hex digits.</p>
+      <pre><code>1011 1100₂ = B C₁₆ = BCH
+1111 1111₂ = F F₁₆ = FFH</code></pre>
+
+      <h3>Binary arithmetic</h3>
+      <p>Addition follows the same column rules as decimal, with a carry when a column reaches 2. Multiplication is repeated shifted addition.</p>
+      <pre><code>   1110₂   (14)
+ + 0111₂   ( 7)
+ --------
+  10101₂   (21)</code></pre>
+
+      <h3>Unsigned overflow</h3>
+      <p>When a fixed number of bits is used, a result too large for that width overflows. In <strong>unsigned</strong> arithmetic, the carry out of the MSB is precisely the overflow indication.</p>
+      <pre><code>  10111001₂   (185)
++ 01101000₂   (104)
+-----------
+ 100100001₂   → the 8-bit result is 00100001₂ (33)
+               carry out = 1  ⇒ unsigned overflow</code></pre>
+
+      <div class="viz" id="viz-flags">
+        <div class="viz-head"><span class="vt">Interactive · Addition, carry, overflow, and flags</span><span class="vh">8-bit ALU</span></div>
+        <div class="viz-body"></div>
+      </div>
+    </section>
+
+    <!-- ================= 4. SIGNED ================= -->
+    <section class="topic" id="signed">
+      <h2><span class="kicker">4</span>Signed numbers and two’s complement</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p1-4" data-progress="ch1-signed">
+        <label for="p1-4">I can convert to/from two’s complement and detect signed overflow.
+          <span class="done-meta">Slides 17–20 · Stallings §10.2–10.3</span></label>
+      </div>
+
+      <p>Four common signed representations exist. With 4 bits, the value +5 and −5 become:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Representation</th><th>+5</th><th>−5</th><th>Idea</th></tr></thead>
+          <tbody>
+            <tr><td>Sign-magnitude</td><td><code>0101</code></td><td><code>1101</code></td><td>MSB is the sign, rest is magnitude</td></tr>
+            <tr><td>1’s complement</td><td><code>0101</code></td><td><code>1010</code></td><td>Invert all bits</td></tr>
+            <tr><td>2’s complement</td><td><code>0101</code></td><td><code>1011</code></td><td>Invert all bits, then add 1</td></tr>
+            <tr><td>Excess-2<sup>n−1</sup>−1</td><td><code>1100</code></td><td><code>0010</code></td><td>Add a bias (for n = 4, bias = 7)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Why two’s complement wins:</strong> it lets the same adder perform signed and unsigned addition. The proof is short and worth remembering:</p>
+      <pre><code>Z + Z̄ = 111…1
+Z + Z̄ + 1 = 000…0   (ignoring the MSB carry)
+therefore  −Z = Z̄ + 1</code></pre>
+
+      <p>Addition proceeds as ordinary binary addition; the MSB carry is discarded.</p>
+
+      <h4>Range</h4>
+      <p>For an <em>n</em>-bit two’s-complement number the range is <code>−2<sup>n−1</sup></code> to <code>+2<sup>n−1</sup> − 1</code>. For 8 bits: −128 to +127. Unsigned 8-bit is 0 to 255.</p>
+
+      <h4>Two’s-complement in one page</h4>
+      <ol>
+        <li>Write the positive value in binary using the full width.</li>
+        <li>Invert every bit.</li>
+        <li>Add 1.</li>
+      </ol>
+      <p>To read a negative pattern back: the leading bit is 1, so the value is negative. Invert, add 1, and put a minus sign in front.</p>
+      <pre><code>−5 in 8 bits:
+   0000 0101   (+5)
+   1111 1010   (invert)
+   1111 1011   (+1)  = FBH
+
+FBH back to decimal:
+   1111 1011
+   0000 0100   (invert)
+   0000 0101   (+1) → 5 → so −5</code></pre>
+
+      <div class="viz" id="viz-2c">
+        <div class="viz-head"><span class="vt">Interactive · Two’s-complement explorer</span><span class="vh">4, 8, 12, or 16 bits</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <h3>Signed overflow</h3>
+      <p>Overflow can occur only when adding two numbers of the <em>same</em> sign. The result then has the wrong sign. Equivalently, overflow is detected when the carry into the MSB differs from the carry out of the MSB.</p>
+
+      <div class="warn">
+        <strong>Carry ≠ overflow.</strong> Carry is about unsigned range; overflow is about signed range. A single addition can set carry without overflow, overflow without carry, both, or neither. The flags lab above shows all four flags at once—use it until the distinction is automatic.
+      </div>
+
+      <div class="exam">
+        <strong>Exam link.</strong> 2025–26 Q2.1–2.4, 2024–25 Q1.2–1.3, 2022–23 Q2.1, 2021–22 Q1.4–1.5. You are repeatedly asked for the same bits interpreted as unsigned, as two’s complement, and then for the affected flags.
+      </div>
+    </section>
+
+    <!-- ================= 5. COMBINATIONAL ================= -->
+    <section class="topic" id="comb">
+      <h2><span class="kicker">5</span>Combinational logic circuits</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p1-5" data-progress="ch1-comb">
+        <label for="p1-5">I can distinguish combinational from sequential logic and read a truth table, equation, and timing diagram.
+          <span class="done-meta">Slides 21–27 · Stallings §11.3</span></label>
+      </div>
+
+      <p>A <strong>combinational</strong> circuit’s output depends only on its present inputs—it has no memory. A <strong>sequential</strong> circuit’s output depends on present inputs <em>and</em> past inputs (its state). That single distinction separates an adder from a register.</p>
+
+      <p>Any combinational circuit can be described in several equivalent ways: a Boolean equation (sum of products, product of sums), a truth table, a logic diagram, a binary decision diagram, or a timing diagram. Being able to move between representations is the actual skill.</p>
+
+      <h3>Basic gates</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Gate</th><th>Equation</th><th>Output is 1 when…</th></tr></thead>
+          <tbody>
+            <tr><td>NOT</td><td>Y = A̅</td><td>A is 0</td></tr>
+            <tr><td>AND</td><td>Y = A·B</td><td>both inputs are 1</td></tr>
+            <tr><td>OR</td><td>Y = A + B</td><td>at least one input is 1</td></tr>
+            <tr><td>NAND</td><td>Y = A·B̅</td><td>not both inputs are 1</td></tr>
+            <tr><td>NOR</td><td>Y = A + B̅</td><td>both inputs are 0</td></tr>
+            <tr><td>XOR</td><td>Y = A ⊕ B</td><td>inputs differ</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>NAND and NOR are called <em>universal</em> because either one alone can implement every other gate. In CMOS, NAND and NOR are also the natural gates to build, which is why AND and OR are usually made as NAND/NOR followed by an inverter.</p>
+
+      <div class="viz" id="viz-gates">
+        <div class="viz-head"><span class="vt">Interactive · Truth-table explorer</span><span class="vh">pick a gate</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <h3>Propagation delay and glitches</h3>
+      <p>Real gates do not switch instantly. <code>t<sub>pHL</sub></code> is the high-to-low delay, <code>t<sub>pLH</sub></code> the low-to-high delay, and <code>t<sub>r</sub></code>/<code>t<sub>f</sub></code> the rise/fall times. Delays matter because paths with different delays can produce a short wrong output—a <strong>glitch</strong>. The classic example is <code>S = A·A̅</code>: logically always 0, but the two paths to the AND gate have different delays, so a narrow pulse can appear.</p>
+
+      <p>This is also why <em>timing</em> is a real design constraint, not a formality: the circuit must be stable before the next clock edge.</p>
+
+      <h3>Karnaugh maps</h3>
+      <p>A Karnaugh map is a truth table rearranged so that adjacent cells differ in exactly one variable. Grouping 1s in powers of two (1, 2, 4, 8) yields a minimal sum-of-products expression. It is the fastest hand method for small functions and appears in the design of adders, decoders, and control logic.</p>
+    </section>
+
+    <!-- ================= 6. BUILDING BLOCKS ================= -->
+    <section class="topic" id="build">
+      <h2><span class="kicker">6</span>MUX, decoder, tri-state, adders, ALU</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p1-6" data-progress="ch1-build">
+        <label for="p1-6">I can explain a multiplexer, decoder, tri-state buffer, full adder, and ALU—and why they appear in a CPU.
+          <span class="done-meta">Slides 29–37 · Stallings §11.3</span></label>
+      </div>
+
+      <h3>Multiplexer (MUX)</h3>
+      <p>A MUX selects one of several inputs and routes it to a single output. A 4-to-1 MUX needs two select lines. The 74LS153 is a dual 4-input MUX.</p>
+      <pre><code>Y = S1̅·S0̅·I0 + S1̅·S0·I1 + S1·S0̅·I2 + S1·S0·I3</code></pre>
+      <p>In a CPU, MUXes choose which register drives the internal bus and which ALU result is written back.</p>
+
+      <div class="viz" id="viz-mux">
+        <div class="viz-head"><span class="vt">Interactive · 4-to-1 multiplexer</span><span class="vh">choose select lines</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <h3>Decoder and encoder</h3>
+      <p>A decoder takes an <em>n</em>-bit input and asserts exactly one of <code>2<sup>n</sup></code> outputs. The 74LS138 is a 3-to-8 decoder with active-low outputs and enable inputs. An encoder does the reverse: it reports which input is active as a binary code.</p>
+      <p>Decoders are how a CPU selects one memory chip or one register: the address bits are decoded into a single select line.</p>
+
+      <h3>Tri-state buffer</h3>
+      <p>A tri-state buffer has three output states: 0, 1, and <strong>Z</strong> (high impedance, effectively disconnected). It is the component that makes a shared bus possible—many devices connect to the same wire, but only the enabled one drives it.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Enable</th><th>Input</th><th>Output</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>0</td><td>0</td></tr>
+            <tr><td>0</td><td>1</td><td>1</td></tr>
+            <tr><td>1</td><td>0</td><td>Z</td></tr>
+            <tr><td>1</td><td>1</td><td>Z</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small muted">This is the active-low enable convention used in the slides and in the 2021–22 control.</p>
+
+      <div class="viz" id="viz-tristate">
+        <div class="viz-head"><span class="vt">Interactive · Tri-state buffer on a shared bus</span><span class="vh">enable / disable</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <h3>Half adder, full adder, ripple-carry adder</h3>
+      <p>A half adder adds two bits and produces sum and carry:</p>
+      <pre><code>S = A ⊕ B
+C = A · B</code></pre>
+      <p>A full adder adds three bits (A, B, and carry-in):</p>
+      <pre><code>S   = A ⊕ B ⊕ Cin
+Cout = A·B + Cin·(A ⊕ B)</code></pre>
+      <p>Chain <em>n</em> full adders and you get an <strong>n-bit ripple-carry adder</strong>: each carry ripples into the next stage. That is simple but slow, because the last sum must wait for the carry to travel through every stage.</p>
+
+      <p>To build a <strong>subtractor</strong>, invert B and set the first carry-in to 1. That is exactly “add the two’s complement”:</p>
+      <pre><code>A − B = A + B̅ + 1</code></pre>
+      <p>One control signal can therefore select addition or subtraction with the same adder hardware.</p>
+
+      <div class="viz" id="viz-adder">
+        <div class="viz-head"><span class="vt">Interactive · Full adder</span><span class="vh">toggle A, B, Cin</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <h3>The ALU</h3>
+      <p>The Arithmetic and Logic Unit is the collection of adders, logic gates, and a MUX that selects which operation result leaves the unit. Control signals choose the operation; flags (zero, sign, carry, overflow) summarize the result for later conditional branches.</p>
+
+      <div class="note">
+        <strong>Mental model.</strong> Data path = registers + ALU + buses. Control = the signals that tell the data path what to do. Chapter 3 makes this concrete; Chapter 4 will show how those signals are generated.
+      </div>
+    </section>
+
+    <!-- ================= 7. SEQUENTIAL ================= -->
+    <section class="topic" id="seq">
+      <h2><span class="kicker">7</span>Sequential circuits</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p1-7" data-progress="ch1-seq">
+        <label for="p1-7">I can explain a latch, a D flip-flop, setup/hold time, a register, a shift register, and a counter.
+          <span class="done-meta">Slides 38–50 · Stallings §11.4</span></label>
+      </div>
+
+      <p>A sequential circuit remembers. The basic storage element is built from cross-coupled gates, and its behavior is defined by a clock.</p>
+
+      <h3>Latch</h3>
+      <p>A transparent D latch follows the input while the enable/clock is high, and holds the last value when it goes low. The 74LS373 is an octal transparent latch with tri-state outputs.</p>
+
+      <div class="note">
+        <strong>Book corner — the SR latch (Stallings §11.4).</strong>
+        The simplest memory element is two NOR gates cross-coupled: each output feeds the other gate’s input. Set <code>S=1</code> and the Q output goes to 1 and stays there even after S returns to 0; set <code>R=1</code> and Q resets to 0 and stays there. The cross-coupling is the memory. Its forbidden input is <code>S=R=1</code>, which drives both outputs to 0 and makes the next state unpredictable. A D latch fixes that by deriving S and R from one data input and an enable, so the two can never both be active.
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>D</th><th>Clk</th><th>Q⁺</th></tr></thead>
+          <tbody>
+            <tr><td>X</td><td>0</td><td>Q (hold)</td></tr>
+            <tr><td>0</td><td>1</td><td>0</td></tr>
+            <tr><td>1</td><td>1</td><td>1</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>D flip-flop</h3>
+      <p>A positive-edge-triggered D flip-flop captures D only at the rising clock edge. Between edges it holds its value. The 74LS74 contains two such flip-flops with preset and clear.</p>
+      <pre><code>Q⁺ = D   (at the active clock edge)</code></pre>
+
+      <p>Three timing numbers define reliable operation:</p>
+      <ul class="clean">
+        <li><strong>Setup time t<sub>SU</sub></strong>: D must be stable this long <em>before</em> the edge.</li>
+        <li><strong>Hold time t<sub>H</sub></strong>: D must remain stable this long <em>after</em> the edge.</li>
+        <li><strong>Propagation delay t<sub>PD</sub></strong>: how long after the edge the output becomes valid.</li>
+      </ul>
+
+      <div class="viz" id="viz-dff">
+        <div class="viz-head"><span class="vt">Interactive · D flip-flop timing</span><span class="vh">click the clock</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <h3>Registers, shift registers, counters</h3>
+      <p>An <strong>n-bit register</strong> is simply <em>n</em> D flip-flops sharing a clock: <code>Q<sub>i</sub>(t⁺) = D<sub>i</sub>(t)</code>. A <strong>shift register</strong> connects each flip-flop to the next, so bits move one position per clock. A <strong>counter</strong> adds feedback so the state advances through a fixed sequence.</p>
+
+      <pre><code>Shift register:
+Q0(t+1) = Q1(t)
+Q1(t+1) = Q2(t)
+Q2(t+1) = Q3(t)
+Q3(t+1) = D(t)</code></pre>
+
+      <p>For the 3-bit counter in the slides:</p>
+      <pre><code>Q0(t+1) = Q0(t)
+Q1(t+1) = Q0(t) ⊕ Q1(t)
+Q2(t+1) = Q0(t)·Q1(t) ⊕ Q2(t)</code></pre>
+    </section>
+
+    <!-- ================= 8. LOGIC FAMILIES ================= -->
+    <section class="topic" id="families">
+      <h2><span class="kicker">8</span>Logic families and CMOS</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p1-8" data-progress="ch1-cmos">
+        <label for="p1-8">I can explain NMOS/PMOS switching and draw a CMOS inverter, NAND, NOR, and a complex gate.
+          <span class="done-meta">Slides 51–58 · Stallings §11.2</span></label>
+      </div>
+
+      <p><strong>TTL</strong> (Transistor–Transistor Logic) is built from bipolar transistors and was dominant until CMOS replaced it in the 1990s. <strong>CMOS</strong> (Complementary MOS) uses paired NMOS and PMOS transistors and is the basis of almost all modern digital ICs.</p>
+
+      <h3>How the transistors switch</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Transistor</th><th>Condition</th><th>State</th></tr></thead>
+          <tbody>
+            <tr><td>NMOS</td><td>V<sub>GS</sub> = 0</td><td>OFF</td></tr>
+            <tr><td>NMOS</td><td>V<sub>GS</sub> = V<sub>DD</sub></td><td>ON</td></tr>
+            <tr><td>PMOS</td><td>V<sub>SG</sub> = 0</td><td>OFF</td></tr>
+            <tr><td>PMOS</td><td>V<sub>SG</sub> = V<sub>DD</sub></td><td>ON</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small muted">A PMOS turns on when its gate is pulled <em>low</em>; an NMOS turns on when its gate is pulled <em>high</em>.</p>
+
+      <h3>CMOS inverter</h3>
+      <p>One PMOS and one NMOS, gates tied together as the input:</p>
+      <ul class="clean">
+        <li>Input = 0 → NMOS OFF, PMOS ON → output pulled to V<sub>DD</sub> (1).</li>
+        <li>Input = 1 → PMOS OFF, NMOS ON → output pulled to ground (0).</li>
+      </ul>
+      <p>Because one transistor is always off, the steady-state path from V<sub>DD</sub> to ground is broken. That is the key to CMOS’s low power consumption.</p>
+
+      <div class="viz" id="viz-cmos">
+        <div class="viz-head"><span class="vt">Interactive · CMOS inverter and NAND</span><span class="vh">toggle inputs</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <h3>CMOS NAND and NOR</h3>
+      <p>NMOS transistors in <em>series</em> implement AND (both must conduct); NMOS in <em>parallel</em> implement OR (either can conduct). The PMOS network is the dual: series NMOS ↔ parallel PMOS, and vice versa.</p>
+      <ul class="clean">
+        <li><strong>NAND:</strong> two NMOS in series to ground, two PMOS in parallel to V<sub>DD</sub>.</li>
+        <li><strong>NOR:</strong> two NMOS in parallel to ground, two PMOS in series to V<sub>DD</sub>.</li>
+        <li><strong>AND / OR:</strong> a NAND/NOR followed by an inverter (more transistors, but the same idea).</li>
+      </ul>
+
+      <h3>Complex CMOS gates</h3>
+      <p>For a static CMOS gate, the <strong>pull-down network (PDN)</strong> connects the output to ground when the output should be 0, so it realizes <code>Y̅</code> using NMOS transistors: <strong>AND → series</strong>, <strong>OR → parallel</strong>. The <strong>pull-up network (PUN)</strong> is the exact dual using PMOS transistors.</p>
+      <pre><code>Example:  Y = (A·B + C)̅
+PDN:      A series B, in parallel with C
+PUN:      A parallel B, in series with C</code></pre>
+      <p>For the exam function <code>Y = AB + AC + AD</code>, first factor it:</p>
+      <pre><code>Y = A(B + C + D)</code></pre>
+      <p>The usual course drawing is:</p>
+      <pre><code>PDN:  A in series with (B ∥ C ∥ D)
+PUN:  A in parallel with (B series C series D)</code></pre>
+      <p class="small muted">Strictly, a static CMOS PDN realizes <code>Y̅</code>; the drawing above places the PDN in the position that conducts when the bracketed expression is true. If your solution expects the literal function <code>Y</code>, add an inverter after the gate (or state the convention used in the course). For the exam, the marks come from getting the series/parallel topology and its dual right.</p>
+
+      <div class="exam">
+        <strong>Exam link.</strong> 2025–26 Q2.5 and 2021–22 Q1.7 ask you to draw a CMOS schematic from a Boolean expression. 2021–22 Q1.6 asks for one CMOS advantage (power) and one disadvantage (transistor count/area) versus NMOS.
+      </div>
+    </section>
+
+    <!-- ================= EXAM ================= -->
+    <section class="topic" id="exam">
+      <h2><span class="kicker">9</span>Exam connections for Chapter 1</h2>
+      <p>Every skill below has appeared in at least one control. The right-hand column points to where it is taught here.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Control question</th><th>Skill</th><th>Where to review</th></tr></thead>
+          <tbody>
+            <tr><td>2025–26 Q2.1–2.3 · 2021–22 Q1.4</td><td>Signed/unsigned interpretation of hex patterns</td><td><a href="#signed">Two’s complement</a></td></tr>
+            <tr><td>2025–26 Q2.4 · 2021–22 Q1.5</td><td>Carry, overflow, sign, zero flags</td><td><a href="#signed">Signed overflow</a></td></tr>
+            <tr><td>2025–26 Q2.5 · 2021–22 Q1.7</td><td>CMOS schematic from a Boolean expression</td><td><a href="#families">CMOS gates</a></td></tr>
+            <tr><td>2021–22 Q1.1</td><td>MIPS from clock rate and CPI</td><td><a href="ch2.html#perf">Ch. 2 performance</a></td></tr>
+            <tr><td>2021–22 Q1.2–1.3</td><td>Tri-state buffer truth table and application</td><td><a href="#build">Tri-state buffer</a></td></tr>
+            <tr><td>2021–22 Q1.6</td><td>CMOS vs. NMOS advantage/disadvantage</td><td><a href="#families">Logic families</a></td></tr>
+            <tr><td>2022–23 Q2.1</td><td>Two’s complement with a fixed bit width</td><td><a href="#signed">Two’s complement</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <div class="q"><span class="tag">Check yourself</span><br>Using 8-bit two’s complement, what is the decimal value of <code>1110 0010₂</code>?</div>
+        <div class="opts">
+          <button data-opt="a">226</button>
+          <button data-opt="b">−30</button>
+          <button data-opt="c">−29</button>
+          <button data-opt="d">−31</button>
+        </div>
+        <details><summary>Show reasoning</summary><div class="sol">The MSB is 1, so the value is negative. Invert: <code>0001 1101</code>, add 1: <code>0001 1110₂ = 30</code>. Therefore the value is −30. The unsigned reading is 226—same bits, different interpretation.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <div class="q"><span class="tag">Check yourself</span><br>An 8-bit addition of two positive two’s-complement numbers produces <code>1000 0001</code>. What happened?</div>
+        <div class="opts">
+          <button data-opt="a">Nothing; the result is +129</button>
+          <button data-opt="b">Only the carry flag is set</button>
+          <button data-opt="c">Signed overflow: the result sign is wrong</button>
+          <button data-opt="d">The CPU must have added negative numbers</button>
+        </div>
+        <details><summary>Show reasoning</summary><div class="sol">Adding two positive 8-bit numbers should give a result in 0…127. <code>1000 0001</code> is 129 unsigned, but as two’s complement it is negative (−127). The result sign contradicts the operands, so signed overflow occurred.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <div class="q"><span class="tag">Check yourself</span><br>Why is a tri-state buffer essential on a shared bus?</div>
+        <div class="opts">
+          <button data-opt="a">It disconnects a device’s output so another device can drive the bus</button>
+          <button data-opt="b">It amplifies the signal to travel farther</button>
+          <button data-opt="c">It stores the last value on the bus</button>
+          <button data-opt="d">It converts analog signals to digital</button>
+        </div>
+        <details><summary>Show reasoning</summary><div class="sol">With many outputs tied to one wire, two active drivers would fight each other. The Z state removes the inactive devices electrically, leaving exactly one driver.</div></details>
+      </div>
+
+      <p style="margin-top:26px"><a class="btn btn-primary" href="ch2.html">Continue to Chapter 2 →</a></p>
+    </section>
+
+    <footer class="foot">Chapter 1 · Review of Digital Design · EE321 companion. Slides 1–59; Stallings 10e chapters 9–11.</footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+<script src="js/viz-ch1.js"></script>
+</body>
+</html>

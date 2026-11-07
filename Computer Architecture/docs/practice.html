@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Past-Control Practice | EE321 Companion</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Past-Control Practice</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EE321 Companion<small>Computer Architecture</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch1.html"><span class="num">01</span>Digital design</a>
+      <a href="ch2.html"><span class="num">02</span>Top-level computer</a>
+      <a href="ch3.html"><span class="num">03</span>CPU</a>
+      <div class="nav-label">Practice</div>
+      <a href="practice.html" class="active"><span class="num">✎</span>Past-control practice</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Practice progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Practice</span>
+      <h1>Past-Control Practice</h1>
+      <p class="lede">Six recurring skills explain almost every control question. Each section below teaches the method, works an example, and then gives you a fresh problem with the solution hidden.</p>
+    </header>
+
+    <div class="note">
+      <strong>How to use this page.</strong> Attempt each problem on paper <em>before</em> opening the solution. Reading a solution feels productive; reproducing it from an empty page is the actual skill. The year references point to the style of the question, not to a promise that this year’s paper repeats it.
+    </div>
+
+    <div class="toc">
+      <strong>Skill map</strong>
+      <ol>
+        <li><a href="#flags">Number interpretation and flags</a></li>
+        <li><a href="#encoding">Instruction size and hex encoding</a></li>
+        <li><a href="#trace">Fetch/execute register traces</a></li>
+        <li><a href="#stack">Stack and subroutine behaviour</a></li>
+        <li><a href="#interrupt">Interrupts and ISR addressing</a></li>
+        <li><a href="#program">Program size, instruction count, cycles</a></li>
+        <li><a href="#custom">Older custom-CPU style</a></li>
+        <li><a href="#log">Your error log</a></li>
+      </ol>
+    </div>
+
+    <!-- ============ 1. FLAGS ============ -->
+    <section class="topic" id="flags">
+      <h2><span class="kicker">A</span>Number interpretation and flags</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="pr-a" data-progress="practice-flags">
+        <label for="pr-a">I can solve an unsigned/signed/flag question without notes.
+          <span class="done-meta">Similar to 2025–26 Q2.1–2.4 · 2024–25 Q1.2–1.3 · 2021–22 Q1.4–1.5</span></label>
+      </div>
+
+      <h3>Method</h3>
+      <ol>
+        <li>Write the operation in binary using the stated width.</li>
+        <li><strong>Unsigned:</strong> if the true result is negative, add <code>2<sup>n</sup></code> (wrap modulo 2<sup>n</sup>).</li>
+        <li><strong>8-bit CPU:</strong> perform two’s-complement addition: <code>A − B = A + (B̄ + 1)</code>. Keep the low <em>n</em> bits.</li>
+        <li><strong>Decimal signed result:</strong> if the MSB is 1, invert + 1 and add a minus sign.</li>
+        <li><strong>Carry:</strong> for addition, carry out of the MSB. For subtraction, carry = 1 means <em>no borrow</em> (the CPU computed A + B̄ + 1 and carried out).</li>
+        <li><strong>Overflow:</strong> only if the two operands have the same sign and the result has the opposite sign. Equivalently, carry into MSB ≠ carry out of MSB.</li>
+      </ol>
+
+      <div class="card" style="margin:18px 0">
+        <h3>Worked example — the 2025–26 style</h3>
+        <p>Using 8 bits, compute <code>53H − 35H</code> and <code>35H − 53H</code>; then give the carry and overflow flags.</p>
+        <pre><code>53H = 0101 0011₂      35H = 0011 0101₂
+
+53H − 35H:
+  53H + (35H inverted + 1)
+  = 53H + CAH + 1 = 53H + CBH
+  = 1EH   (true result +30; no borrow)
+
+35H − 53H:
+  35H + (53H inverted + 1)
+  = 35H + ACH + 1 = 35H + ADH
+  = E2H   (8-bit pattern; true result −30)
+
+Decimal signed: E2H → invert 1DH → +1 → 1EH = 30 → −30
+
+Flags:
+  53H − 35H: carry = 1 (no borrow), overflow = 0
+  35H − 53H: carry = 0 (borrow),    overflow = 0</code></pre>
+        <p class="small muted">Why is overflow 0? For subtraction, think of it as <code>A + (−B)</code>. In the first case the effective operands are +83 and −53; in the second they are +53 and −83. In both cases the operands have opposite signs, so the result cannot overflow, and +30 / −30 are both in range. The carry differs because the second subtraction had to borrow.</p>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <div class="q"><span class="tag">Your turn</span><br>Using 8 bits, give <code>7BH − B7H</code> as (a) unsigned hex and (b) signed decimal.</div>
+        <div class="opts">
+          <button data-opt="a">C4H and +196</button>
+          <button data-opt="b">C4H and −60</button>
+          <button data-opt="c">44H and −60</button>
+          <button data-opt="d">C4H and −59</button>
+        </div>
+        <details><summary>Show solution</summary><div class="sol">
+          <code>7BH = 123</code>, <code>B7H = 183</code>. <code>123 − 183 = −60</code>. Modulo 256: <code>256 − 60 = 196 = C4H</code>.
+          As an 8-bit two’s-complement pattern, <code>C4H = 1100 0100</code>: invert → <code>0011 1011</code>, +1 → <code>0011 1100 = 60</code>, so −60.
+        </div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <div class="q"><span class="tag">Your turn</span><br>Which operation sets <strong>carry</strong> but <strong>not</strong> overflow on an 8-bit CPU?</div>
+        <div class="opts">
+          <button data-opt="a">7FH + 01H</button>
+          <button data-opt="b">80H + 80H</button>
+          <button data-opt="c">FFH + 01H</button>
+          <button data-opt="d">40H + 40H</button>
+        </div>
+        <details><summary>Show solution</summary><div class="sol">
+          <code>FFH + 01H = 100H</code> → 8-bit result <code>00H</code> with carry 1. Signed: −1 + 1 = 0, no overflow.
+          <code>7FH + 01H = 80H</code> is signed +127 + 1 = +128 → overflow, but no carry.
+          <code>80H + 80H = 100H</code> → 00H with carry; signed −128 + −128 = −256 → overflow too.
+        </div></details>
+      </div>
+    </section>
+
+    <!-- ============ 2. ENCODING ============ -->
+    <section class="topic" id="encoding">
+      <h2><span class="kicker">B</span>Instruction size and hex encoding</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="pr-b" data-progress="practice-encoding">
+        <label for="pr-b">I can determine any instruction’s size and bytes from a supplied table.
+          <span class="done-meta">Similar to 2025–26 Q1.4–1.5 · 2024–25 Q1.4–1.5 · 2022–23 Q1.3, Q1.7</span></label>
+      </div>
+
+      <h3>Method</h3>
+      <ol>
+        <li>Find the instruction in the table. The table gives the opcode bytes and the operand type.</li>
+        <li>Count: opcode bytes + operand bytes.</li>
+        <li>Encode each operand: 8-bit <code>n</code> is one byte; 16-bit <code>nn</code> is two bytes, <strong>low byte first</strong> (little-endian).</li>
+        <li>For register-coded instructions, substitute each register’s 3-bit code into the binary pattern.</li>
+      </ol>
+
+      <div class="card" style="margin:18px 0">
+        <h3>Worked example — the Z80 set</h3>
+        <pre><code>JR Z,−5      opcode 28H + 8-bit displacement        → 2 bytes
+             −5 = FBH (two's complement of 5)          → 28 FBH
+
+LD IX,F1H    DD 21H + 16-bit nn                     → 4 bytes
+             nn = 00F1H, little-endian                 → DD 21 F1 00H
+
+LD A,(IX+5)  DD 01 RRR 110 + n
+             R = A = 111 → 01 111 110 = 7EH          → DD 7E 05H (3 bytes)</code></pre>
+        <p class="small muted">The size follows the <em>format</em>, not the number of digits you write. <code>LD IX,F1H</code> is still 4 bytes because the format reserves a 16-bit operand.</p>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <div class="q"><span class="tag">Your turn</span><br>Give the size and hex code of <code>LD A,(IX+5)</code>.</div>
+        <div class="opts">
+          <button data-opt="a">3 bytes, DD 7E 05H</button>
+          <button data-opt="b">2 bytes, DD 05H</button>
+          <button data-opt="c">4 bytes, DD 7E 00 05H</button>
+          <button data-opt="d">3 bytes, DD 7E 50H</button>
+        </div>
+        <details><summary>Show solution</summary><div class="sol">
+          <code>DD</code> is the prefix, <code>7E</code> encodes <code>LD A,(IX+n)</code>, and <code>05</code> is the signed displacement. Three bytes total: <code>DD 7E 05H</code>. The displacement is one byte, not two.
+        </div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="d">
+        <div class="q"><span class="tag">Your turn</span><br>Which instruction is <strong>2 bytes</strong> long?</div>
+        <div class="opts">
+          <button data-opt="a">LD IX,(2348H)</button>
+          <button data-opt="b">LD HL,(nn)</button>
+          <button data-opt="c">LD (IX+0),A</button>
+          <button data-opt="d">JR Z,−5</button>
+        </div>
+        <details><summary>Show solution</summary><div class="sol">
+          <code>JR Z,n</code> = opcode + 8-bit displacement = 2 bytes. <code>LD IX,(nn)</code> is 4 bytes; <code>LD HL,(nn)</code> and <code>LD (IX+n),A</code> are 3 bytes.
+        </div></details>
+      </div>
+    </section>
+
+    <!-- ============ 3. TRACE ============ -->
+    <section class="topic" id="trace">
+      <h2><span class="kicker">C</span>Fetch/execute register traces</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="pr-c" data-progress="practice-trace">
+        <label for="pr-c">I can produce PC, MAR, MBR, IR (and IX/AC) after any fetch or execute.
+          <span class="done-meta">Similar to 2025–26 Q1.6–1.7 · 2024–25 Q1.6–1.7 · 2023–24 Q1.4–1.5</span></label>
+      </div>
+
+      <h3>The only method you need</h3>
+      <pre><code>FETCH of an instruction of size S:
+  MAR ← PC
+  MBR ← [MAR]        (repeat for each byte, incrementing MAR)
+  IR  ← the complete instruction
+  PC  ← PC + S
+
+EXECUTE:
+  decode IR
+  read operands (register or memory)
+  perform the operation
+  write the result
+  leave PC, MAR, MBR at their last values unless the instruction changes them</code></pre>
+
+      <div class="warn">
+        <strong>The trap.</strong> MAR is not “the address of the instruction” after the fetch—it is the address of the <em>last byte read</em>. MBR is the <em>last byte read</em>, not the whole instruction. IR is the whole instruction. PC already points to the next instruction.
+      </div>
+
+      <div class="card" style="margin:18px 0">
+        <h3>Worked example — <code>JR FEH</code> at 2509H</h3>
+        <p><code>JR n</code> is <code>18H + n</code>. For <code>JR FEH</code>, the encoding is <code>18 FEH</code>, 2 bytes, stored at 2509H and 250AH.</p>
+        <pre><code>Before fetch: PC = 2509H
+
+Fetch:
+  MAR ← 2509H
+  MBR ← [2509H] = 18H
+  IR  ← 18H           (first opcode byte)
+  PC  ← 250AH
+  MAR ← 250AH
+  MBR ← [250AH] = FEH
+  IR  ← 18FEH
+  PC  ← 250BH
+
+After fetch:  PC = 250BH, MAR = 250AH, MBR = FEH
+
+Execute:
+  n = FEH = −2
+  PC ← PC + n = 250BH − 2 = 2509H
+  MAR and MBR are unchanged: 250AH and FEH
+
+After execute: PC = 2509H, MAR = 250AH, MBR = FEH</code></pre>
+        <p class="small muted">This is the 2025–26 Q1.6–1.7 pattern. Notice the execute changes PC only; MAR/MBR keep their fetch values.</p>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <div class="q"><span class="tag">Your turn</span><br><code>LD IX,3000H</code> is stored at 2000H. After the <strong>fetch cycle only</strong>, what are PC, MAR, MBR?</div>
+        <div class="opts">
+          <button data-opt="a">PC=2002H, MAR=2002H, MBR=21H</button>
+          <button data-opt="b">PC=2004H, MAR=2003H, MBR=30H</button>
+          <button data-opt="c">PC=2004H, MAR=2000H, MBR=DDH</button>
+          <button data-opt="d">PC=2002H, MAR=2001H, MBR=21H</button>
+        </div>
+        <details><summary>Show solution</summary><div class="sol">
+          The instruction is <code>DD 21 00 30</code> (4 bytes). Fetch reads four bytes, ending at 2003H. So <code>MAR = 2003H</code>, <code>MBR = 30H</code>, and <code>PC = 2000H + 4 = 2004H</code>. If your course defines the fetch as only the opcode bytes, use that convention—but check the control’s own wording.
+        </div></details>
+      </div>
+    </section>
+
+    <!-- ============ 4. STACK ============ -->
+    <section class="topic" id="stack">
+      <h2><span class="kicker">D</span>Stack and subroutine behaviour</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="pr-d" data-progress="practice-stack">
+        <label for="pr-d">I can trace PUSH/POP, including byte order and SP/MAR/MBR.
+          <span class="done-meta">Similar to 2025–26 Q1.8 · 2024–25 Q1.10 · 2023–24 Q2.3–2.4</span></label>
+      </div>
+
+      <h3>Method</h3>
+      <ul class="clean">
+        <li><strong>PUSH:</strong> SP ← SP − 2 (for a 16-bit register), then the high byte is written at [SP+1] and the low byte at [SP]. On a downward-growing stack, “top” is the lowest address.</li>
+        <li><strong>POP:</strong> low byte ← [SP], high byte ← [SP+1], then SP ← SP + 2.</li>
+        <li><strong>MAR</strong> after a PUSH/POP is the address of the last byte accessed: for POP, <code>SP+1</code>; for PUSH, <code>SP</code> (the low byte is written last on many CPUs).</li>
+      </ul>
+
+      <div class="card" style="margin:18px 0">
+        <h3>Worked example — POP HL at SP = 3009H</h3>
+        <p>Memory: <code>[3009H] = 09H</code>, <code>[300AH] = FAH</code>.</p>
+        <pre><code>POP HL:
+  L  ← [SP]   = [3009H] = 09H
+  H  ← [SP+1] = [300AH] = FAH
+  HL = FA09H
+  SP ← SP + 2 = 300BH
+  MAR = 300AH   (last byte read)
+  MBR = FAH     (last byte read)</code></pre>
+        <p class="small muted">Little-endian is why the low byte (09H) is at the lower address. H = FAH, L = 09H, so HL = FA09H—not 09FAH.</p>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <div class="q"><span class="tag">Your turn</span><br>SP = 3F07H, B = B1H, C = C1H. After <code>PUSH BC</code>, what are SP and the two memory bytes?</div>
+        <div class="opts">
+          <button data-opt="a">SP=3F09H, [3F07H]=B1H, [3F08H]=C1H</button>
+          <button data-opt="b">SP=3F05H, [3F05H]=B1H, [3F06H]=C1H</button>
+          <button data-opt="c">SP=3F05H, [3F05H]=C1H, [3F06H]=B1H</button>
+          <button data-opt="d">SP=3F06H, [3F06H]=C1H, [3F07H]=B1H</button>
+        </div>
+        <details><summary>Show solution</summary><div class="sol">
+          PUSH decrements SP by 2 first: <code>3F07H − 2 = 3F05H</code>. The register pair BC is stored low byte first: C (low) at 3F05H, B (high) at 3F06H. So <code>[3F05H]=C1H</code>, <code>[3F06H]=B1H</code>, and the new top is 3F05H.
+        </div></details>
+      </div>
+    </section>
+
+    <!-- ============ 5. INTERRUPTS ============ -->
+    <section class="topic" id="interrupt">
+      <h2><span class="kicker">E</span>Interrupts and ISR addressing</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="pr-e" data-progress="practice-interrupt">
+        <label for="pr-e">I can compute SP, PC, and the ISR fetch for Z80 mode 2.
+          <span class="done-meta">Similar to 2024–25 Q1.11–1.13</span></label>
+      </div>
+
+      <h3>The Z80 IM2 sequence</h3>
+      <ol>
+        <li>Finish the current instruction. PC now points to the next instruction.</li>
+        <li>Push PC: SP ← SP − 2; [SP] ← low byte of PC, [SP+1] ← high byte.</li>
+        <li>Form the vector pointer: <code>I × 256 + device_data</code>.</li>
+        <li>Read two bytes at that pointer (little-endian) → new PC = ISR start address.</li>
+        <li>Fetch the first ISR instruction from that address.</li>
+      </ol>
+
+      <div class="card" style="margin:18px 0">
+        <h3>Worked example — IM2 with I = 23H, device = 4CH</h3>
+        <p>Interrupt arrives during <code>LD IX,0H</code> at 2100H. That instruction is <code>DD 21 00 00</code>, 4 bytes, so after fetching it PC = 2104H. SP = F612H. Memory at 234CH contains 17H, at 234DH contains F7H.</p>
+        <pre><code>Before the interrupt cycle:
+  SP = F612H
+  PC = 2104H          (LD IX,0H is 4 bytes; PC has advanced)
+
+Interrupt cycle:
+  push PC → SP = F610H, [F610H]=04H, [F611H]=21H
+  pointer = 2300H + 4CH = 234CH
+  ISR address = [234DH][234CH] = F717H
+  PC ← F717H
+
+After the interrupt cycle:
+  SP = F610H
+  PC = F717H
+
+Before fetching the first ISR instruction:
+  IR  = DD210000H     (the interrupted instruction is still in IR)
+  MAR = 234DH         (last byte read to form the ISR address)
+  MBR = F7H           (last byte read)</code></pre>
+        <p class="small muted">Note the two distinct memory accesses: the stack write, then the vector read. Keep them separate or the addresses will blur.</p>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <div class="q"><span class="tag">Your turn</span><br>Z80 IM1 interrupt. Where does the CPU jump?</div>
+        <div class="opts">
+          <button data-opt="a">0038H</button>
+          <button data-opt="b">0066H</button>
+          <button data-opt="c">0000H</button>
+          <button data-opt="d">[I×256 + data]</button>
+        </div>
+        <details><summary>Show solution</summary><div class="sol">
+          IM1 always uses <code>0038H</code>. IM0 uses one of <code>00H…38H</code> selected by hardware; IM2 uses <code>[I×256 + data]</code>; NMI uses <code>0066H</code>; reset uses <code>0000H</code>.
+        </div></details>
+      </div>
+    </section>
+
+    <!-- ============ 6. PROGRAM ============ -->
+    <section class="topic" id="program">
+      <h2><span class="kicker">F</span>Program size, instruction count, cycles</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="pr-f" data-progress="practice-program">
+        <label for="pr-f">I can count bytes, instructions, machine cycles, and T-states.
+          <span class="done-meta">Similar to 2025–26 Q1.9 · 2024–25 Q1.8–1.9 · 2022–23 Q1.10</span></label>
+      </div>
+
+      <h3>Method</h3>
+      <ul class="clean">
+        <li>Disassemble from the start address until the halt (or until the bytes stop forming valid instructions).</li>
+        <li>Sum each instruction’s size in bytes. The total is the program size in bytes; multiply by 8 for bits.</li>
+        <li>Count instructions separately from bytes.</li>
+        <li>For cycles: list each machine cycle (opcode fetch, operand fetch, memory read/write) and multiply by its T-state count.</li>
+      </ul>
+
+      <div class="card" style="margin:18px 0">
+        <h3>Worked example — the 2025–26 program at 2000H</h3>
+        <pre><code>2000H  DD 21 00 30   LD IX,3000H     4 bytes
+2004H  DD 7E 00      LD A,(IX+0)     3 bytes
+2007H  3C            INC A           1 byte
+2008H  DD 77 00      LD (IX+0),A     3 bytes
+200BH  76            HALT            1 byte
+
+Total: 4+3+1+3+1 = 12 bytes = 96 bits
+Instructions: 5</code></pre>
+        <p class="small muted">The last instruction starts at 200BH, not 200CH. Program bytes run 2000H…200BH inclusive.</p>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <div class="q"><span class="tag">Your turn</span><br>How many T-states does <code>LD IX,nn</code> take? (opcode fetch = 4, operand fetch = 3 per byte)</div>
+        <div class="opts">
+          <button data-opt="a">10</button>
+          <button data-opt="b">14</button>
+          <button data-opt="c">12</button>
+          <button data-opt="d">16</button>
+        </div>
+        <details><summary>Show solution</summary><div class="sol">
+          <code>DD 21</code> is a two-byte opcode: two opcode fetches = 8 T-states. The 16-bit operand is two operand fetches = 6 T-states. Total 14.
+        </div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <div class="q"><span class="tag">Your turn</span><br><code>LD HL,(nn)</code> uses which machine cycles?</div>
+        <div class="opts">
+          <button data-opt="a">opcode fetch only</button>
+          <button data-opt="b">opcode fetch + operand fetch</button>
+          <button data-opt="c">opcode fetch + operand fetch + memory read (×2)</button>
+          <button data-opt="d">opcode fetch + memory write</button>
+        </div>
+        <details><summary>Show solution</summary><div class="sol">
+          <code>LD HL,(nn)</code> is <code>2A</code> + <code>nn</code> (3 bytes). It fetches the opcode, fetches the 16-bit address as two operand bytes, then reads the two data bytes at that address: 4 + 3 + 3 + 3 + 3 = 16 T-states.
+        </div></details>
+      </div>
+    </section>
+
+    <!-- ============ OLDER CUSTOM CPU ============ -->
+    <section class="topic" id="custom">
+      <h2><span class="kicker">G</span>Older custom-CPU style</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="pr-g" data-progress="practice-custom">
+        <label for="pr-g">I can apply the same trace method to an unfamiliar CPU specification.
+          <span class="done-meta">Similar to 2021–22 Q2 · 2022–23 Q1 · 2023–24 Q1</span></label>
+      </div>
+
+      <p>The older controls use a made-up 8-bit CPU instead of the Z80. The registers and opcodes change, but the <strong>method does not</strong>. This is the transfer skill the exam is really testing.</p>
+
+      <div class="card" style="margin:18px 0">
+        <h3>Worked example — 8-bit bus, 16-bit instructions</h3>
+        <p>Specification: little-endian, byte-addressable memory, 16-bit address bus, <strong>8-bit data bus</strong>, instructions 16 bits long, and a 16-bit IR. Memory at 900H begins:</p>
+        <pre><code>900H: 0A 19 0C 59 0E 29 00 79 23 45 67 89 AB CD EF 01</code></pre>
+        <p><strong>1. How many memory reads to fetch one instruction?</strong> The instruction is 16 bits but the data bus moves 8 bits per read. Two reads.</p>
+        <p><strong>2. IR, MBR, and PC after fetching the first instruction?</strong></p>
+        <pre><code>MAR ← 900H; MBR ← 0AH; PC ← 901H
+MAR ← 901H; MBR ← 19H; PC ← 902H
+Little-endian: the first byte is the low byte.
+IR = 190AH
+MBR = 19H      (last byte read)
+PC  = 902H     (next instruction)</code></pre>
+        <p><strong>3. How many instructions in the program?</strong> Decode from 900H until the halt. If the program is four 16-bit instructions ending in a halt at 906H, the program is 8 bytes = 64 bits, and the last instruction starts at 906H.</p>
+        <p><strong>4. What changes if the data bus is 16 bits?</strong> The same instruction now takes one read, but IR is unchanged. The bus width affects the number of reads, not the instruction size.</p>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <div class="q"><span class="tag">Your turn</span><br>An 8-bit CPU with a 16-bit address bus and an <strong>8-bit data bus</strong> fetches a 16-bit instruction. How many memory reads are needed?</div>
+        <div class="opts">
+          <button data-opt="a">1</button>
+          <button data-opt="b">4</button>
+          <button data-opt="c">2</button>
+          <button data-opt="d">Depends on the opcode</button>
+        </div>
+        <details><summary>Show solution</summary><div class="sol">
+          The instruction is 16 bits; each read returns 8 bits. Two reads. This is independent of the opcode—it follows from the bus width and instruction size.
+        </div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <div class="q"><span class="tag">Your turn</span><br>The first two bytes at 900H are <code>0A</code> then <code>19</code>. On a little-endian machine, what is the 16-bit instruction word?</div>
+        <div class="opts">
+          <button data-opt="a">190AH</button>
+          <button data-opt="b">0A19H</button>
+          <button data-opt="c">A019H</button>
+          <button data-opt="d">9019H</button>
+        </div>
+        <details><summary>Show solution</summary><div class="sol">
+          Little-endian stores the low byte first. The byte at 900H (<code>0A</code>) is the low byte; the byte at 901H (<code>19</code>) is the high byte. The word is <code>190AH</code>.
+        </div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <div class="q"><span class="tag">Your turn</span><br>A program starts at 900H and its last instruction starts at 906H. Each instruction is 2 bytes. What is the program size?</div>
+        <div class="opts">
+          <button data-opt="a">6 bytes</button>
+          <button data-opt="b">8 bytes</button>
+          <button data-opt="c">10 bytes</button>
+          <button data-opt="d">12 bytes</button>
+        </div>
+        <details><summary>Show solution</summary><div class="sol">
+          Instructions start at 900H, 902H, 904H, 906H—four instructions. Four × 2 bytes = 8 bytes = 64 bits. The last instruction occupies 906H and 907H, so the program ends at 907H.
+        </div></details>
+      </div>
+    </section>
+
+    <!-- ============ ERROR LOG ============ -->
+    <section class="topic" id="log">
+      <h2><span class="kicker">H</span>Your error log</h2>
+      <p>Every mistake should become a line here. The goal is not to feel good about the solution—it is to make the same mistake impossible next time.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Question / skill</th><th>What I did wrong</th><th>Correct rule</th><th>Retry date</th></tr></thead>
+          <tbody>
+            <tr><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tip">
+        <strong>Readiness test.</strong> Take a full control with no notes, mark it honestly, then solve the same skills on a different year’s CPU. If both go well, you are ready. If only the first goes well, you memorized a paper—not the method.
+      </div>
+
+      <p style="margin-top:26px"><a class="btn btn-primary" href="ch1.html">Review Chapter 1 →</a> <a class="btn btn-outline" href="ch3.html">Review Chapter 3 →</a></p>
+    </section>
+
+    <footer class="foot">Practice page · EE321 companion. Questions are original, written in the style of the 2021–2026 controls. The controls themselves remain the authoritative source.</footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>

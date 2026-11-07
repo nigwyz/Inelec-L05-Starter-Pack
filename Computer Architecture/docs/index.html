@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EE321 Computer Architecture — Course Companion</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="mobile-bar">
+  <span class="t">EE321 Companion</span>
+  <button type="button">Menu ☰</button>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EE321 Companion<small>Computer Architecture</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch1.html"><span class="num">01</span>Digital design</a>
+      <a href="ch2.html"><span class="num">02</span>Top-level computer</a>
+      <a href="ch3.html"><span class="num">03</span>CPU</a>
+      <div class="nav-label">Practice</div>
+      <a href="practice.html"><span class="num">✎</span>Past-control practice</a>
+      <a href="https://github.com/nigwyz/Inelec-L05-Starter-Pack" target="_blank" rel="noopener"><span class="num">↗</span>Repository</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Learning progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="hero">
+      <span class="eyebrow" style="background:rgba(255,255,255,.12);color:#cfe0ff">EE321 · Computer Architecture</span>
+      <h1>Understand the machine, not just the slides.</h1>
+      <p class="lede">A guided companion to Chapters 1–3 of the course: digital design foundations, the top-level computer, and the CPU. Every topic has an explanation, an interactive visual, and practice taken from the style of the past controls.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="ch1.html">Start Chapter 1 →</a>
+        <a class="btn btn-ghost" href="practice.html">Jump to practice</a>
+      </div>
+    </header>
+
+    <h2>What this site covers</h2>
+    <p class="lede">It follows the professor’s sequence exactly. Chapter 4 onward is intentionally excluded until the class reaches it.</p>
+
+    <div class="grid grid-3" style="margin:22px 0 34px">
+      <a class="card card-link chapter-card" href="ch1.html">
+        <span class="badge">01</span>
+        <h3>Review of Digital Design</h3>
+        <p>From analog signals to CMOS gates: the layer underneath every instruction.</p>
+        <ul>
+          <li>Binary, hex, signed numbers</li>
+          <li>Carry vs. overflow</li>
+          <li>Gates, adders, MUX, tri-state</li>
+          <li>Latches, flip-flops, registers</li>
+          <li>CMOS transistors</li>
+        </ul>
+        <span class="go">Open chapter →</span>
+      </a>
+
+      <a class="card card-link chapter-card" href="ch2.html">
+        <span class="badge">02</span>
+        <h3>Top Level View of Computer</h3>
+        <p>What a computer is made of, how the parts talk, and how a program actually runs.</p>
+        <ul>
+          <li>Architecture vs. organization</li>
+          <li>CPU, memory, I/O, buses</li>
+          <li>Endianness, stack, memory map</li>
+          <li>Fetch and execute cycles</li>
+          <li>MIPS and performance</li>
+        </ul>
+        <span class="go">Open chapter →</span>
+      </a>
+
+      <a class="card card-link chapter-card" href="ch3.html">
+        <span class="badge">03</span>
+        <h3>Central Processing Unit</h3>
+        <p>The registers, the instruction cycle, interrupts, and real processors.</p>
+        <ul>
+          <li>Register organization and PSW</li>
+          <li>IAC → IF → IOD → OAC → OF → DO → OS</li>
+          <li>Interrupts and priorities</li>
+          <li>Z80, ARM, x86 examples</li>
+          <li>Little-endian traces and stack</li>
+        </ul>
+        <span class="go">Open chapter →</span>
+      </a>
+    </div>
+
+    <h2>How to use each chapter</h2>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>1 · Read the idea</h3>
+        <p>Each topic begins with the concept in plain language, then tightens it to the precise definition the course uses. Nothing is skipped just because it looks advanced.</p>
+      </div>
+      <div class="card">
+        <h3>2 · Move the visual</h3>
+        <p>Interactive panels let you flip bits, toggle gates, push the stack, and step through fetch/execute. Seeing the register values change is the point.</p>
+      </div>
+      <div class="card">
+        <h3>3 · Work the example</h3>
+        <p>Worked examples solve real exam-style problems line by line, including the reasoning behind every register value.</p>
+      </div>
+      <div class="card">
+        <h3>4 · Test yourself</h3>
+        <p>Practice questions hide their solutions until you try. The practice page maps each one back to the control it resembles.</p>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:28px">
+      <strong>Scope note.</strong>
+      The companion follows the supplied slides: Chapter 1 (Review of Digital Design), Chapter 2 (Top Level View of Computer), and Chapter 3 (CPU). Topics from later chapters are not taught here yet.
+    </div>
+
+    <div class="exam">
+      <strong>Exam-first tip.</strong>
+      Past controls repeatedly test the same skills: reading a register trace, computing instruction size, decoding a hex opcode, following little-endian memory, and managing the stack. The practice page is organized around those skills rather than around years.
+    </div>
+
+    <footer class="foot">
+      Built as an original study companion for EE321. Course slides and textbook are the authoritative sources; this site adds explanations and visualizations.
+      <br><a href="practice.html">Past-control practice</a> · <a href="ch1.html">Begin Chapter 1</a>
+    </footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>

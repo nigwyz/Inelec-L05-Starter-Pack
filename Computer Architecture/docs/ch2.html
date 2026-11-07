@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 2 — Top Level View of Computer | EE321 Companion</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Ch. 2 — Top-Level Computer</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EE321 Companion<small>Computer Architecture</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch1.html"><span class="num">01</span>Digital design</a>
+      <a href="ch2.html" class="active"><span class="num">02</span>Top-level computer</a>
+      <a href="ch3.html"><span class="num">03</span>CPU</a>
+      <div class="nav-label">Practice</div>
+      <a href="practice.html"><span class="num">✎</span>Past-control practice</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Chapter 2</span>
+      <h1>Top Level View of Computer</h1>
+      <p class="lede">What the parts are, what they do, how they are connected—and how a stored program turns into a sequence of register changes you can trace on paper.</p>
+    </header>
+
+    <div class="toc">
+      <strong>On this page</strong>
+      <ol>
+        <li><a href="#defs">Architecture vs. organization</a></li>
+        <li><a href="#evolution">Computer evolution</a></li>
+        <li><a href="#components">Von Neumann and Harvard</a></li>
+        <li><a href="#cpu">The CPU</a></li>
+        <li><a href="#memory">Memory: words, bytes, endianness, stack</a></li>
+        <li><a href="#io">I/O peripherals</a></li>
+        <li><a href="#buses">System buses</a></li>
+        <li><a href="#instructions">Instructions and assembly</a></li>
+        <li><a href="#function">Fetch, decode, execute</a></li>
+        <li><a href="#perf">Performance: MIPS and MFLOPS</a></li>
+      </ol>
+    </div>
+
+    <!-- ================= DEFINITIONS ================= -->
+    <section class="topic" id="defs">
+      <h2><span class="kicker">1</span>Architecture vs. organization</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p2-1" data-progress="ch2-defs">
+        <label for="p2-1">I can separate architecture attributes from organization attributes.
+          <span class="done-meta">Slides 5–6 · Stallings §1.1–1.2</span></label>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Computer Architecture</h3>
+          <p>Attributes <strong>visible to the programmer</strong> that directly affect the logical execution of a program.</p>
+          <ul class="clean">
+            <li>Instruction set</li>
+            <li>Number of bits (word size, register size)</li>
+            <li>Memory addressing modes</li>
+            <li>Data types and registers visible to code</li>
+          </ul>
+          <p class="small muted">The contract: “if you write this instruction, this is what it means.”</p>
+        </div>
+        <div class="card">
+          <h3>Computer Organization</h3>
+          <p>The <strong>operational units and their interconnections</strong> that realize the architectural specification.</p>
+          <ul class="clean">
+            <li>ALU design and width</li>
+            <li>Control unit implementation</li>
+            <li>Bus structure and timing</li>
+            <li>Cache size and organization</li>
+          </ul>
+          <p class="small muted">The implementation: “this is how the hardware actually does it.”</p>
+        </div>
+      </div>
+
+      <p>A computer is a <strong>hierarchical system</strong>. At every level, <em>structure</em> is how components relate, and <em>function</em> is what each component does as part of that structure.</p>
+
+      <pre><code>Computer structure : CPU, memory, bus, I/O
+CPU structure      : ALU, registers, control unit, internal bus
+Control unit       : sequencing logic, registers, decoders, memory control</code></pre>
+    </section>
+
+    <!-- ================= EVOLUTION ================= -->
+    <section class="topic" id="evolution">
+      <h2><span class="kicker">2</span>A short evolution</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p2-2" data-progress="ch2-evolution">
+        <label for="p2-2">I know the key milestones and why the stored-program idea mattered.
+          <span class="done-meta">Slides 7–8 · Stallings §1.3</span></label>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Year</th><th>Machine / event</th><th>Why it matters</th></tr></thead>
+          <tbody>
+            <tr><td>1947</td><td>ENIAC</td><td>First electronic computer: 30 tons, 18 000 vacuum tubes, decimal, programmed manually by switches and cables.</td></tr>
+            <tr><td>1947</td><td>Transistor (Bell Labs)</td><td>Replaced vacuum tubes; smaller, cooler, more reliable computers.</td></tr>
+            <tr><td>1952</td><td>IAS / Von Neumann machine</td><td><strong>Stored-program concept</strong>: instructions live in the same memory as data. Prototype of today’s general-purpose computer.</td></tr>
+            <tr><td>1965</td><td>Moore’s law</td><td>Transistor count and frequency roughly double every 18 months (originally stated as 18–24 months).</td></tr>
+            <tr><td>1971</td><td>Intel 4004</td><td>First microprocessor: a 4-bit CPU on one chip, 2300 transistors, 108 kHz.</td></tr>
+            <tr><td>1972</td><td>Intel 8008</td><td>First 8-bit microprocessor; first commercially available processor.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>The key idea.</strong> Before stored programs, changing a computation meant rewiring the machine. After it, changing the computation means loading different bytes into the same memory. That is why a general-purpose computer can run a text editor, a compiler, and a game without changing its hardware.
+      </div>
+    </section>
+
+    <!-- ================= COMPONENTS ================= -->
+    <section class="topic" id="components">
+      <h2><span class="kicker">3</span>Von Neumann and Harvard</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p2-3" data-progress="ch2-components">
+        <label for="p2-3">I can list the four top-level components and explain the three Von Neumann concepts.
+          <span class="done-meta">Slides 9–13 · Stallings §1.2, §3.1</span></label>
+      </div>
+
+      <p><strong>Von Neumann architecture</strong> rests on three ideas:</p>
+      <ol>
+        <li><strong>One memory</strong> stores both data and instructions, and it is read/write.</li>
+        <li>Memory contents are <strong>addressable by location</strong>—a pointer is just an address.</li>
+        <li>Execution is <strong>sequential</strong> from one instruction to the next unless an instruction explicitly changes the flow.</li>
+      </ol>
+
+      <p>At the top level, a computer has four elements: the <strong>CPU</strong>, <strong>memory</strong>, <strong>I/O peripherals</strong>, and the <strong>communication buses</strong> that connect them.</p>
+
+      <p><strong>Harvard architecture</strong> uses two separate memories—one for program, one for data—often with separate buses. It appears in DSPs and in some embedded and image-processing systems. Its advantage is that an instruction fetch and a data access can happen at the same time; its cost is more pins, more memory, and a less flexible memory map.</p>
+
+      <div class="viz" id="viz-vn">
+        <div class="viz-head"><span class="vt">Interactive · Von Neumann vs. Harvard</span><span class="vh">click a component</span></div>
+        <div class="viz-body"></div>
+      </div>
+    </section>
+
+    <!-- ================= CPU ================= -->
+    <section class="topic" id="cpu">
+      <h2><span class="kicker">4</span>The CPU</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p2-4" data-progress="ch2-cpu">
+        <label for="p2-4">I can explain opcode vs. operand and the role of every basic register.
+          <span class="done-meta">Slides 14–21 · Stallings §3.2, §14.1</span></label>
+      </div>
+
+      <p>The CPU performs one basic job: execute instructions. Each instruction has two parts:</p>
+      <ul class="clean">
+        <li><strong>Opcode</strong>—what operation to perform (ADD, LOAD, STORE, JUMP…).</li>
+        <li><strong>Operand</strong>—references to the inputs and outputs: a register, a memory address, or an immediate value.</li>
+      </ul>
+
+      <p>The basic operation classes are arithmetic/logic, data movement, and control flow (conditional jump, branch, call).</p>
+
+      <h3>Four CPU blocks</h3>
+      <div class="grid grid-4">
+        <div class="card"><h3>Registers</h3><p>Fast temporary storage of data, addresses, and instructions.</p></div>
+        <div class="card"><h3>ALU</h3><p>Performs the arithmetic and logical operation.</p></div>
+        <div class="card"><h3>Control Unit</h3><p>Fetches, decodes, and asserts the control signals.</p></div>
+        <div class="card"><h3>Internal bus</h3><p>Moves values between the blocks.</p></div>
+      </div>
+
+      <h3>Basic registers</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Register</th><th>Holds</th><th>Typical use</th></tr></thead>
+          <tbody>
+            <tr><td><strong>PC</strong> — Program Counter</td><td>Address of the next instruction</td><td>Incremented after each fetch</td></tr>
+            <tr><td><strong>MAR</strong> — Memory Address Register</td><td>Address for the next memory read/write</td><td>PC is copied here to fetch</td></tr>
+            <tr><td><strong>MBR/MDR</strong> — Memory Buffer Register</td><td>Data read from or written to memory</td><td>Holds the word in transit</td></tr>
+            <tr><td><strong>IR</strong> — Instruction Register</td><td>The instruction currently being executed</td><td>Output of the fetch</td></tr>
+            <tr><td><strong>AC/ACC</strong> — Accumulator</td><td>Result of the ALU</td><td>Implicit operand in many CPUs</td></tr>
+            <tr><td><strong>SP</strong> — Stack Pointer</td><td>Address of the top of the stack</td><td>Updated by PUSH/POP</td></tr>
+            <tr><td><strong>GPR</strong> — General Purpose Registers</td><td>Any data or address</td><td>Compiler/programmer managed</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="viz" id="viz-registers">
+        <div class="viz-head"><span class="vt">Interactive · Register explorer</span><span class="vh">click a register</span></div>
+        <div class="viz-body"></div>
+      </div>
+    </section>
+
+    <!-- ================= MEMORY ================= -->
+    <section class="topic" id="memory">
+      <h2><span class="kicker">5</span>Memory: words, bytes, endianness, stack</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p2-5" data-progress="ch2-memory">
+        <label for="p2-5">I can compute memory capacity and trace little-endian values and stack operations.
+          <span class="done-meta">Slides 22–33 · Stallings §4.1, §3.3</span></label>
+      </div>
+
+      <p>RAM is conceptually a table of <strong>N locations</strong>. Each location has a unique <strong>address</strong> and stores a fixed number of bits (the <strong>word length</strong>). The number of locations is the <strong>depth</strong>; the bits per location is the <strong>width</strong>; and:</p>
+
+      <pre><code>capacity = depth × width</code></pre>
+
+      <p>The notation <code>[X]</code> means “the content of the memory location whose address is X”. So <code>[1234H] = 56H</code> means address 1234H holds 56H.</p>
+
+      <p><strong>ROM</strong> can only be read; <strong>RAM</strong> (read/write memory) can be read and written. The CPU normally accesses one location at a time.</p>
+
+      <h3>Word-addressable vs. byte-addressable</h3>
+      <p>In <strong>word-addressable</strong> memory, each address points to a whole word; that is inefficient for characters and strings. In <strong>byte-addressable</strong> memory, each address points to one byte, and a 16- or 32-bit value spans two or four consecutive locations. Most modern CPUs are byte-addressable.</p>
+
+      <h3>Little-endian vs. big-endian</h3>
+      <p>For a multi-byte value, the bytes must be ordered. <strong>Little-endian</strong> stores the least-significant byte at the lowest address; <strong>big-endian</strong> stores the most-significant byte first.</p>
+
+      <p>For the 32-bit value <code>12345678H</code> stored at address <code>10H</code>:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Address</th><th>Little-endian</th><th>Big-endian</th></tr></thead>
+          <tbody>
+            <tr><td>10H</td><td>78</td><td>12</td></tr>
+            <tr><td>11H</td><td>56</td><td>34</td></tr>
+            <tr><td>12H</td><td>34</td><td>56</td></tr>
+            <tr><td>13H</td><td>12</td><td>78</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small muted">x86 is little-endian; Motorola 68k and SPARC are big-endian. The Z80 and the course’s hypothetical CPUs are little-endian.</p>
+
+      <div class="viz" id="viz-endian">
+        <div class="viz-head"><span class="vt">Interactive · Endian memory viewer</span><span class="vh">edit the value, switch the mode</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <h3>Stack memory</h3>
+      <p>A stack is read/write memory with <strong>last-in, first-out</strong> access. The <strong>SP</strong> holds the address of the last saved item. <code>PUSH</code> saves a value and <code>POP</code> retrieves it; SP updates automatically.</p>
+
+      <div class="viz" id="viz-stack">
+        <div class="viz-head"><span class="vt">Interactive · Stack with PUSH and POP</span><span class="vh">little-endian, 8-bit CPU</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <h3>Memory map</h3>
+      <p>With <em>N</em> address lines, the CPU can address <code>2<sup>N</sup></code> locations. The address range is divided into regions with different roles—monitor ROM, program/data RAM, user range, I/O ports. That division is the <strong>memory map</strong>.</p>
+
+      <p>The course example (MDA-WINZ80):</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Range</th><th>Role</th><th>Size</th></tr></thead>
+          <tbody>
+            <tr><td><code>0000–1FFFH</code></td><td>Monitor EEPROM</td><td>8 KB</td></tr>
+            <tr><td><code>2000–3FFFH</code></td><td>Program and data memory</td><td>8 KB</td></tr>
+            <tr><td><code>4000–FFFFH</code></td><td>User range</td><td>48 KB</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small">Size of a range <code>[A, B]</code> is <code>B − A + 1</code> locations. For 16-bit addresses the whole space is 64 KB; a byte-addressable 64 KB memory therefore holds 64 K bytes = 512 Kbit.</p>
+    </section>
+
+    <!-- ================= I/O ================= -->
+    <section class="topic" id="io">
+      <h2><span class="kicker">6</span>I/O peripherals</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p2-6" data-progress="ch2-io">
+        <label for="p2-6">I can explain why I/O looks like memory to the CPU.
+          <span class="done-meta">Slides 34–35 · Stallings §7.1–7.2</span></label>
+      </div>
+
+      <p>Input modules move data from the outside world into the CPU; output modules move data out. From the CPU’s internal point of view, an I/O device behaves much like a memory location: each device has a unique <strong>port/address</strong> that can be read or written.</p>
+
+      <p>That similarity is deliberate. It allows the same load/store machinery—and, in many CPUs, the same instructions—to reach both memory and peripherals. Chapter 7 of the course will separate <em>memory-mapped I/O</em> from <em>isolated I/O</em>; for now, remember that “I/O is an address the CPU can read or write.”</p>
+    </section>
+
+    <!-- ================= BUSES ================= -->
+    <section class="topic" id="buses">
+      <h2><span class="kicker">7</span>System buses</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p2-7" data-progress="ch2-buses">
+        <label for="p2-7">I can describe the data, address, and control buses and the tri-state requirement.
+          <span class="done-meta">Slides 36–39 · Stallings §3.4</span></label>
+      </div>
+
+      <p>A <strong>bus</strong> is a shared communication path. All peripherals connect to it, but <strong>only one device may drive it at a time</strong>; the others must be in the high-impedance state. That is why devices connect through tri-state buffers.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Bus</th><th>Direction</th><th>Carries</th><th>Width determines</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Data bus</strong></td><td>Bidirectional</td><td>Data between CPU, memory, I/O</td><td>How many bits move at once</td></tr>
+            <tr><td><strong>Address bus</strong></td><td>Unidirectional (out of CPU)</td><td>The address being accessed</td><td>Maximum addressable memory: <code>2<sup>N</sup></code></td></tr>
+            <tr><td><strong>Control bus</strong></td><td>Mixed</td><td>Read/write, clock, interrupt, reset…</td><td>What operation and when</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>A 16-bit address bus addresses <code>2<sup>16</sup> = 65 536 = 64 K</code> locations. If each location is one byte, that is 64 KB; if the memory is word-addressable with a 16-bit word, the capacity is 64 K words = 128 KB.</p>
+
+      <div class="note">
+        <strong>Book corner — bus timing and arbitration (Stallings §3.4).</strong>
+        A bus transfer needs more than data lines: it needs a <em>timing</em> rule. In <strong>synchronous</strong> timing, every event is tied to a clock and both sides must meet the same clock budget. In <strong>asynchronous</strong> timing, a handshake (request/acknowledge) lets a slow device take as long as it needs. When several devices want the bus, an <strong>arbiter</strong> grants it—centrally (one controller) or distributively (daisy-chain or independent requests). The exam’s “only one device drives the bus” rule is the reason arbitration exists at all.
+      </div>
+
+      <div class="viz" id="viz-bus">
+        <div class="viz-head"><span class="vt">Interactive · Who owns the bus?</span><span class="vh">click a device</span></div>
+        <div class="viz-body"></div>
+      </div>
+    </section>
+
+    <!-- ================= INSTRUCTIONS ================= -->
+    <section class="topic" id="instructions">
+      <h2><span class="kicker">8</span>Instructions and assembly language</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p2-8" data-progress="ch2-instructions">
+        <label for="p2-8">I can read an instruction format and turn assembly into machine code.
+          <span class="done-meta">Slides 40–45 · Stallings §12.1–12.4</span></label>
+      </div>
+
+      <p>An assembly program is a sequence of machine instructions. Every instruction encodes two kinds of information:</p>
+      <ul class="clean">
+        <li><strong>Opcode field</strong>—the operation.</li>
+        <li><strong>Operand fields</strong>—immediate value, memory address (pointer), or register.</li>
+      </ul>
+
+      <p>Instructions may have zero, one, two, or three operands. More operands make assembly easier to read but make each instruction longer.</p>
+
+      <h3>Reading an assembly line</h3>
+      <pre><code>start:  addi  $t0, $t0, 1    ; increment i
+
+start   optional label = address of this instruction
+addi    opcode
+$t0     destination register
+$t0     source register
+1       immediate source operand
+; ...   comment</code></pre>
+
+      <p><strong>Machine code</strong> is the binary or hex representation of that instruction. For example, the MIPS instruction <code>add $t0, $t1, $t2</code> becomes:</p>
+      <pre><code>0000 0001 0010 1011 1000 0000 0100 0000₂
+= 012B8040H</code></pre>
+    </section>
+
+    <!-- ================= FUNCTION ================= -->
+    <section class="topic" id="function">
+      <h2><span class="kicker">9</span>Fetch, decode, execute</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p2-9" data-progress="ch2-function">
+        <label for="p2-9">I can trace PC, MAR, MBR, IR, and AC through a complete program.
+          <span class="done-meta">Slides 46–61 · Stallings §3.2, §14.3</span></label>
+      </div>
+
+      <p>Program execution repeats two phases:</p>
+      <ol>
+        <li><strong>Fetch:</strong> read the instruction at <code>[PC]</code> into IR.</li>
+        <li><strong>Decode/execute:</strong> decode it, read operands, perform the operation, store the result.</li>
+      </ol>
+
+      <h3>The fetch cycle, precisely</h3>
+      <pre><code>MAR ← PC
+MBR ← [MAR]        (memory read)
+IR  ← MBR
+PC  ← PC + instruction_size</code></pre>
+
+      <p>So at the end of a fetch, <code>MAR</code> holds the address of the last byte fetched, <code>MBR</code> holds the last byte read, and <code>IR</code> holds the complete instruction. The PC has already moved to the next instruction.</p>
+
+      <div class="callout note">
+        <strong>How many memory reads?</strong> One read per bus-width chunk. In the course’s hypothetical machine, instructions are 16 bits and the data bus is 16 bits, so one read fetches an instruction. If the data bus were 8 bits, the same instruction would need two reads. This exact distinction appears in Quiz #1.
+      </div>
+
+      <h3>Worked example: the 16-bit hypothetical machine</h3>
+      <p>Specifications (slides 50–57): instructions are 16 bits, the address bus is 12 bits, the format is 4-bit opcode + 12-bit address, and there is a single accumulator AC. Opcodes: <code>1H</code> load AC from memory, <code>2H</code> store AC, <code>5H</code> add memory to AC, <code>7H</code> halt.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Address</th><th>Content</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>300H</td><td><code>1940H</code></td><td>Load AC from 940H</td></tr>
+            <tr><td>301H</td><td><code>5941H</code></td><td>Add [941H] to AC</td></tr>
+            <tr><td>302H</td><td><code>2941H</code></td><td>Store AC to 941H</td></tr>
+            <tr><td>303H</td><td><code>7940H</code></td><td>Halt</td></tr>
+            <tr><td>940H</td><td><code>0003H</code></td><td>Data</td></tr>
+            <tr><td>941H</td><td><code>0002H</code></td><td>Data</td></tr>
+            <tr><td>942H</td><td><code>0001H</code></td><td>Data</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Step 1 — fetch the first instruction.</strong> <code>PC = 300H</code>, so <code>MAR = 300H</code>, <code>MBR = [300H] = 1940H</code>, <code>IR = 1940H</code>, <code>PC = 301H</code>.</p>
+      <p><strong>Step 2 — execute it.</strong> Opcode <code>1H</code> = load; address = <code>940H</code>. <code>AC ← [940H] = 0003H</code>.</p>
+      <p><strong>Step 3 — fetch the second.</strong> <code>MAR = 301H</code>, <code>MBR = 5941H</code>, <code>IR = 5941H</code>, <code>PC = 302H</code>.</p>
+      <p><strong>Step 4 — execute.</strong> Opcode <code>5H</code> = add; address = <code>941H</code>. <code>AC ← 0003H + [941H] = 0003H + 0002H = 0005H</code>.</p>
+      <p><strong>Step 5 — fetch the third.</strong> <code>MAR = 302H</code>, <code>MBR = 2941H</code>, <code>IR = 2941H</code>, <code>PC = 303H</code>.</p>
+      <p><strong>Step 6 — execute.</strong> Opcode <code>2H</code> = store; address = <code>941H</code>. <code>[941H] ← 0005H</code>.</p>
+      <p><strong>Step 7 — fetch the fourth.</strong> <code>MAR = 303H</code>, <code>MBR = 7940H</code>, <code>IR = 7940H</code>, <code>PC = 304H</code>.</p>
+      <p><strong>Step 8 — execute.</strong> Opcode <code>7H</code> = halt. Execution stops.</p>
+
+      <div class="viz" id="viz-fetch">
+        <div class="viz-head"><span class="vt">Interactive · Step through the program</span><span class="vh">watch every register</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <div class="exam">
+        <strong>Exam link.</strong> This is the exact pattern behind 2025–26 Q1.6–1.7, 2024–25 Q1.6–1.7, 2023–24 Q1.4–1.5, and 2021–22 Q2.4–2.5: “give PC, MAR, MBR (and IR) after the fetch/execute cycle.” The method never changes—only the instruction set changes.
+      </div>
+    </section>
+
+    <!-- ================= PERFORMANCE ================= -->
+    <section class="topic" id="perf">
+      <h2><span class="kicker">10</span>Performance: MIPS and MFLOPS</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p2-10" data-progress="ch2-perf">
+        <label for="p2-10">I can compute CPI and MIPS from a clock rate and an instruction mix.
+          <span class="done-meta">Slides 62–65 · Stallings §2.4–2.5</span></label>
+      </div>
+
+      <p>Performance is not one number. The course lists speed, cost, size, reliability, and power consumption. For instruction throughput, the key relation is:</p>
+
+      <pre><code>CPI_avg = Σ (fraction_i × CPI_i)
+MIPS    = clock_frequency / (CPI_avg × 10^6)
+
+MFLOPS = number_of_floating_point_operations
+         ────────────────────────────────────────
+                execution_time × 10^6</code></pre>
+
+      <p>For the 2021–22 control: 200 instructions total; 100 take 4 cycles, 60 take 7, 40 take 10; clock = 2 GHz.</p>
+      <pre><code>fractions: 100/200 = 0.5, 60/200 = 0.3, 40/200 = 0.2
+CPI = 0.5×4 + 0.3×7 + 0.2×10 = 2.0 + 2.1 + 2.0 = 6.1
+
+MIPS = 2×10^9 / (6.1×10^6) ≈ 328 MIPS</code></pre>
+
+      <div class="viz" id="viz-mips">
+        <div class="viz-head"><span class="vt">Interactive · MIPS calculator</span><span class="vh">edit the instruction mix</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <div class="warn">
+        <strong>Careful with units.</strong> GHz = 10<sup>9</sup> Hz. The “10<sup>6</sup>” in the MIPS formula converts cycles per second to millions of instructions per second. A result of 328 means 328 million instructions per second.
+      </div>
+    </section>
+
+    <p><a class="btn btn-primary" href="ch3.html">Continue to Chapter 3 →</a></p>
+
+    <footer class="foot">Chapter 2 · Top Level View of Computer · EE321 companion. Slides 1–66; Stallings 10e chapters 1–3.</footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+<script src="js/viz-ch2.js"></script>
+</body>
+</html>

@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 3 — Central Processing Unit | EE321 Companion</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Ch. 3 — CPU</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EE321 Companion<small>Computer Architecture</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch1.html"><span class="num">01</span>Digital design</a>
+      <a href="ch2.html"><span class="num">02</span>Top-level computer</a>
+      <a href="ch3.html" class="active"><span class="num">03</span>CPU</a>
+      <div class="nav-label">Practice</div>
+      <a href="practice.html"><span class="num">✎</span>Past-control practice</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Chapter 3</span>
+      <h1>Central Processing Unit</h1>
+      <p class="lede">What the CPU must do, the registers it needs, the states an instruction passes through, how interrupts hijack the flow—and how the Z80 makes it concrete.</p>
+    </header>
+
+    <div class="toc">
+      <strong>On this page</strong>
+      <ol>
+        <li><a href="#org">CPU organization</a></li>
+        <li><a href="#registers">Register organization</a></li>
+        <li><a href="#psw">The PSW and flags</a></li>
+        <li><a href="#models">Programming models: 8086, 68000, Z80</a></li>
+        <li><a href="#cycle">The instruction cycle</a></li>
+        <li><a href="#interrupts">Interrupts</a></li>
+        <li><a href="#multiple">Multiple interrupts and priorities</a></li>
+        <li><a href="#z80">Z80 in detail</a></li>
+        <li><a href="#arm-x86">ARM and x86</a></li>
+        <li><a href="#exam">Exam connections</a></li>
+      </ol>
+    </div>
+
+    <!-- ================= ORGANIZATION ================= -->
+    <section class="topic" id="org">
+      <h2><span class="kicker">1</span>CPU organization</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p3-1" data-progress="ch3-org">
+        <label for="p3-1">I can list the five things a CPU must do and the blocks that do them.
+          <span class="done-meta">Slides 4–7 · Stallings §14.1</span></label>
+      </div>
+
+      <p>The CPU is connected to the rest of the system through the system bus. Internally it has four blocks—registers, ALU, control unit, and internal bus—but the important question is <em>what the CPU has to accomplish</em>:</p>
+
+      <div class="grid grid-2">
+        <div class="card"><h3>1 · Fetch instruction</h3><p>Read the next instruction from memory using the PC.</p></div>
+        <div class="card"><h3>2 · Interpret instruction</h3><p>Decode the opcode and operand fields to determine the required action.</p></div>
+        <div class="card"><h3>3 · Fetch data</h3><p>Read operands from memory or an I/O module when the instruction needs them.</p></div>
+        <div class="card"><h3>4 · Process data</h3><p>Perform the arithmetic or logical operation in the ALU.</p></div>
+        <div class="card"><h3>5 · Write data</h3><p>Store the result back to a register, memory, or an I/O module.</p></div>
+      </div>
+
+      <p>To do this, the CPU needs a small internal memory: somewhere to keep the current instruction, the address being accessed, the data in transit, and intermediate results. Those are the registers.</p>
+
+      <div class="viz" id="viz-cpuorg">
+        <div class="viz-head"><span class="vt">Interactive · CPU internal structure</span><span class="vh">click a block</span></div>
+        <div class="viz-body"></div>
+      </div>
+    </section>
+
+    <!-- ================= REGISTERS ================= -->
+    <section class="topic" id="registers">
+      <h2><span class="kicker">2</span>Register organization</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p3-2" data-progress="ch3-registers">
+        <label for="p3-2">I can sort registers into user-visible and control/status, and explain each category.
+          <span class="done-meta">Slides 8–16 · Stallings §14.2</span></label>
+      </div>
+
+      <p>Registers are the top of the memory hierarchy: the fastest storage, and the smallest. The number and function of registers vary between processors and are one of the major design decisions.</p>
+
+      <h3>User-visible registers</h3>
+      <p>These can be referenced by machine-language instructions:</p>
+      <ul class="clean">
+        <li><strong>General-purpose</strong>—usable for any operand; true general-purpose use means any GPR can hold any operand, though real CPUs often restrict some registers for the stack or addressing.</li>
+        <li><strong>Data registers</strong>—hold data only; they cannot be used to compute an operand address.</li>
+        <li><strong>Address registers</strong>—hold addresses: segment pointers, index registers, stack pointer.</li>
+        <li><strong>Condition codes (flags)</strong>—set by hardware as a result of operations, read by conditional branches, and not directly settable by ordinary programs.</li>
+      </ul>
+
+      <p>How many? Typically 8–32. Fewer registers means more memory references; more registers means longer instruction encodings to name them. How big? At least large enough for a full address or a full word; often two data registers can be combined into one wider register (as with Z80’s H and L forming HL).</p>
+
+      <h3>Control and status registers</h3>
+      <p>Used by the control unit and privileged software during fetch, decode, and execution. Many are invisible to the programmer; some are visible but not easily modified.</p>
+      <ul class="clean">
+        <li><strong>PC</strong>—address of the instruction to fetch.</li>
+        <li><strong>IR</strong>—the instruction most recently fetched.</li>
+        <li><strong>MAR</strong>—address of a memory location.</li>
+        <li><strong>MBR</strong>—data written to or read from memory.</li>
+        <li><strong>PSW</strong>—condition codes plus status information.</li>
+      </ul>
+
+      <div class="note">
+        <strong>Programming model.</strong> The set of registers a programmer may use is called the <em>programming model</em>. Two CPUs can have the same instruction set but different programming models only if the visible state differs—which is why the model is part of the architecture, not the organization.
+      </div>
+    </section>
+
+    <!-- ================= PSW ================= -->
+    <section class="topic" id="psw">
+      <h2><span class="kicker">3</span>The PSW and flags</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p3-3" data-progress="ch3-psw">
+        <label for="p3-3">I can name the PSW fields and explain when each is set.
+          <span class="done-meta">Slide 17 · Stallings §14.2</span></label>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Sign</strong></td><td>Sign bit of the last arithmetic result (1 = negative).</td></tr>
+            <tr><td><strong>Zero</strong></td><td>Set when the result is exactly 0.</td></tr>
+            <tr><td><strong>Carry</strong></td><td>Set on a carry out of (addition) or borrow into (subtraction) the high-order bit. Used for multiword arithmetic.</td></tr>
+            <tr><td><strong>Equal</strong></td><td>Set when a logical comparison finds equality.</td></tr>
+            <tr><td><strong>Overflow</strong></td><td>Set when signed arithmetic exceeds the representable range.</td></tr>
+            <tr><td><strong>Interrupt enable/disable</strong></td><td>Controls whether maskable interrupts are accepted.</td></tr>
+            <tr><td><strong>Supervisor</strong></td><td>Indicates supervisor vs. user mode; privileged instructions and protected memory are only available in supervisor mode.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warn">
+        <strong>Flags are outputs, not inputs.</strong> An instruction sets them; a later conditional branch reads them. Writing a program that assumes flags survive an unrelated instruction is a classic bug—many instructions modify them.
+      </div>
+    </section>
+
+    <!-- ================= MODELS ================= -->
+    <section class="topic" id="models">
+      <h2><span class="kicker">4</span>Programming models: 8086, 68000, Z80</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p3-4" data-progress="ch3-models">
+        <label for="p3-4">I know the Z80 register set by heart and can describe the 8086 and 68000 layouts.
+          <span class="done-meta">Slides 18–24 · Stallings §14.5</span></label>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="card">
+          <h3>Intel 8086</h3>
+          <p>16-bit processor, 20-bit address bus, 16-bit data bus.</p>
+          <ul class="clean">
+            <li>4 × 16-bit data registers: AX, BX, CX, DX (byte-addressable halves)</li>
+            <li>4 × 16-bit pointer/index: SP, BP, SI, DI</li>
+            <li>4 × 16-bit segment: CS, DS, SS, ES</li>
+            <li>Instruction pointer</li>
+            <li>16-bit flags register, 9 active flags</li>
+          </ul>
+          <p class="small muted">Physical address = CS × 16 + IP.</p>
+        </div>
+        <div class="card">
+          <h3>Motorola 68000</h3>
+          <p>32-bit registers, 24-bit address bus.</p>
+          <ul class="clean">
+            <li>8 × 32-bit data registers D0–D7</li>
+            <li>8 × 32-bit address registers A0–A7 (A7 is the stack pointer; a second A7 for supervisor mode)</li>
+            <li>32-bit program counter</li>
+            <li>16-bit status register</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Zilog Z80</h3>
+          <p>8-bit processor, 8-bit data bus, 16-bit address bus.</p>
+          <ul class="clean">
+            <li>6 × 8-bit GPR: B, C, D, E, H, L</li>
+            <li>8-bit accumulator A</li>
+            <li>8-bit flag register F (6 flags)</li>
+            <li>4 × 16-bit address registers: IX, IY, SP, PC</li>
+            <li>Special: I (interrupt vector), R (refresh)</li>
+          </ul>
+        </div>
+      </div>
+
+      <p>The Z80 is the one the controls use, so its details matter most. Pairs:<br>
+      <code>BC = B·256 + C</code>, <code>DE = D·256 + E</code>, <code>HL = H·256 + L</code>.</p>
+
+      <pre><code>Z80 example:
+LD A, 20H     ; A = 20H
+LD B, 3AH     ; B = 3AH
+ADD A, B      ; A = A + B = 5AH</code></pre>
+
+      <p class="small muted">The x86 equivalent is <code>MOV EAX,20H / MOV EBX,3AH / ADD EAX,EBX</code>.</p>
+    </section>
+
+    <!-- ================= CYCLE ================= -->
+    <section class="topic" id="cycle">
+      <h2><span class="kicker">5</span>The instruction cycle</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p3-5" data-progress="ch3-cycle">
+        <label for="p3-5">I can list the seven states and say which are used by a given instruction.
+          <span class="done-meta">Slides 25–28 · Stallings §14.3</span></label>
+      </div>
+
+      <p>The basic <strong>direct</strong> instruction cycle contains seven states:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>State</th><th>Meaning</th><th>What happens</th></tr></thead>
+          <tbody>
+            <tr><td><strong>IAC</strong></td><td>Instruction Address Calculation</td><td>Determine the address of the next instruction (usually PC, or PC + offset)</td></tr>
+            <tr><td><strong>IF</strong></td><td>Instruction Fetch</td><td>Read the instruction from memory into IR</td></tr>
+            <tr><td><strong>IOD</strong></td><td>Instruction Operation Decoding</td><td>Decode opcode and operand specifiers</td></tr>
+            <tr><td><strong>OAC</strong></td><td>Operand Address Calculation</td><td>Compute the effective address of the operand</td></tr>
+            <tr><td><strong>OF</strong></td><td>Operand Fetch</td><td>Read the operand from memory or an I/O module</td></tr>
+            <tr><td><strong>DO</strong></td><td>Data Operation</td><td>Perform the operation in the ALU</td></tr>
+            <tr><td><strong>OS</strong></td><td>Operand Store</td><td>Write the result back</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Not every instruction visits every state, and some states can be visited more than once. The slides give three canonical examples:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Instruction</th><th>States</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td><code>LOAD A, 30H</code></td><td>IAC, IF, IOD, OAC, OF</td><td>Needs the operand address, then reads memory; no data operation or store</td></tr>
+            <tr><td><code>ADD A, 30H</code></td><td>IAC, IF, IOD, DO</td><td>Operand is implicit (accumulator + immediate); just operate</td></tr>
+            <tr><td><code>JUMP 200H</code></td><td>IAC, IF, IOD</td><td>Only changes the PC; no operand fetch or store</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>In an <strong>indirect</strong> cycle the operand is itself an address: the fetch returns the address, so an additional memory access is needed to get the actual data. That is why the indirect cycle has multiple OF states.</p>
+
+      <div class="note">
+        <strong>Book corner — data flow (Stallings §14.3).</strong>
+        The fetch cycle has four register transfers: <code>MAR ← PC</code>, <code>MBR ← memory[MAR]</code>, <code>IR ← MBR</code>, <code>PC ← PC + I</code>. The indirect cycle adds: <code>MAR ← IR(address)</code>, <code>MBR ← memory[MAR]</code>, then update the address field of IR. The execute cycle is whatever the opcode requires. The interrupt cycle adds a save of PC and a load of the ISR address. Once you see the cycle as a sequence of register transfers, the exam’s “give the registers after fetch/execute” questions become mechanical.
+      </div>
+
+      <div class="viz" id="viz-states">
+        <div class="viz-head"><span class="vt">Interactive · Instruction-cycle state diagram</span><span class="vh">pick an instruction</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <div class="exam">
+        <strong>Exam link.</strong> 2025–26 Q1.3 (“which states are executed for LD IX,nn, LD IX,(nn), INC (HL)”), 2024–25 Q1.8 (machine cycles), 2023–24 Q1.6, 2022–23 Q1.9, and 2023–24/2022–23 clock-cycle questions all reduce to: <em>classify the instruction, then list its phases</em>.
+      </div>
+    </section>
+
+    <!-- ================= INTERRUPTS ================= -->
+    <section class="topic" id="interrupts">
+      <h2><span class="kicker">6</span>Interrupts</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p3-6" data-progress="ch3-interrupts">
+        <label for="p3-6">I can define an interrupt, classify interrupts, and describe the interrupt cycle.
+          <span class="done-meta">Slides 29–36 · Stallings §7.4</span></label>
+      </div>
+
+      <p>An <strong>interrupt</strong> is a process by which another module (typically I/O) interrupts the normal sequence of processing. It is <strong>asynchronous</strong>: it can arrive between any two instructions. The alternative, <strong>polling</strong>, keeps the CPU in a loop checking the device—wasteful when the device is usually idle.</p>
+
+      <h3>Classes</h3>
+      <ul class="clean">
+        <li><strong>Program</strong>—overflow, division by zero.</li>
+        <li><strong>Timer</strong>—generated by an internal processor timer for periodic work.</li>
+        <li><strong>I/O</strong>—from an I/O device.</li>
+        <li><strong>Hardware failure</strong>—memory parity error, bus error.</li>
+      </ul>
+
+      <h3>Types</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pair</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>Hardware / software</td><td>Generated by a hardware signal vs. by an instruction (e.g. a trap or system call).</td></tr>
+            <tr><td>Maskable / non-maskable</td><td>Can be enabled/disabled or delayed vs. always accepted. NMI is used for catastrophic events.</td></tr>
+            <tr><td>Vectored / non-vectored</td><td>The ISR address is fixed by hardware vs. supplied by the peripheral or calculated.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>The interrupt cycle</h3>
+      <p>The CPU checks for interrupts at the <strong>end of the current instruction</strong>—never in the middle. If an interrupt is pending and enabled:</p>
+      <ol>
+        <li>Suspend the current program.</li>
+        <li><strong>Save the context</strong>—at minimum the PC (the return address), usually also flags and registers.</li>
+        <li>Set the PC to the start address of the <strong>ISR</strong> (Interrupt Service Routine).</li>
+        <li>Execute the ISR.</li>
+        <li>Restore the context and continue the interrupted program.</li>
+      </ol>
+
+      <p>The user program contains no special code for this. The CPU and operating system are responsible for suspending and resuming it.</p>
+
+      <div class="viz" id="viz-interrupt">
+        <div class="viz-head"><span class="vt">Interactive · The interrupt cycle</span><span class="vh">step by step</span></div>
+        <div class="viz-body"></div>
+      </div>
+    </section>
+
+    <!-- ================= MULTIPLE ================= -->
+    <section class="topic" id="multiple">
+      <h2><span class="kicker">7</span>Multiple interrupts and priorities</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p3-7" data-progress="ch3-multiple">
+        <label for="p3-7">I can trace sequential and nested interrupts, including the slide’s printer/disk/communications example.
+          <span class="done-meta">Slides 37–43 · Stallings §7.4</span></label>
+      </div>
+
+      <p>Two approaches handle simultaneous interrupts:</p>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Disable interrupts</h3>
+          <p>While one interrupt is being processed, further interrupts are ignored. They remain pending and are handled in sequence after the current one finishes.</p>
+          <p><strong>Advantage:</strong> simple. <strong>Drawback:</strong> ignores relative priority and time-critical needs.</p>
+        </div>
+        <div class="card">
+          <h3>Define priorities</h3>
+          <p>A lower-priority interrupt can itself be interrupted by a higher-priority one. When the higher-priority ISR finishes, the CPU returns to the lower-priority one.</p>
+          <p>This produces <strong>nested</strong> interrupts and requires a stack of contexts.</p>
+        </div>
+      </div>
+
+      <h3>The slide’s example</h3>
+      <p>Three devices with priorities: printer = 2, disk = 4, communications = 5 (higher number = higher priority). Each ISR takes 10 time units.</p>
+      <ul class="clean">
+        <li>t = 0: user program begins.</li>
+        <li>t = 10: printer interrupt (priority 2). ISR would run until t = 20.</li>
+        <li>t = 15: communications interrupt (priority 5) arrives. It is higher than the printer, so it preempts.</li>
+        <li>t = 20: disk interrupt (priority 4) arrives. It is lower than communications (5) but higher than printer (2).</li>
+      </ul>
+
+      <p>Result: printer starts at 10, is preempted at 15 by communications; disk waits or preempts printer depending on the exact priority rules; each resumed routine continues from where it stopped.</p>
+
+      <div class="viz" id="viz-nested">
+        <div class="viz-head"><span class="vt">Interactive · Nested interrupt timeline</span><span class="vh">play the sequence</span></div>
+        <div class="viz-body"></div>
+      </div>
+    </section>
+
+    <!-- ================= Z80 ================= -->
+    <section class="topic" id="z80">
+      <h2><span class="kicker">8</span>Z80 in detail</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p3-8" data-progress="ch3-z80">
+        <label for="p3-8">I can encode a Z80 instruction, trace a fetch/execute, and compute an IM2 ISR address.
+          <span class="done-meta">Slides 45–49 · control tables</span></label>
+      </div>
+
+      <p>The Z80 is an 8-bit processor with an 8-bit data bus and a 16-bit address bus. It has 158 instructions, 1 to 4 bytes long, and 256 input and 256 output ports.</p>
+
+      <h3>Register set</h3>
+      <p><strong>8-bit:</strong> A (accumulator), F (flags), B, C, D, E, H, L. <strong>16-bit:</strong> PC, SP, IX, IY. Pairs: BC, DE, HL. Special: I (interrupt vector), R (refresh).</p>
+
+      <h3>Instruction formats</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Format</th><th>Layout</th><th>Examples</th></tr></thead>
+          <tbody>
+            <tr><td>1 byte</td><td>opcode</td><td><code>NOP</code>, <code>HALT</code>, <code>LD A,B</code></td></tr>
+            <tr><td>2 bytes</td><td>opcode + 8-bit operand</td><td><code>JR n</code>, <code>ADD A,n</code></td></tr>
+            <tr><td>3 bytes</td><td>opcode + 16-bit operand, or two-byte opcode + 8-bit operand</td><td><code>LD HL,nn</code>, <code>LD A,(IX+n)</code></td></tr>
+            <tr><td>4 bytes</td><td>two-byte opcode + 16-bit operand</td><td><code>LD IX,nn</code>, <code>LD IX,(nn)</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Common opcodes used in the controls</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Instruction</th><th>Encoding</th><th>Size</th><th>Effect</th></tr></thead>
+          <tbody>
+            <tr><td><code>LD R,S</code></td><td><code>01 RRR SSS</code></td><td>1</td><td>R ← S (register code table)</td></tr>
+            <tr><td><code>LD R,(IX+n)</code></td><td><code>DD 01 RRR 110</code> + n</td><td>3</td><td>R ← [IX+n]</td></tr>
+            <tr><td><code>LD (IX+n),S</code></td><td><code>DD 01110 SSS</code> + n</td><td>3</td><td>[IX+n] ← S</td></tr>
+            <tr><td><code>LD IX,nn</code></td><td><code>DD 21</code> + nn (little-endian)</td><td>4</td><td>IX ← nn</td></tr>
+            <tr><td><code>LD IX,(nn)</code></td><td><code>DD 2A</code> + nn</td><td>4</td><td>IX ← [nn]</td></tr>
+            <tr><td><code>LD HL,nn</code></td><td><code>21</code> + nn</td><td>3</td><td>HL ← nn</td></tr>
+            <tr><td><code>LD HL,(nn)</code></td><td><code>2A</code> + nn</td><td>3</td><td>HL ← [nn]</td></tr>
+            <tr><td><code>LD (nn),A</code></td><td><code>32</code> + nn</td><td>3</td><td>[nn] ← A</td></tr>
+            <tr><td><code>PUSH HL</code></td><td><code>E5</code></td><td>1</td><td>SP ← SP−2, [SP] ← HL</td></tr>
+            <tr><td><code>POP HL</code></td><td><code>E1</code></td><td>1</td><td>HL ← [SP], SP ← SP+2</td></tr>
+            <tr><td><code>PUSH IX</code></td><td><code>DD E5</code></td><td>2</td><td>SP ← SP−2, [SP] ← IX</td></tr>
+            <tr><td><code>POP IX</code></td><td><code>DD E1</code></td><td>2</td><td>IX ← [SP], SP ← SP+2</td></tr>
+            <tr><td><code>JR n</code></td><td><code>18</code> + n</td><td>2</td><td>PC ← PC + n (signed displacement)</td></tr>
+            <tr><td><code>JR Z,n</code></td><td><code>28</code> + n</td><td>2</td><td>if Z=1: PC ← PC + n</td></tr>
+            <tr><td><code>ADD A,n</code></td><td><code>C6</code> + n</td><td>2</td><td>A ← A + n</td></tr>
+            <tr><td><code>ADD A,(HL)</code></td><td><code>86</code></td><td>1</td><td>A ← A + [HL]</td></tr>
+            <tr><td><code>ADD A,S</code></td><td><code>10000 SSS</code></td><td>1</td><td>A ← A + S</td></tr>
+            <tr><td><code>INC (HL)</code></td><td><code>34</code></td><td>1</td><td>[HL] ← [HL] + 1</td></tr>
+            <tr><td><code>INC R</code></td><td><code>00 RRR 100</code></td><td>1</td><td>R ← R + 1</td></tr>
+            <tr><td><code>HALT</code></td><td><code>76</code></td><td>1</td><td>stop execution</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Register codes:</strong> A = 111, B = 000, C = 001, D = 010, E = 011, H = 100, L = 101.</p>
+
+      <div class="viz" id="viz-encoder">
+        <div class="viz-head"><span class="vt">Interactive · Z80 instruction encoder</span><span class="vh">choose an instruction and operands</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <h3>Machine cycles and T-states</h3>
+      <p>A Z80 instruction cycle is made of one to six <strong>machine cycles</strong>. Each machine cycle contains three to six <strong>T-states</strong> (clock cycles):</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Machine cycle</th><th>T-states</th></tr></thead>
+          <tbody>
+            <tr><td>1-byte opcode fetch</td><td>4</td></tr>
+            <tr><td>1-byte operand fetch</td><td>3</td></tr>
+            <tr><td>1-byte memory read</td><td>3</td></tr>
+            <tr><td>1-byte memory write</td><td>3</td></tr>
+            <tr><td>1-byte I/O read</td><td>4</td></tr>
+            <tr><td>1-byte I/O write</td><td>4</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small muted">A 16-bit operand fetch is two 1-byte operand fetches; a 16-bit memory read is two 1-byte memory reads.</p>
+
+      <h3>Worked fetch/execute trace</h3>
+      <p>Take the program from the 2025–26 control, stored at <code>2000H</code>:</p>
+      <pre><code>2000H: DD 21 00 30   →  LD IX, 3000H
+2004H: DD 7E 00      →  LD A, (IX+0)
+2007H: 3C            →  INC A
+2008H: DD 77 00      →  LD (IX+0), A
+200BH: 76            →  HALT</code></pre>
+
+      <p>Fetching <code>LD IX,3000H</code>:</p>
+      <pre><code>MAR ← PC = 2000H
+MBR ← [2000H] = DDH        (first opcode byte)
+IR  ← DD
+PC  ← 2001H
+MAR ← 2001H
+MBR ← [2001H] = 21H        (second opcode byte)
+IR  ← DD21H
+PC  ← 2002H
+... then the two operand bytes 00H, 30H are fetched
+PC  ← 2004H
+IX  ← 3000H</code></pre>
+
+      <p class="small muted">Which byte ends up in MBR at the end of the fetch depends on the definition used: the last byte read. For a 4-byte instruction, that is the high operand byte. Check the control’s convention carefully.</p>
+
+      <div class="viz" id="viz-z80trace">
+        <div class="viz-head"><span class="vt">Interactive · Z80 fetch/execute trace</span><span class="vh">DD 21 00 30 at 2000H</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <h3>Z80 interrupts</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Signal</th><th>Mode</th><th>ISR location</th></tr></thead>
+          <tbody>
+            <tr><td>Reset</td><td>—</td><td><code>0000H</code></td></tr>
+            <tr><td>NMI (non-maskable)</td><td>—</td><td><code>0066H</code></td></tr>
+            <tr><td>INT (maskable)</td><td>0</td><td>One of <code>00H, 08H, 10H, … 38H</code>, selected by external hardware</td></tr>
+            <tr><td>INT</td><td>1</td><td><code>0038H</code></td></tr>
+            <tr><td>INT</td><td>2</td><td><code>[(I × 256) + device_data]</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>It also has eight software interrupts, <code>RST 0</code> to <code>RST 7</code>. The Z80 saves the context and PC on the stack, fetches the first ISR instruction, and restores the PC at the end.</p>
+
+      <h3>IM2 address calculation</h3>
+      <p>The <strong>I</strong> register supplies the high byte, and the interrupting device supplies the low byte. That 16-bit value is a <em>pointer</em> to the ISR address. So there are two memory accesses:</p>
+      <ol>
+        <li>Form the pointer <code>(I × 256) + data</code>.</li>
+        <li>Read the two bytes at that pointer—that pair is the ISR start address.</li>
+      </ol>
+
+      <pre><code>I = 23H, device data = 4CH
+pointer = 2300H + 4CH = 234CH
+ISR address = [234DH][234CH]   (little-endian)</code></pre>
+
+      <div class="exam">
+        <strong>Exam link.</strong> 2024–25 Q1.11–1.13 ask for SP and PC before/after the interrupt and for IR, MAR, MBR before fetching the ISR. The sequence is: finish the current instruction → push PC → SP = SP − 2 → PC = pointer → fetch from the ISR address.
+      </div>
+    </section>
+
+    <!-- ================= ARM/X86 ================= -->
+    <section class="topic" id="arm-x86">
+      <h2><span class="kicker">9</span>ARM and x86</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p3-9" data-progress="ch3-arm-x86">
+        <label for="p3-9">I can contrast the Z80, ARM, and x86 register organizations.
+          <span class="done-meta">Slides 50–58 · Stallings §14.5–14.6</span></label>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>ARM</h3>
+          <ul class="clean">
+            <li>Load/store model: operations act on registers, not directly on memory.</li>
+            <li>32-bit register file, with a barrel shifter before the ALU.</li>
+            <li>Conditional execution of most instructions reduces branches.</li>
+            <li>37 × 32-bit registers total: R0–R12, R13 = SP, R14 = LR (link register), R15 = PC.</li>
+            <li>Multiply/accumulate unit; 6 mode-specific CPSRs and 6 SPSRs.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>x86 / Pentium 4</h3>
+          <ul class="clean">
+            <li>8 × 32-bit general-purpose registers.</li>
+            <li>6 × 16-bit segment registers.</li>
+            <li>32-bit flags register and instruction pointer.</li>
+            <li>8 × 80-bit floating-point registers.</li>
+            <li>80486 instruction cycle: fetch, decode 1, decode 2, execute, writeback.</li>
+            <li>Interrupts: maskable/non-maskable, exceptions, vector table of 256 × 32-bit entries, 5 priority classes.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>The common thread.</strong> Every processor has the same conceptual pieces—PC, IR, MAR/MBR, flags, GPRs, an ALU, and a control unit. What changes is the width, the number of registers, the instruction encoding, and the interrupt mechanism. Learn the concept once and the exam’s unfamiliar CPU becomes readable.
+      </div>
+    </section>
+
+    <!-- ================= EXAM ================= -->
+    <section class="topic" id="exam">
+      <h2><span class="kicker">10</span>Exam connections for Chapter 3</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Control question</th><th>Skill</th><th>Where to review</th></tr></thead>
+          <tbody>
+            <tr><td>2025–26 Q1.1 · 2024–25 Q1.1</td><td>Register sizes</td><td><a href="#z80">Z80 registers</a></td></tr>
+            <tr><td>2025–26 Q1.2</td><td>Instruction classification</td><td><a href="#z80">Instruction types</a></td></tr>
+            <tr><td>2025–26 Q1.3 · 2023–24 Q1.6 · 2022–23 Q1.9</td><td>Instruction-cycle states</td><td><a href="#cycle">Cycle states</a></td></tr>
+            <tr><td>2025–26 Q1.4–1.5 · 2024–25 Q1.4–1.5</td><td>Instruction size and hex encoding</td><td><a href="#z80">Formats and opcodes</a></td></tr>
+            <tr><td>2025–26 Q1.6–1.7 · 2024–25 Q1.6–1.7</td><td>Fetch/execute register trace</td><td><a href="#z80">Worked trace</a></td></tr>
+            <tr><td>2025–26 Q1.8 · 2024–25 Q1.10</td><td>POP HL, SP and memory</td><td><a href="ch2.html#memory">Stack</a></td></tr>
+            <tr><td>2025–26 Q1.9</td><td>Program size and instruction count</td><td><a href="#z80">Sizes</a></td></tr>
+            <tr><td>2024–25 Q1.8–1.9</td><td>Machine cycles and T-states</td><td><a href="#z80">Machine cycles</a></td></tr>
+            <tr><td>2024–25 Q1.11–1.13</td><td>Interrupt mode 2, context save</td><td><a href="#z80">Z80 interrupts</a></td></tr>
+            <tr><td>2023–24 Q2.1–2.4 · 2022–23 Q1.6</td><td>Stack advantages, PUSH/POP, micro-operations</td><td><a href="ch2.html#memory">Stack</a> · <a href="#cycle">Cycle</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <div class="q"><span class="tag">Check yourself</span><br>How many bytes does <code>LD IX,3000H</code> occupy?</div>
+        <div class="opts">
+          <button data-opt="a">2</button>
+          <button data-opt="b">4</button>
+          <button data-opt="c">3</button>
+          <button data-opt="d">1</button>
+        </div>
+        <details><summary>Show reasoning</summary><div class="sol"><code>DD 21</code> is a two-byte opcode; the 16-bit operand <code>3000H</code> adds two more bytes. Total 4 bytes: <code>DD 21 00 30</code> in little-endian order.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <div class="q"><span class="tag">Check yourself</span><br>Which states are used by <code>INC (HL)</code>?</div>
+        <div class="opts">
+          <button data-opt="a">IAC, IF, IOD, OAC, OF, DO, OS</button>
+          <button data-opt="b">IAC, IF, IOD only</button>
+          <button data-opt="c">IAC, IF, IOD, DO</button>
+          <button data-opt="d">IAC, IF, IOD, OAC, OF</button>
+        </div>
+        <details><summary>Show reasoning</summary><div class="sol">The operand is in memory at [HL]: compute its address (OAC), read it (OF), increment it (DO), and write it back (OS). All seven states are used.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <div class="q"><span class="tag">Check yourself</span><br>Z80 interrupt mode 2, I = 23H, device data = 4CH. Where is the ISR start address stored?</div>
+        <div class="opts">
+          <button data-opt="a">At 2300H</button>
+          <button data-opt="b">At 004CH</button>
+          <button data-opt="c">At 234CH and 234DH (the vector)</button>
+          <button data-opt="d">At 0038H</button>
+        </div>
+        <details><summary>Show reasoning</summary><div class="sol">The pointer is <code>I×256 + data = 2300H + 4CH = 234CH</code>. The two bytes at 234CH and 234DH form the 16-bit ISR address (little-endian). Mode 1 would be fixed at 0038H.</div></details>
+      </div>
+
+      <p style="margin-top:26px"><a class="btn btn-primary" href="practice.html">Go to past-control practice →</a></p>
+    </section>
+
+    <footer class="foot">Chapter 3 · Central Processing Unit · EE321 companion. Slides 1–59; Stallings 10e chapters 3, 7, 12, 14.</footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+<script src="js/viz-ch3.js"></script>
+</body>
+</html>
