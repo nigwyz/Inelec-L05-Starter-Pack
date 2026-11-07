@@ -259,7 +259,7 @@ code, kbd {
 }
 pre {
   background: var(--code-bg); color: var(--code-ink);
-  padding: 16px 18px; border-radius: 12px; overflow-x: auto;
+  padding: 38px 18px 16px; border-radius: 12px; overflow-x: auto;
   font-family: var(--mono); font-size: .86rem; line-height: 1.55;
   margin: 16px 0;
 }

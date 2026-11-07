@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 0 — How the Pieces Fit | EE321 Companion</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Ch. 0 — Overview</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EE321 Companion<small>Computer Architecture</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch0.html" class="active"><span class="num">00</span>Overview</a>
+      <a href="ch1.html"><span class="num">01</span>Digital design</a>
+      <a href="ch2.html"><span class="num">02</span>Top-level computer</a>
+      <a href="ch3.html"><span class="num">03</span>CPU</a>
+      <div class="nav-label">Practice</div>
+      <a href="practice.html"><span class="num">✎</span>Past-control practice</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Chapter 0</span>
+      <h1>How the Pieces Fit</h1>
+      <p class="lede">Before the details, see the whole machine. This page is the map: what Chapters 1–3 are each doing, how they connect, and the ten rules that keep showing up in the controls.</p>
+    </header>
+
+    <div class="done-row" style="margin-bottom:18px">
+      <input type="checkbox" id="p0-read" data-progress="ch0-read">
+      <label for="p0-read">I can name the three layers and the ten rules, and I know which chapter to open for each.
+        <span class="done-meta">Chapter 0 · overview</span></label>
+    </div>
+
+    <div class="toc">
+      <strong>On this page</strong>
+      <ol>
+        <li><a href="#bigpicture">The big picture</a></li>
+        <li><a href="#layers">Three layers, three chapters</a></li>
+        <li><a href="#rules">The ten control rules</a></li>
+        <li><a href="#anatomy">Exam anatomy</a></li>
+        <li><a href="#solver">The six-step solver</a></li>
+        <li><a href="#diagnostic">Diagnostic</a></li>
+        <li><a href="#route">Where to go next</a></li>
+      </ol>
+    </div>
+
+    <!-- ================= BIG PICTURE ================= -->
+    <section class="topic" id="bigpicture">
+      <h2><span class="kicker">1</span>The big picture in one paragraph</h2>
+
+      <p>A computer is a stack of agreements. At the bottom, a transistor is a switch. Switches arranged in the right pattern become a <strong>logic gate</strong>. Gates plus feedback become a <strong>register</strong>, which can hold a bit pattern. Registers plus an ALU plus a control path become a <strong>CPU</strong>. The CPU reads <strong>instructions</strong> from memory, and those instructions move data between registers and memory. Memory, buses, and I/O turn the CPU into a <strong>system</strong>. An <strong>interrupt</strong> lets the outside world break the sequence without corrupting the program.</p>
+
+      <p>That is the whole course. Chapter 1 builds the bottom, Chapter 2 connects the blocks, and Chapter 3 makes the CPU execute. The controls then test whether you can trace a specific instruction through that stack.</p>
+
+      <div class="card" style="margin:20px 0; background:linear-gradient(135deg,#f7f9ff,#eef3ff); border-color:#c9d7f6">
+        <h3 style="margin-bottom:6px">The one sentence to remember</h3>
+        <p style="font-size:1.08rem; margin:0"><strong>Bits live in registers, registers are moved by instructions, instructions live in memory, and the CPU repeats fetch–execute until it meets a halt.</strong></p>
+      </div>
+    </section>
+
+    <!-- ================= LAYERS ================= -->
+    <section class="topic" id="layers">
+      <h2><span class="kicker">2</span>Three layers, three chapters</h2>
+
+      <div class="viz" style="margin:22px 0">
+        <div class="viz-head"><span class="vt">The course as a stack</span><span class="vh">bottom to top</span></div>
+        <div class="viz-body">
+          <svg class="viz-svg" viewBox="0 0 760 330" role="img" aria-label="Course layers">
+            <defs>
+              <marker id="up" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b97ad"/>
+              </marker>
+            </defs>
+            <rect x="60" y="20" width="640" height="58" rx="10" fill="#e7edfb" stroke="#b9caf7"/>
+            <text x="80" y="44" font-size="12" font-weight="800" fill="#2c4b9b">CHAPTER 3 — EXECUTION</text>
+            <text x="80" y="62" font-size="10.5" fill="#46536b">CPU registers · instruction cycle · interrupts · Z80/ARM/x86</text>
+
+            <rect x="60" y="92" width="640" height="58" rx="10" fill="#fdf3e0" stroke="#ecd3a6"/>
+            <text x="80" y="116" font-size="12" font-weight="800" fill="#c47a12">CHAPTER 2 — SYSTEM</text>
+            <text x="80" y="134" font-size="10.5" fill="#46536b">CPU · memory · I/O · buses · fetch/execute · endianness · MIPS</text>
+
+            <rect x="60" y="164" width="640" height="58" rx="10" fill="#e5f5ec" stroke="#bfe3cf"/>
+            <text x="80" y="188" font-size="12" font-weight="800" fill="#1f7a4d">CHAPTER 1 — BUILDING BLOCKS</text>
+            <text x="80" y="206" font-size="10.5" fill="#46536b">bits · two’s complement · gates · adders · latches · CMOS</text>
+
+            <rect x="60" y="236" width="640" height="58" rx="10" fill="#f1f4f9" stroke="#c9d2e2"/>
+            <text x="80" y="260" font-size="12" font-weight="800" fill="#46536b">PHYSICS</text>
+            <text x="80" y="278" font-size="10.5" fill="#6b7891">transistors as switches · voltage ranges · noise margins</text>
+
+            <line x1="380" y1="304" x2="380" y2="278" stroke="#8b97ad" stroke-width="2" marker-end="url(#up)"/>
+            <text x="392" y="300" font-size="10" fill="#6b7891">abstraction grows upward</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="card">
+          <span class="pill good">Chapter 1</span>
+          <h3>Representation and building blocks</h3>
+          <p>How a bit pattern becomes a number, how gates compute, how a flip-flop remembers, and how CMOS builds it. This is where you learn <em>why</em> two’s complement works and how a carry differs from an overflow.</p>
+          <p class="small muted">Key output: you can convert, compute, and draw the hardware that does it.</p>
+        </div>
+        <div class="card">
+          <span class="pill warm">Chapter 2</span>
+          <h3>Organization and program execution</h3>
+          <p>How the CPU, memory, I/O, and buses fit together. How an instruction is encoded, fetched, and executed. How bytes are ordered in memory and how a stack works.</p>
+          <p class="small muted">Key output: you can trace a program through PC, MAR, MBR, IR, and AC.</p>
+        </div>
+        <div class="card">
+          <span class="pill">Chapter 3</span>
+          <h3>CPU internals and interrupts</h3>
+          <p>The register file, the PSW, the seven instruction-cycle states, and the interrupt mechanism. Then the Z80, ARM, and x86 as concrete examples.</p>
+          <p class="small muted">Key output: you can handle an unfamiliar CPU by reading its tables.</p>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>The controls move in the same direction.</strong> A typical question starts with the machine’s specifications, gives you a memory table, and asks what a register or memory location contains after a cycle. That is exactly the Chapter 1 → 2 → 3 chain: represent the bits, place them in the system, execute them.
+      </div>
+    </section>
+
+    <!-- ================= RULES ================= -->
+    <section class="topic" id="rules">
+      <h2><span class="kicker">3</span>The ten control rules</h2>
+
+      <p>These are the recurring rules distilled from the two study PDFs and the five available controls. They are not a substitute for understanding—they are the checklist you run <em>after</em> you understand the machine.</p>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <span class="pill">Rule 1</span>
+          <h3>Register size follows the bus it serves</h3>
+          <p><strong>PC</strong> and <strong>MAR</strong> hold an address → same width as the address bus. <strong>MBR</strong> holds a memory word → same width as the data bus or memory location. <strong>GPR/AC</strong> hold data → the CPU’s data width. <strong>IR</strong> must hold the fetched instruction → the instruction width, or the opcode width if the CPU fetches operands separately.</p>
+          <p class="small muted">State the convention: “8 bits for a 1-byte opcode, 16 bits for a 2-byte opcode.”</p>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 2</span>
+          <h3>X, [X], and [[X]] are three different things</h3>
+          <p><strong>X</strong> is the value or the address itself. <strong>[X]</strong> is the content of memory location X. <strong>[[X]]</strong> (or <code>#X</code>) is a double pointer: read [X], treat that as an address, then read again.</p>
+          <p class="small muted">Every memory trace starts by writing the address under every byte.</p>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 3</span>
+          <h3>Little-endian: little end first</h3>
+          <p>The least-significant byte goes to the <em>lowest</em> address. A 16-bit value read at <code>2348H</code> takes its low byte from <code>[2348H]</code> and its high byte from <code>[2349H]</code>.</p>
+          <pre style="margin:8px 0"><code>15H at 2348H, F5H at 2349H
+→ 16-bit value = F515H</code></pre>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 4</span>
+          <h3>Two’s complement in two moves</h3>
+          <p>Look at the leading hex digit. <code>0–7</code> means positive: convert normally. <code>8–F</code> means negative: subtract each digit from F, add 1, convert, put a minus sign. Or invert all bits and add 1.</p>
+          <pre style="margin:8px 0"><code>F5H → (FFH − F5H) + 1 = 0BH = 11 → −11</code></pre>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 5</span>
+          <h3>Instruction size = opcode bytes + operand bytes</h3>
+          <p>Read the format table. A 1-byte opcode with an 8-bit operand is 2 bytes; with a 16-bit operand it is 3 bytes. A 2-byte prefix opcode with a 16-bit operand is 4 bytes. Encode multi-byte operands low byte first.</p>
+          <pre style="margin:8px 0"><code>LD IX,3000H → DD 21 00 30 → 4 bytes</code></pre>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 6</span>
+          <h3>Five addressing modes</h3>
+          <p><strong>Immediate</strong> (<code>n</code>), <strong>register</strong> (<code>R</code>), <strong>direct</strong> (<code>(nn)</code> or <code>[X]</code>), <strong>register indirect</strong> (<code>(HL)</code>, <code>(As)</code>), <strong>memory indirect</strong> (<code>[[X]]</code>). The brackets tell you where the address lives.</p>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 7</span>
+          <h3>Fetch and execute have different rules for MAR/MBR</h3>
+          <p>At the end of a fetch of an instruction of size <em>S</em> at <em>Addr</em>: <code>PC = Addr + S</code>, <code>MAR = Addr + S − 1</code>, <code>MBR = [Addr + S − 1]</code>, IR = the instruction. During execute, MAR/MBR change only if the instruction actually accesses memory.</p>
+          <p class="small muted">If the execute reads/writes a 16-bit value, the final MAR is the higher address and MBR is the byte read there.</p>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 8</span>
+          <h3>States and T-states</h3>
+          <p><code>IAC, IF, IOD</code> happen for every instruction. Add <code>OAC</code> and <code>OF</code> for memory operands, <code>DO</code> for an ALU operation, <code>OS</code> for a memory write. Then sum the T-states: opcode fetch 4, operand fetch 3 per byte, memory read/write 3 per byte.</p>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 9</span>
+          <h3>The stack grows down</h3>
+          <p><strong>PUSH</strong>: SP decreases first, then the value is written. <strong>POP</strong>: the value is read first, then SP increases. A 16-bit pair is stored low byte first; POP reads the low byte from [SP] and the high byte from [SP+1].</p>
+          <pre style="margin:8px 0"><code>PUSH BC: SP−2; [SP]=C; [SP+1]=B</code></pre>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 10</span>
+          <h3>Interrupts finish the instruction first</h3>
+          <p>The CPU completes the current instruction, then pushes PC, then loads the ISR address. In Z80 mode 2: pointer = <code>I×256 + device_data</code>; the ISR address is the 16-bit value stored at that pointer.</p>
+          <pre style="margin:8px 0"><code>I=23H, data=4CH → pointer 234CH
+PC = [234DH][234CH]</code></pre>
+        </div>
+      </div>
+
+      <div class="warn">
+        <strong>Use the rules as questions, not as memorized answers.</strong> The two study PDFs disagree in a few places (especially IR width and the “fetch” boundary). The safe exam habit is: state the convention you are using, show the transfer, and keep the arithmetic consistent.
+      </div>
+    </section>
+
+    <!-- ================= ANATOMY ================= -->
+    <section class="topic" id="anatomy">
+      <h2><span class="kicker">4</span>Exam anatomy</h2>
+
+      <p>Five controls are available, 2021–22 through 2025–26. The CPU changes—older papers use a custom 8-bit machine, newer ones use the Z80—but the question patterns repeat.</p>
+
+      <div class="stats">
+        <div class="stat"><span class="k">Controls</span><span class="v">5</span><span class="s">2021 → 2026</span></div>
+        <div class="stat"><span class="k">Duration</span><span class="v">1h</span><span class="s">1h30 for 2021–22</span></div>
+        <div class="stat"><span class="k">Total</span><span class="v">/20</span><span class="s">each control</span></div>
+        <div class="stat"><span class="k">Newest split</span><span class="v">13.5</span><span class="s">Z80 CPU + 6.5 concepts</span></div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Control</th><th>CPU</th><th>Main focus</th><th>Other part</th></tr></thead>
+          <tbody>
+            <tr><td>2025–26</td><td>Z80</td><td>CPU function (13.5)</td><td>Basic concepts (6.5)</td></tr>
+            <tr><td>2024–25</td><td>Z80</td><td>CPU + interrupts (20)</td><td>—</td></tr>
+            <tr><td>2023–24</td><td>Custom 8-bit</td><td>CPU + structure (14)</td><td>Stack (6)</td></tr>
+            <tr><td>2022–23</td><td>Custom 8-bit</td><td>CPU + stack (15)</td><td>Basic concepts (5)</td></tr>
+            <tr><td>2021–22</td><td>Custom 8-bit</td><td>CPU + program (12)</td><td>Basic concepts (8)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Across the five papers, the highest-yield skills are:</p>
+      <ul class="clean check">
+        <li>tracing an instruction through PC, MAR, MBR, IR (5/5 papers);</li>
+        <li>decoding instruction size and hex code from a supplied table (5/5);</li>
+        <li>reading little-endian memory and two’s-complement values (4–5/5);</li>
+        <li>PUSH/POP and the stack pointer (4/5);</li>
+        <li>carry, overflow, sign, and zero flags (4/5);</li>
+        <li>machine cycles and T-states (3/5);</li>
+        <li>CMOS and tri-state logic (2/5);</li>
+        <li>interrupts and ISR addressing (1/5, but a full 20-point paper in 2024–25).</li>
+      </ul>
+
+      <div class="exam">
+        <strong>How to read the point values.</strong> The newest paper gives 13.5 points to Z80 execution and only 6.5 to basic concepts. That does not mean ignore the concepts—6.5 points is the difference between 13.5/20 and 20/20. It means the CPU trace is where most of the time should go.
+      </div>
+    </section>
+
+    <!-- ================= SOLVER ================= -->
+    <section class="topic" id="solver">
+      <h2><span class="kicker">5</span>The six-step solver</h2>
+
+      <p>Every control question can be attacked with the same six steps. Write them on the back of your mind, not on the exam sheet.</p>
+
+      <div class="grid grid-2">
+        <div class="card"><h3>1 · Identify the machine</h3><p>Word size, address-bus width, data-bus width, endianness, instruction size, memory organization. These determine every register width and every byte order.</p></div>
+        <div class="card"><h3>2 · Identify the instruction</h3><p>Find it in the supplied table. Write its format, its size, and the width of each operand. Then encode it, low byte first.</p></div>
+        <div class="card"><h3>3 · Fetch</h3><p><code>MAR ← PC</code>, <code>MBR ← [MAR]</code>, <code>IR ← instruction</code>, <code>PC ← PC + S</code>. Record the final MAR, MBR, IR, PC.</p></div>
+        <div class="card"><h3>4 · Execute</h3><p>Decode the opcode, compute the effective address, read the operands, do the operation, write the result. Update MAR/MBR only if memory was touched.</p></div>
+        <div class="card"><h3>5 · Side effects</h3><p>Did it change flags? SP? A register pair? Did it push or pop? Did it jump? Did an interrupt arrive? These are the marks students lose.</p></div>
+        <div class="card"><h3>6 · Check units</h3><p>Hex digits, bytes vs. bits, T-states vs. machine cycles, decimal vs. hex. A correct method with the wrong unit still loses the mark.</p></div>
+      </div>
+    </section>
+
+    <!-- ================= DIAGNOSTIC ================= -->
+    <section class="topic" id="diagnostic">
+      <h2><span class="kicker">6</span>Diagnostic — five questions before you start</h2>
+
+      <p>Answer without notes. If you miss more than two, start with Chapter 1; if you miss two, skim Chapter 1 and begin Chapter 2; if you miss none, go straight to Chapter 2 and use Chapter 1 only for reference.</p>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <div class="q"><span class="tag">1 · Chapter 1</span><br>What is <code>1110 0010₂</code> as an 8-bit two’s-complement number?</div>
+        <div class="opts">
+          <button data-opt="a">226</button>
+          <button data-opt="b">−30</button>
+          <button data-opt="c">−29</button>
+          <button data-opt="d">−31</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol">MSB is 1 → negative. Invert: <code>0001 1101</code>, add 1: <code>0001 1110 = 30</code>. Answer −30.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <div class="q"><span class="tag">2 · Chapter 2</span><br>A 16-bit address bus with byte-addressable memory can address how many bytes?</div>
+        <div class="opts">
+          <button data-opt="a">16 KB</button>
+          <button data-opt="b">32 KB</button>
+          <button data-opt="c">64 KB</button>
+          <button data-opt="d">128 KB</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol"><code>2^16 = 65 536</code> locations × 1 byte = 64 KB.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <div class="q"><span class="tag">3 · Chapter 2</span><br><code>[2348H] = 15H</code> and <code>[2349H] = F5H</code> on a little-endian CPU. What is the 16-bit word at 2348H?</div>
+        <div class="opts">
+          <button data-opt="a">F515H</button>
+          <button data-opt="b">15F5H</button>
+          <button data-opt="c">15H</button>
+          <button data-opt="d">F5H</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol">Low byte at the low address: low = 15H, high = F5H → <code>F515H</code>.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <div class="q"><span class="tag">4 · Chapter 3</span><br><code>LD IX,3000H</code> at 2000H. After the <strong>full fetch</strong>, what is PC?</div>
+        <div class="opts">
+          <button data-opt="a">2002H</button>
+          <button data-opt="b">2004H</button>
+          <button data-opt="c">2003H</button>
+          <button data-opt="d">3000H</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol">The instruction is <code>DD 21 00 30</code> = 4 bytes. <code>PC = 2000H + 4 = 2004H</code>.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="d">
+        <div class="q"><span class="tag">5 · Chapter 3</span><br>Z80 IM2, I = 23H, device data = 4CH. What address holds the ISR start address?</div>
+        <div class="opts">
+          <button data-opt="a">2300H</button>
+          <button data-opt="b">004CH</button>
+          <button data-opt="c">0038H</button>
+          <button data-opt="d">234CH</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol">Pointer = <code>I×256 + data = 2300H + 4CH = 234CH</code>. The two bytes there (little-endian) form the ISR address.</div></details>
+      </div>
+    </section>
+
+    <!-- ================= ROUTE ================= -->
+    <section class="topic" id="route">
+      <h2><span class="kicker">7</span>Where to go next</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>If you…</th><th>Start with</th><th>Then</th></tr></thead>
+          <tbody>
+            <tr><td>missed number conversions or flags</td><td><a href="ch1.html#binary">Ch. 1 — binary</a> and <a href="ch1.html#signed">two’s complement</a></td><td><a href="ch1.html#build">adders and ALU</a></td></tr>
+            <tr><td>can convert but cannot trace a program</td><td><a href="ch2.html#function">Ch. 2 — fetch/execute</a></td><td><a href="ch3.html#cycle">Ch. 3 — cycle states</a></td></tr>
+            <tr><td>can trace but freeze on Z80 questions</td><td><a href="ch3.html#z80">Ch. 3 — Z80</a></td><td><a href="practice.html#encoding">practice — encoding</a></td></tr>
+            <tr><td>know the theory but lose marks</td><td><a href="practice.html">Practice page</a></td><td>error log and timed paper</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>Study order that matches the course:</strong> Chapter 1 → Chapter 2 → Chapter 3 → practice. Do not start with the controls if you cannot yet explain what a register is; the controls will feel like magic tricks instead of applications of the same six steps.
+      </div>
+
+      <p style="margin-top:26px"><a class="btn btn-primary" href="ch1.html">Start Chapter 1 →</a> <a class="btn btn-outline" href="practice.html">Go to practice</a></p>
+    </section>
+
+    <footer class="foot">Chapter 0 · Overview · Synthesized from the two EE321 study PDFs and the five controls. Course slides and Stallings remain the authoritative sources.</footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>
