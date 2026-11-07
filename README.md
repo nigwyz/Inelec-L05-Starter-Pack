@@ -6,8 +6,11 @@ from and improve together.
 
 ## Study areas
 
-- [Computer Architecture (EE321)](Computer%20Architecture/README.md) — active
-  study path, currently through the supplied CPU chapter.
+- **[Computer Architecture study site](https://nigwyz.github.io/Inelec-L05-Starter-Pack/)** —
+  interactive companion for Chapters 1–3: digital design, the top-level computer,
+  and the CPU, with past-control practice.
+- [Computer Architecture source notes](Computer%20Architecture/README.md) —
+  Markdown lessons, the binary-byte lab, and the site source.
 - Electromagnetic Field Theory (EE361) — original study notes and visualizations
   will be added as we create them.
 
