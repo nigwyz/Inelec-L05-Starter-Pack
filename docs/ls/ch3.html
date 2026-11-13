@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 3 — DT Fourier Series | EE351 Linear Systems II</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Ch. 3 — DT Fourier Series</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EE351 Companion<small>Linear Systems II</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch0.html"><span class="num">00</span>Overview</a>
+      <a href="ch1.html"><span class="num">01</span>DT signals &amp; systems</a>
+      <a href="ch2.html"><span class="num">02</span>DT LTI systems</a>
+      <a href="ch3.html" class="active"><span class="num">03</span>DT Fourier series</a>
+      <a href="ch4.html"><span class="num">04</span>DTFT &amp; DFT</a>
+      <a href="ch5.html"><span class="num">05</span>Z-transform</a>
+      <div class="nav-label">Practice</div>
+      <a href="practice.html"><span class="num">✎</span>Past-control practice</a>
+      <a href="formulas.html"><span class="num">Σ</span>Formula sheet</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Chapter 3</span>
+      <h1>Discrete-Time Fourier Series</h1>
+      <p class="lede">The Fourier series for discrete-time signals: the synthesis equation that builds a signal from its spectrum, the analysis equation that reads the spectrum back, and the identities that let you manipulate coefficients without recomputing them.</p>
+    </header>
+
+    <div class="toc">
+      <strong>On this page</strong>
+      <ol>
+        <li><a href="#why">Why a Fourier series for DT?</a></li>
+        <li><a href="#dfs">Synthesis and analysis</a></li>
+        <li><a href="#work">Two control questions, worked</a></li>
+        <li><a href="#parseval">Parseval</a></li>
+        <li><a href="#props">Properties of the coefficients</a></li>
+        <li><a href="#manip">Coefficient manipulation</a></li>
+        <li><a href="#exam">Exam connections</a></li>
+      </ol>
+    </div>
+
+    <!-- ================= WHY ================= -->
+    <section class="topic" id="why">
+      <h2><span class="kicker">1</span>Why a Fourier series for discrete time?</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p3-1" data-progress="ch3-why">
+        <label for="p3-1">I can state the two DFS equations and say what each one does.
+          <span class="done-meta">synthesis ⇄ analysis</span></label>
+      </div>
+
+      <p>A periodic discrete-time sequence with period <code>N</code> can be expanded exactly as a finite sum of complex exponentials — there are only <code>N</code> independent harmonics, not infinitely many. This is the discrete-time Fourier series (DFS), and it is the discrete-time twin of the continuous Fourier series.</p>
+
+      <div class="formula">
+        <span class="k">Synthesis</span>&nbsp; x[n] = Σ<sub>k=0</sub><sup>N−1</sup> a<sub>k</sub> e<sup>j2πkn/N</sup> , &nbsp; n = 0,1,…,N−1
+        &nbsp;&nbsp;·&nbsp;&nbsp;
+        <span class="k">Analysis</span>&nbsp; a<sub>k</sub> = (1/N) Σ<sub>n=0</sub><sup>N−1</sup> x[n] e<sup>−j2πkn/N</sup>
+      </div>
+
+      <div class="note">
+        <strong>Which is which.</strong> <em>Synthesis</em> goes from coefficients to the signal (you are given <code>aₖ</code> and asked for <code>x[n]</code>). <em>Analysis</em> goes from the signal to the coefficients (you are given <code>x[n]</code> and asked for <code>aₖ</code>). Both appear in the controls — 2023 Ex 3.1 is synthesis, make-up Ex 2 is analysis.
+      </div>
+
+      <div class="warn">
+        <strong>The index convention.</strong> Some books write the sum from <code>k = −N/2</code> to <code>N/2−1</code>. The professor's paper uses <code>k = 0 … N−1</code>. If the question gives coefficients for negative k (as 2023 Ex 3 does: <code>−1 ≤ k ≤ 1</code>), <strong>wrap them around</strong>: <code>a_{−1}</code> is <code>a_{N−1}</code> and <code>a_{−2}</code> is <code>a_{N−2}</code>.
+      </div>
+    </section>
+
+    <!-- ================= DFS ================= -->
+    <section class="topic" id="dfs">
+      <h2><span class="kicker">2</span>Synthesis and analysis in practice</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p3-2" data-progress="ch3-dfs">
+        <label for="p3-2">I can compute x[n] from aₖ and aₖ from x[n] without mistakes.
+          <span class="done-meta">watch the sign of the exponent</span></label>
+      </div>
+
+      <p>Synthesis is a plain matrix multiplication: build the <code>N × N</code> DFT matrix with entries <code>W_N^{kn}</code> (<code>W_N = e^{−j2π/N}</code>) and multiply. Analysis uses the conjugate matrix with the <code>1/N</code> factor.</p>
+
+      <div class="formula">
+        [x] = <b>F</b> [a] &nbsp;&nbsp;with&nbsp;&nbsp; <b>F</b><sub>kn</sub> = W<sub>N</sub><sup>kn</sup>, &nbsp;
+        [a] = (1/N) <b>F</b><sup>*</sup> [x]
+      </div>
+
+      <div class="viz" id="viz-dfs">
+        <div class="viz-head"><span class="vt">DFS synthesizer</span><span class="vh">edit the coefficients, watch the periodic signal and Parseval</span></div>
+        <div class="viz-body"></div>
+      </div>
+    </section>
+
+    <!-- ================= WORKED ================= -->
+    <section class="topic" id="work">
+      <h2><span class="kicker">3</span>Two control questions, worked</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p3-3" data-progress="ch3-work">
+        <label for="p3-3">I can do both control synthesis questions from a blank page.
+          <span class="done-meta">2023 Ex 3 · 2024–25 Ex 3</span></label>
+      </div>
+
+      <details class="work">
+        <summary>Worked solution · 2023 control Exercise 3.1 (5 marks)</summary>
+        <p><strong>Question.</strong> Consider the periodic signal <code>x[n]</code> with period <code>N = 5</code>, if</p>
+        <div class="formula">a<sub>k</sub> = { j<sup>k</sup> &nbsp;&nbsp; −1 ≤ k ≤ 1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; −1 &nbsp;&nbsp;&nbsp;&nbsp; k = ±2 }</div>
+        <p><strong>Step 1 — move the coefficients into the 0 … N−1 range.</strong> With <code>N = 5</code>: <code>a₀ = j⁰ = 1</code>, <code>a₁ = j</code>, <code>a₂ = −1</code>, <code>a₃ = a₋₂ = −1</code>, <code>a₄ = a₋₁ = j⁻¹ = −j</code>.</p>
+        <p><strong>Step 2 — x[0].</strong> At <code>n = 0</code> every exponential equals 1, so <code>x[0] = Σₖ aₖ = 1 + j − 1 − 1 − j = −1</code>.</p>
+        <p><strong>Step 3 — the closed form.</strong> Write the synthesis sum and pair the conjugate terms:</p>
+        <div class="formula">
+          x[n] = Σ<sub>k=−2</sub><sup>2</sup> a<sub>k</sub> e<sup>j2πkn/5</sup>
+          <br> = 1 + j e<sup>j2πn/5</sup> − e<sup>j4πn/5</sup> − e<sup>j6πn/5</sup> − j e<sup>j8πn/5</sup>
+          <br> = 1 + j(e<sup>jθ</sup> − e<sup>−jθ</sup>) − (e<sup>j2θ</sup> + e<sup>−j2θ</sup>) &nbsp;&nbsp;(θ = 2πn/5)
+          <br> = <b>1 − 2 sin(2πn/5) − 2 cos(4πn/5)</b>
+        </div>
+        <p>using <code>j(e^{jθ} − e^{−jθ}) = j·2j sinθ = −2 sinθ</code>.</p>
+        <p><strong>Step 4 — sanity check.</strong> The result is real (the coefficients came in conjugate pairs), it is periodic with period 5, and <code>x[0] = 1 − 0 − 2 = −1</code> ✓. The five values over one period are <code>−1, 0.7159, −0.7936, 1.5575, 4.5201</code>.</p>
+        <div class="note"><strong>Why the answer is real.</strong> <code>a_{−k} = aₖ*</code> here: <code>a₁ = j</code> and <code>a₄ = −j = a₁*</code>; <code>a₂ = a₃ = −1</code> (both real). A conjugate-symmetric spectrum always produces a real signal.</div>
+      </details>
+
+      <details class="work">
+        <summary>Worked solution · 2024–25 control Exercise 3.1 (5 marks)</summary>
+        <p><strong>Question.</strong> Period <code>N = 7</code>, with <code>a₀ = 0</code>, <code>a±₁ = 1</code>, <code>a±₂ = 2</code>, <code>a±₃ = 1</code>, and 0 outside <code>|k| ≤ 3</code>. Synthesise <code>x[n]</code>.</p>
+        <p><strong>Step 1 — the sum.</strong> Because the coefficients are real and symmetric, pair <code>k</code> with <code>−k</code>:</p>
+        <div class="formula">
+          x[n] = Σ<sub>k=−3</sub><sup>3</sup> a<sub>k</sub> e<sup>j2πkn/7</sup>
+          <br> = a₀ + Σ<sub>k=1</sub><sup>3</sup> a<sub>k</sub>( e<sup>j2πkn/7</sup> + e<sup>−j2πkn/7</sup> )
+          <br> = 0 + 2a₁ cos(2πn/7) + 2a₂ cos(4πn/7) + 2a₃ cos(6πn/7)
+        </div>
+        <p><strong>Step 2 — substitute.</strong></p>
+        <div class="formula">x[n] = <b>2 cos(2πn/7) + 4 cos(4πn/7) + 2 cos(6πn/7)</b></div>
+        <p><strong>Step 3 — check.</strong> <code>x[0] = 2 + 4 + 2 = 8</code>, and <code>Σₖ aₖ = 0 + 2(1 + 2 + 1) = 8</code> ✓. The seven values are <code>8, −1.445, −2.802, 0.247, 0.247, −2.802, −1.445</code>.</p>
+        <div class="tip"><strong>The general shortcut.</strong> If <code>a₋ₖ = aₖ</code> (real and even spectrum), then <code>x[n] = a₀ + 2Σ<sub>k=1</sub> aₖ cos(2πkn/N)</code> — write it as a sum of cosines and you are done. Half the marks come from this pairing step alone.</div>
+      </details>
+    </section>
+
+    <!-- ================= PARSEVAL ================= -->
+    <section class="topic" id="parseval">
+      <h2><span class="kicker">4</span>Parseval</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p3-4" data-progress="ch3-parseval">
+        <label for="p3-4">I can compute the sum of squared samples from the coefficients.
+          <span class="done-meta">2023 Ex 3.2 · 2024–25 Ex 3.2</span></label>
+      </div>
+
+      <div class="formula">
+        Σ<sub>n=0</sub><sup>N−1</sup> |x[n]|² = N · Σ<sub>k=0</sub><sup>N−1</sup> |a<sub>k</sub>|²
+      </div>
+
+      <p>Parseval says the energy of the periodic signal equals <code>N</code> times the energy of its coefficient sequence. It is the discrete-time version of the continuous Parseval relation, and it is the fastest way to answer “compute the finite summation”.</p>
+
+      <div class="note">
+        <strong>Worked with the 2023 coefficients.</strong> <code>a = [1, j, −1, −1, −j]</code>, so <code>Σ|aₖ|² = 1 + 1 + 1 + 1 + 1 = 5</code> and <code>Σₙ₌₀⁴|x[n]|² = 5 × 5 = 25</code>.
+        For 2024–25: <code>Σ|aₖ|² = 2(1 + 4 + 1) = 12</code> and <code>Σₙ₌₀⁶|x[n]|² = 7 × 12 = 84</code>.
+        <strong>Both are sums over one period only</strong> — do not multiply by another N.
+      </div>
+
+      <div class="warn">
+        <strong>The factor N is where the marks go.</strong> Write it as <code>Σ|x[n]|² = N Σ|aₖ|²</code> and say it out loud. Dropping the N, or summing over more than one period, is the single most common error in this part of the paper.
+      </div>
+    </section>
+
+    <!-- ================= PROPERTIES ================= -->
+    <section class="topic" id="props">
+      <h2><span class="kicker">5</span>Properties of the coefficients</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p3-5" data-progress="ch3-props">
+        <label for="p3-5">I know the conjugate-symmetry rule and what it implies for real signals.
+          <span class="done-meta">2023 True/False 4</span></label>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>Statement</th><th>Use it when</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Conjugate symmetry</strong></td><td><code>a_{N−k} = aₖ*</code></td><td>Deciding whether <code>x[n]</code> is real</td></tr>
+            <tr><td><strong>Real signal</strong></td><td><code>x[n]</code> real ⇒ <code>a_{N−k} = aₖ*</code></td><td>Always worth checking</td></tr>
+            <tr><td><strong>Real coefficients</strong></td><td><code>aₖ</code> real ⇒ <code>a_{N−k} = aₖ</code></td><td>Even symmetric spectrum</td></tr>
+            <tr><td><strong>Periodicity of aₖ</strong></td><td><code>aₖ</code> is periodic in k with period N</td><td>Negative indices</td></tr>
+            <tr><td><strong>Linearity</strong></td><td><code>aₖ = αbₖ + βcₖ</code> ⇒ <code>x[n] = αb[n] + βc[n]</code></td><td>Combining signals</td></tr>
+            <tr><td><strong>Time shift</strong></td><td><code>x[n−n₀]</code> ⇒ <code>aₖ → aₖ e<sup>−j2πkn₀/N</sup></code></td><td>2023 Ex 5</td></tr>
+            <tr><td><strong>Modulation</strong></td><td><code>e<sup>jω₀n</sup>x[n]</code> ⇒ <code>aₖ → aₖ e<sup>−jω₀k</sup></code></td><td>Multiplying by an exponential</td></tr>
+            <tr><td><strong>Convolution</strong></td><td><code>x[n]*y[n]</code> ⇒ <code>cₖ = N·aₖbₖ</code></td><td>Also gains a factor N</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="exam">
+        <strong>2023 True/False 4 — the one everybody gets wrong.</strong> “A real discrete-time periodic signal has real Fourier series coefficients.” <strong>False.</strong> Take <code>x[n] = cos(2πn/N)</code>: it is real, but its coefficients are <code>a₁ = a_{N−1} = ½</code> and the rest zero — that one happens to be real. Take <code>x[n] = cos(2πn/N + π/4)</code> instead: <code>a₁ = ½e^{−jπ/4}</code>, which is complex, even though <code>x[n]</code> is perfectly real. <strong>Real signal ⇒ conjugate symmetry, not real coefficients.</strong>
+      </div>
+
+      <div class="note">
+        <strong>How many coefficients are forced to be real?</strong> Conjugate symmetry says <code>a_{N−k} = aₖ*</code>. A coefficient is its own conjugate only if it is real, and that happens when <code>k ≡ N−k (mod N)</code>, i.e. <code>k = 0</code> and, when N is even, <code>k = N/2</code>. So: <strong>N odd ⇒ at least one real coefficient (a₀); N even ⇒ at least two (a₀ and a_{N/2}).</strong> This is exactly the statement Recitation 4 Exercise 4 asks you to prove.
+      </div>
+    </section>
+
+    <!-- ================= MANIPULATION ================= -->
+    <section class="topic" id="manip">
+      <h2><span class="kicker">6</span>Manipulating coefficients without recomputing</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p3-6" data-progress="ch3-manip">
+        <label for="p3-6">I can find the coefficients of a shifted or modulated signal directly.
+          <span class="done-meta">2023 Ex 5 · make-up Ex 5</span></label>
+      </div>
+
+      <h3>The three identities to memorise</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Signal</th><th>Coefficients</th><th>Comment</th></tr></thead>
+          <tbody>
+            <tr><td><code>x[n − n₀]</code></td><td><code>aₖ e<sup>−j2πkn₀/N</sup></code></td><td>A pure phase factor per bin</td></tr>
+            <tr><td><code>x[n]·(−1)ⁿ</code></td><td><code>aₖ e<sup>−jπk</code> = aₖ(−1)ᵏ</code></td><td>Shifts the spectrum by N/2</td></tr>
+            <tr><td><code>x*(−n)</code></td><td><code>aₖ*</code></td><td>Conjugate symmetry ↔ time reversal</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <details class="work">
+        <summary>Worked solution · 2023 control Exercise 5 (2.5 marks)</summary>
+        <p><strong>Question.</strong> A periodic signal <code>x[n]</code> of period <code>N = 8</code> has coefficients <code>aₖ = −a_{8−k}</code>. The signal <code>y[n] = ((4 + (−1)ⁿ)/2)·x[n−1]</code> is generated. Find the coefficients <code>cₖ</code> of <code>y[n]</code> in terms of <code>aₖ</code>.</p>
+        <p><strong>Step 1 — split the multiplier.</strong></p>
+        <div class="formula">(4 + (−1)ⁿ)/2 = 2 + (1/2)(−1)ⁿ</div>
+        <p><strong>Step 2 — find the spectrum of each part.</strong> A constant 2 has spectrum <code>2δ[k]</code>. The sequence <code>(1/2)(−1)ⁿ = (1/2)e^{jπn}</code> has spectrum <code>(1/2)δ[k − N/2]</code> = <code>(1/2)δ[k−4]</code> for N = 8. Multiplying the two spectra (convolution of spectra) leaves the sum:</p>
+        <div class="formula">
+          y[n] = 2·x[n−1] + (1/2)(−1)ⁿ x[n−1]
+          <br> = 2·x[n−1] + (1/2)·x̃[n] &nbsp;&nbsp; where x̃[n] = (−1)ⁿx[n−1]
+        </div>
+        <p><strong>Step 3 — apply the shift and the modulation rules.</strong> <code>x[n−1]</code> has coefficients <code>aₖ e^{−j2πk/8}</code>. Multiplying by <code>(−1)ⁿ</code> shifts that spectrum by N/2 = 4 bins. So:</p>
+        <div class="formula">
+          cₖ = 2 aₖ e<sup>−j2πk/8</sup> + (1/2) a<sub>k−4</sub> e<sup>−j2π(k−4)/8</sup>
+        </div>
+        <p><strong>Step 4 — final form.</strong> Since <code>e<sup>−j2π(k−4)/8</sup> = −e<sup>−j2πk/8</sup></code>, combining the two terms gives</p>
+        <div class="formula">
+          cₖ = e<sup>−j2πk/8</sup> · { 2aₖ − (1/2) a<sub>k−4</sub> } &nbsp;&nbsp; (all k, indices taken mod 8)
+        </div>
+        <p>The given symmetry lets you rewrite the shifted term. The coefficients are periodic in k with period 8, and <code>aₖ = −a₈₋ₖ</code> is the same statement as <code>aₖ = −a₋ₖ</code>; applying it at <code>k − 4</code> and at <code>k + 4</code> gives <code>a<sub>k−4</sub> = a<sub>k+4</sub></code>. An equivalent final answer is</p>
+        <div class="formula">cₖ = e<sup>−j2πk/8</sup> · { 2aₖ − (1/2) a<sub>k+4</sub> }</div>
+        <div class="note"><strong>What the grader wants.</strong> The three ingredients — (1) split the multiplier, (2) shift by one sample ⇒ phase factor, (3) multiply by <code>(−1)ⁿ</code> ⇒ shift by N/2 bins with a sign — each worth roughly one point. The symmetry <code>aₖ = −a_{8−k}</code> is what lets you express everything in terms of the <code>aₖ</code> alone.</div>
+      </details>
+
+      <details class="work">
+        <summary>Worked solution · make-up exam Exercise 5 (3 marks)</summary>
+        <p><strong>Question.</strong> For a periodic signal of period N (even), express <code>x[n] − x[n + N/2]</code> and <code>x[n] + x[n + N/2]</code> in terms of <code>aₖ</code>, and derive <code>x*(−n)</code>.</p>
+        <p><strong>Step 1.</strong> <code>x[n + N/2] = Σₖ aₖ e<sup>j2πk(n+N/2)/N</sup> = Σₖ aₖ e<sup>jπk</sup> e<sup>j2πkn/N</sup> = Σₖ aₖ(−1)ᵏ e<sup>j2πkn/N</sup></code>.</p>
+        <p><strong>Step 2 — the difference.</strong></p>
+        <div class="formula">x[n] − x[n+N/2] = Σₖ aₖ(1 − (−1)ᵏ) e<sup>j2πkn/N</sup> = <b>2 Σ<sub>k odd</sub> aₖ e<sup>j2πkn/N</sup></b></div>
+        <p>Only the <strong>odd</strong> bins survive, doubled.</p>
+        <p><strong>Step 3 — the sum.</strong></p>
+        <div class="formula">x[n] + x[n+N/2] = <b>2 Σ<sub>k even</sub> aₖ e<sup>j2πkn/N</sup></b></div>
+        <p>Only the <strong>even</strong> bins survive, doubled.</p>
+        <p><strong>Step 4 — time reversal.</strong> <code>x*(−n) = Σₖ aₖ* e<sup>−j2πkn/N</sup> = Σₖ a₋ₖ* e<sup>j2πkn/N</sup></code>. So the coefficients of <code>x*(−n)</code> are <code>aₖ*</code> — and for a real signal this is exactly the conjugate symmetry <code>a₋ₖ = aₖ*</code> restated.</p>
+        <div class="tip"><strong>Memory hook.</strong> Shifting by <code>N/2</code> multiplies bin k by <code>(−1)ᵏ</code>: even bins add, odd bins cancel.</div>
+      </details>
+    </section>
+
+    <!-- ================= EXAM ================= -->
+    <section class="topic" id="exam">
+      <h2><span class="kicker">7</span>Exam connections</h2>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <span class="tag">2023 control · Ex 3</span>
+        <div class="q">N = 5, <code>aₖ = jᵏ</code> for −1 ≤ k ≤ 1 and <code>aₖ = −1</code> for k = ±2. What is <code>x[0]</code>?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">1</button>
+          <button type="button" data-opt="b">−1</button>
+          <button type="button" data-opt="c">j</button>
+          <button type="button" data-opt="d">5</button>
+        </div>
+        <details><summary>Solution</summary>
+          <div class="sol"><strong>−1.</strong> <code>x[0] = Σₖ aₖ</code> because every exponential is 1 at n = 0. The coefficients in 0…4 order are <code>[1, j, −1, −1, −j]</code> (note <code>a₋₂ = a₃ = −1</code> and <code>a₋₁ = a₄ = −j</code>). Their sum is <code>1 + j − 1 − 1 − j = −1</code>.</div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <span class="tag">2024–25 control · Ex 3.2</span>
+        <div class="q">N = 7, <code>a₀ = 0</code>, <code>a±₁ = 1</code>, <code>a±₂ = 2</code>, <code>a±₃ = 1</code>. What is <code>Σₙ₌₀⁶|x[n]|²</code>?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">12</button>
+          <button type="button" data-opt="b">84 / 7</button>
+          <button type="button" data-opt="c">84</button>
+          <button type="button" data-opt="d">588</button>
+        </div>
+        <details><summary>Solution</summary>
+          <div class="sol"><strong>84.</strong> Parseval: <code>Σₙ₌₀⁶|x[n]|² = N·Σₖ₌₀⁶|aₖ|²</code>. <code>Σ|aₖ|² = 0 + 2(1 + 4 + 1) = 12</code>, and <code>7 × 12 = 84</code>.</div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <span class="tag">2023 control · Ex 1.4</span>
+        <div class="q">“A real discrete-time periodic signal has real Fourier series coefficients.” True or false?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">False — a real signal only guarantees conjugate symmetry, aₖ* = a₋ₖ</button>
+          <button type="button" data-opt="b">True</button>
+          <button type="button" data-opt="c">False — because the signal must be periodic for the coefficients to exist</button>
+        </div>
+        <details><summary>Solution</summary>
+          <div class="sol"><strong>False.</strong> A real signal gives <code>a₋ₖ = aₖ*</code>, so only <code>a₀</code> (and <code>a_{N/2}</code> when N is even) must be real. Example: <code>x[n] = cos(2πn/N + π/4)</code> is real but has <code>a₁ = ½e<sup>−jπ/4</sup></code>.</div>
+        </details>
+      </div>
+
+      <div class="note" style="margin-top:24px">
+        <strong>Checklist.</strong> Be able to: (1) write the synthesis sum with the right index range; (2) pair conjugate terms to get a cosine sum; (3) compute <code>x[0] = Σaₖ</code> without expanding; (4) apply Parseval with the factor N; (5) apply the shift and modulation rules to coefficients.
+      </div>
+    </section>
+
+    <footer class="foot">
+      Next: <a href="ch4.html">Chapter 4 — DTFT and DFT</a> · back to <a href="ch0.html">the exam map</a>.
+    </footer>
+  </main>
+</div>
+<script src="js/viz-core.js"></script>
+<script src="js/app.js"></script>
+<script src="js/viz-ch3.js"></script>
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 1 — DT Signals and Systems | EE351 Linear Systems II</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Ch. 1 — DT Signals &amp; Systems</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EE351 Companion<small>Linear Systems II</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch0.html"><span class="num">00</span>Overview</a>
+      <a href="ch1.html" class="active"><span class="num">01</span>DT signals &amp; systems</a>
+      <a href="ch2.html"><span class="num">02</span>DT LTI systems</a>
+      <a href="ch3.html"><span class="num">03</span>DT Fourier series</a>
+      <a href="ch4.html"><span class="num">04</span>DTFT &amp; DFT</a>
+      <a href="ch5.html"><span class="num">05</span>Z-transform</a>
+      <div class="nav-label">Practice</div>
+      <a href="practice.html"><span class="num">✎</span>Past-control practice</a>
+      <a href="formulas.html"><span class="num">Σ</span>Formula sheet</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Chapter 1</span>
+      <h1>Discrete-Time Signals and Systems</h1>
+      <p class="lede">The vocabulary of the whole course. What a sequence is, how two sequences combine, and the four properties the control asks about in almost every paper.</p>
+    </header>
+
+    <div class="toc">
+      <strong>On this page</strong>
+      <ol>
+        <li><a href="#signals">Discrete-time signals</a></li>
+        <li><a href="#classify">Periodic, energy, power</a></li>
+        <li><a href="#transform">Time-domain transformations</a></li>
+        <li><a href="#conv">Convolution</a></li>
+        <li><a href="#props">The four system properties</a></li>
+        <li><a href="#impulse">Impulse response and LTI</a></li>
+        <li><a href="#exam">Exam connections</a></li>
+      </ol>
+    </div>
+
+    <!-- ================= 1. SIGNALS ================= -->
+    <section class="topic" id="signals">
+      <h2><span class="kicker">1</span>Discrete-time signals</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p1-1" data-progress="ch1-signals">
+        <label for="p1-1">I can write the unit step, the impulse and the shifted versions correctly.
+          <span class="done-meta">u[n], δ[n], δ[n−n₀], u[n−n₀]</span></label>
+      </div>
+
+      <p>A discrete-time signal is a sequence of numbers indexed by the integers. We write <code>x[n]</code>, and the brackets are the reminder that <code>n</code> is an integer, not a continuous time.</p>
+
+      <div class="formula">
+        <span class="k">δ[n]</span> = 1 for n = 0, 0 otherwise &nbsp;&nbsp;·&nbsp;&nbsp;
+        <span class="k">u[n]</span> = 1 for n ≥ 0, 0 otherwise &nbsp;&nbsp;·&nbsp;&nbsp;
+        <span class="k">u[−n−1]</span> = 1 for n ≤ −1 (the <em>anti-causal</em> unit step)
+      </div>
+
+      <div class="warn">
+        <strong>The off-by-one that loses marks.</strong> <code>u[n]</code> is 1 <em>at</em> n = 0, so <code>u[n] − u[n−1] = δ[n]</code>. And <code>u[−n−1]</code> is 1 at n = −1, <em>not</em> at n = 0: that is exactly the “strictly before zero” step you need for every anti-causal inverse Z-transform.
+      </div>
+
+      <div class="viz" id="viz-signal">
+        <div class="viz-head"><span class="vt">Signal playground</span><span class="vh">build a sequence, then shift, reverse or scale it</span></div>
+        <div class="viz-body"></div>
+      </div>
+    </section>
+
+    <!-- ================= 2. CLASSIFICATION ================= -->
+    <section class="topic" id="classify">
+      <h2><span class="kicker">2</span>Periodic, energy and power signals</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p1-2" data-progress="ch1-classify">
+        <label for="p1-2">I can test periodicity and decide energy vs. power for any sequence.
+          <span class="done-meta">Recitation 1, Exercises 1 and 2</span></label>
+      </div>
+
+      <h3>Periodicity</h3>
+      <p><code>x[n]</code> is <strong>periodic</strong> if there is a positive integer <code>N</code> such that <code>x[n+N] = x[n]</code> for every <code>n</code>. The <strong>fundamental period</strong> <code>N₀</code> is the smallest such <code>N</code>.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Signal</th><th>Periodic?</th><th>How to see it</th></tr></thead>
+          <tbody>
+            <tr><td><code>x[n] = cos(2πn/N)</code></td><td>Yes</td><td>Period N exactly (for integer N ≥ 1)</td></tr>
+            <tr><td><code>x[n] = cos(ω₀n)</code>, ω₀ = 2πp/N with p, N coprime</td><td>Yes</td><td>Fundamental period N</td></tr>
+            <tr><td><code>x[n] = cos(2n)</code></td><td>No</td><td>2 is not a rational multiple of 2π</td></tr>
+            <tr><td><code>x[n] = e^{jω₀n}</code></td><td>Yes iff ω₀/(2π) is rational</td><td>Write ω₀ = 2πp/q</td></tr>
+            <tr><td><code>x[n] = u[n]</code>, <code>δ[n]</code></td><td>No</td><td>No shift returns them</td></tr>
+            <tr><td><code>x[n] = A</code> (constant)</td><td>Yes</td><td>Every N works; the fundamental period is 1</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tip">
+        <strong>Exam shortcut.</strong> For a sum of complex exponentials, the period is the smallest N with <code>ω₀N = 2πm</code> for <em>every</em> frequency present. If one of them is irrational relative to 2π, the sum is not periodic. Recitation 1 Exercise 1 is nine sub-questions of exactly this.
+      </div>
+
+      <h3>Energy and power</h3>
+
+      <div class="formula">
+        <span class="k">Energy</span> E = Σₙ |x[n]|² &nbsp;&nbsp;·&nbsp;&nbsp;
+        <span class="k">Power</span> P = lim<sub>N→∞</sub> (1/(2N+1)) Σₙ₌₋ᴺᴺ |x[n]|²
+      </div>
+
+      <p>A signal is an <strong>energy signal</strong> if <code>0 &lt; E &lt; ∞</code> (then its power is 0). It is a <strong>power signal</strong> if <code>0 &lt; P &lt; ∞</code> (then its energy is infinite). A signal cannot be both, and the only signal that is neither is the zero signal.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Signal</th><th>Type</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td><code>x[n] = δ[n]</code></td><td>Energy</td><td>E = 1</td></tr>
+            <tr><td><code>x[n] = aⁿu[n]</code>, |a| &lt; 1</td><td>Energy</td><td>E = 1/(1−|a|²)</td></tr>
+            <tr><td><code>x[n] = aⁿu[n]</code>, |a| &gt; 1</td><td>Power</td><td>P = ∞ (energy also ∞) — neither</td></tr>
+            <tr><td><code>x[n] = A cos(ω₀n + φ)</code></td><td>Power</td><td>P = A²/2</td></tr>
+            <tr><td><code>x[n] = u[n]</code></td><td>Power</td><td>P = 1/2</td></tr>
+            <tr><td><code>x[n] = A</code> (constant)</td><td>Power</td><td>P = A²</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>Watch the constant.</strong> A DC signal is <em>periodic</em> (any period) and a <em>power</em> signal with <code>P = A²</code>, not <code>A²/2</code>. The factor ½ only appears for a sinusoid, because the cosine and sine split the energy evenly.
+      </div>
+    </section>
+
+    <!-- ================= 3. TRANSFORMATIONS ================= -->
+    <section class="topic" id="transform">
+      <h2><span class="kicker">3</span>Time-domain transformations</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p1-3" data-progress="ch1-transform">
+        <label for="p1-3">I can sketch x[n−n₀], x[−n] and x[2n] correctly from x[n].
+          <span class="done-meta">Recitation 1, Exercise 5</span></label>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Operation</th><th>Rule</th><th>Effect on the plot</th></tr></thead>
+          <tbody>
+            <tr><td>Time shift</td><td><code>x[n − n₀]</code></td><td>Shifts <strong>right</strong> by n₀ (delays)</td></tr>
+            <tr><td>Time reversal</td><td><code>x[−n]</code></td><td>Reflects about the <strong>vertical axis</strong> (n = 0)</td></tr>
+            <tr><td>Decimation</td><td><code>x[2n]</code></td><td>Keeps every other sample; the sequence gets slower</td></tr>
+            <tr><td>Expansion</td><td><code>x[n/2]</code> (n even)</td><td>Stretches by 2; zeros in between</td></tr>
+            <tr><td>Amplitude scale</td><td><code>A·x[n]</code></td><td>Scales the vertical axis</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warn">
+        <strong>Shift direction is the classic slip.</strong> <code>x[n − 3]</code> moves the waveform <strong>to the right</strong> (delays it). <code>x[n + 3]</code> moves it left (advances it). If you draw it the other way, every downstream answer is wrong even though the algebra looks fine.
+      </div>
+
+      <div class="viz" id="viz-transform">
+        <div class="viz-head"><span class="vt">Shift / reverse / decimate</span><span class="vh">the three transforms Recitation 1 asks you to sketch</span></div>
+        <div class="viz-body"></div>
+      </div>
+    </section>
+
+    <!-- ================= 4. CONVOLUTION ================= -->
+    <section class="topic" id="conv">
+      <h2><span class="kicker">4</span>Convolution</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p1-4" data-progress="ch1-conv">
+        <label for="p1-4">I can compute a convolution and state its support before computing it.
+          <span class="done-meta">2023 control Ex 4 · 2024–25 Ex 4 · Recitation 2</span></label>
+      </div>
+
+      <div class="formula">
+        <span class="k">y[n]</span> = (x * h)[n] = Σₖ₌₋∞^∞ x[k]·h[n−k]
+      </div>
+
+      <p>Read it as: flip <code>h</code> about the origin, slide it along <code>x</code>, multiply sample by sample, and add up. The value of the sum at position <code>n</code> is <code>y[n]</code>.</p>
+
+      <h3>The three rules that make convolution fast</h3>
+      <ol class="clean">
+        <li><strong>Support first.</strong> If <code>x[n] ≠ 0</code> only for <code>n ∈ [n₁, n₂]</code> and <code>h[n] ≠ 0</code> only for <code>n ∈ [m₁, m₂]</code>, then <code>y[n] = 0</code> outside <code>[n₁+m₁, n₂+m₂]</code>. Draw the two supports, add the endpoints, and you know where to look.</li>
+        <li><strong>Length grows.</strong> Two sequences of lengths <code>L₁</code> and <code>L₂</code> convolve to length <code>L₁ + L₂ − 1</code>.</li>
+        <li><strong>Count the overlapping terms.</strong> This is where the archived 2024–25 solution goes wrong. In <code>y[n] = Σₖ x[k]h[n−k]</code>, the number of non-zero products is the number of indices where the two supports overlap — and that number <em>changes with n</em>. For two right-sided sequences it is <code>n+1</code>, not ∞. That is why the answer is <code>(n+1)(1/3)ⁿ</code> and not a geometric series.</li>
+      </ol>
+
+      <div class="viz" id="viz-conv">
+        <div class="viz-head"><span class="vt">Convolution explorer</span><span class="vh">slide h[−k] across x and watch the running sum</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <details class="work">
+        <summary>Worked solution · 2023 control Exercise 4 (5 marks)</summary>
+        <p><strong>Question.</strong> Compute and plot <code>y[n] = x[n] * h[n]</code> where <code>x[n] = h[n] = u[n+20] − u[n−21]</code>.</p>
+        <p><strong>Step 1 — write the sequences.</strong> <code>u[n+20]</code> is 1 for <code>n ≥ −20</code>; <code>u[n−21]</code> is 1 for <code>n ≥ 21</code>. Their difference is a rectangle of height 1 on <code>−20 ≤ n ≤ 20</code>, i.e. 41 samples. Outside that, <code>x[n] = h[n] = 0</code>.</p>
+        <p><strong>Step 2 — support.</strong> <code>[−20,20] + [−20,20] = [−40,40]</code>. So <code>y[n] = 0</code> outside <code>[−40, 40]</code>, and <code>y</code> has 81 samples.</p>
+        <p><strong>Step 3 — count the overlap.</strong> For <code>−40 ≤ n ≤ 0</code> the overlap has <code>n + 41</code> points; for <code>0 ≤ n ≤ 40</code> it has <code>41 − n</code> points. Every product equals 1, so the sum is just the count:</p>
+        <div class="formula">
+          y[n] = { n + 41 &nbsp;&nbsp; −40 ≤ n ≤ 0<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 41 − n &nbsp;&nbsp; 0 ≤ n ≤ 40<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; elsewhere }
+        </div>
+        <p><strong>Step 4 — plot.</strong> A triangle: it starts at 1 at <code>n = −40</code>, rises by 1 each sample to a peak of <strong>41 at n = 0</strong>, then falls symmetrically back to 1 at <code>n = 40</code>. The peak value equals the length of the rectangle (41), not 40 and not 42.</p>
+        <div class="note"><strong>Marks.</strong> Support (1) · the two cases of the formula (2) · the correct plot with the peak labelled 41 (2).</div>
+      </details>
+
+      <details class="work">
+        <summary>Worked solution · 2024–25 control Exercise 4 (5 marks) — and the trap</summary>
+        <p><strong>Question.</strong> Convolve <code>x[n] = h[n] = (1/3)ⁿu[n]</code>.</p>
+        <p><strong>Step 1.</strong> <code>x[k] = (1/3)ᵏ</code> for <code>k ≥ 0</code>, zero otherwise; same for <code>h</code>.</p>
+        <p><strong>Step 2 — how many terms?</strong> Both sequences are right-sided, so in <code>y[n] = Σₖ x[k]h[n−k]</code> the index <code>k</code> must satisfy <code>k ≥ 0</code> (from <code>x</code>) and <code>n − k ≥ 0</code> (from <code>h</code>), i.e. <code>0 ≤ k ≤ n</code>. For <code>n ≥ 0</code> that is exactly <code>n + 1</code> terms; for <code>n &lt; 0</code> it is <strong>zero</strong> terms, so <code>y[n] = 0</code>.</p>
+        <p><strong>Step 3 — the sum.</strong> Every product is <code>(1/3)ᵏ·(1/3)ⁿ⁻ᵏ = (1/3)ⁿ</code>:</p>
+        <div class="formula">y[n] = (n+1)·(1/3)ⁿ &nbsp;&nbsp; for n ≥ 0, &nbsp; and y[n] = 0 for n &lt; 0</div>
+        <p><strong>Step 4 — the plot.</strong> It starts at 1 at <code>n = 0</code>, rises to a maximum of <code>2/3</code> at <code>n = 1</code>, then decays. It is <em>not</em> a geometric decay — the envelope is the straight line <code>(n+1)</code>.</p>
+        <div class="warn"><strong>The trap.</strong> The archived handwritten solution writes <code>y[n] = (1/3)ⁿ·Σₖ₌₀^∞(1/3)^{2k} = (9/8)(1/3)ⁿ</code>. The mistake is replacing a finite sum whose length is <code>n+1</code> with an infinite geometric series. A convolution sum is <em>always</em> finite (two supports can only overlap in finitely many places). If your answer behaves like a pure exponential, you have silently assumed infinite overlap.</div>
+      </details>
+
+      <h3>Convolution properties</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>Statement</th></tr></thead>
+          <tbody>
+            <tr><td>Commutative</td><td><code>x * h = h * x</code></td></tr>
+            <tr><td>Associative</td><td><code>(x * h) * g = x * (h * g)</code></td></tr>
+            <tr><td>Distributive</td><td><code>x * (h + g) = x*h + x*g</code></td></tr>
+            <tr><td>Identity</td><td><code>x * δ = x</code></td></tr>
+            <tr><td>Time shift</td><td><code>x[n−n₀] * h[n] = (x*h)[n−n₀]</code></td></tr>
+            <tr><td>Time reversal</td><td><code>x[−n] * h[−n] = (x*h)[−n]</code></td></tr>
+            <tr><td>Scaling</td><td><code>x[an] * h[an] = (x*h)[an]</code> (a positive integer)</td></tr>
+            <tr><td>Sum / difference</td><td><code>x * (h₁ ± h₂) = x*h₁ ± x*h₂</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tip">
+        <strong>Use them in the exam.</strong> Recitation 2 Exercise 2 asks you to convolve six pairs and then explicitly says “use your knowledge of linearity and time invariance to minimize the work in parts (d)–(f)”. Those three parts are all shifts, scalings and sums of one base convolution — do not recompute them from scratch.
+      </div>
+    </section>
+
+    <!-- ================= 5. PROPERTIES ================= -->
+    <section class="topic" id="props">
+      <h2><span class="kicker">5</span>The four system properties</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p1-5" data-progress="ch1-props">
+        <label for="p1-5">I can prove each property with a test, not assert it.
+          <span class="done-meta">2023 Ex 2 (5.5) · 2024–25 Ex 2 (5) · make-up Ex 1 (3.5)</span></label>
+      </div>
+
+    <p>A discrete-time system maps an input <code>x[n]</code> to an output <code>y[n]</code>. Four questions decide almost every mark in the control:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Property</th><th>The test you must write down</th><th>Shortcuts</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Linear</strong></td>
+            <td><code>T{a·x₁ + b·x₂} = a·T{x₁} + b·T{x₂}</code> for all scalars a, b</td>
+            <td>Any term containing <em>two</em> inputs (<code>x[n]x[n]</code>, <code>x[n]²</code>) is not linear. Any absolute value, square or sign function is not linear.</td>
+          </tr>
+          <tr>
+            <td><strong>Time-invariant</strong></td>
+            <td><code>T{x[n−n₀]} = y[n−n₀]</code> for every n₀</td>
+            <td>Shifting the input shifts the output by the <em>same</em> amount. A factor that depends on <code>n</code> (<code>(n+1)</code>, <code>cos(πn/10)</code>, <code>n</code>) breaks time-invariance.</td>
+          </tr>
+          <tr>
+            <td><strong>Causal</strong></td>
+            <td><code>y[n]</code> depends only on <code>x[k]</code> for <code>k ≤ n</code></td>
+            <td>For LTI: <code>h[n] = 0</code> for <code>n &lt; 0</code>. A term <code>x[n+1]</code> or <code>x[2n]</code> (for n &gt; 0) makes it non-causal.</td>
+          </tr>
+          <tr>
+            <td><strong>Stable</strong></td>
+            <td>every bounded input gives a bounded output</td>
+            <td>For LTI: <code>Σₙ |h[n]| &lt; ∞</code>. A bounded input is one with <code>|x[n]| ≤ M</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>Memoryless</strong></td>
+            <td><code>y[n]</code> depends only on <code>x[n]</code></td>
+            <td>Ask: can I change <code>x[n−1]</code> without changing <code>y[n]</code>? If yes, it has memory.</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="warn">
+        <strong>Causal and stable are independent.</strong> <code>h[n] = u[n]</code> is causal and <strong>unstable</strong> (<code>Σ|h[n]| = ∞</code>). <code>h[n] = (1/2)ⁿu[−n−1]</code> is stable (<code>Σ|h[n]| = 1</code>) and <strong>non-causal</strong>. Both appear in the past controls.
+      </div>
+
+      <div class="viz" id="viz-props">
+        <div class="viz-head"><span class="vt">System property checker</span><span class="vh">numeric tests, the same way you must argue them on paper</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <details class="work">
+        <summary>Worked solution · 2023 control Exercise 2.1 (5.5 marks)</summary>
+        <p><strong>Question.</strong> Is <code>y[n] = (n+1)x[n−1]</code> linear, time-invariant, causal, stable?</p>
+        <p><strong>Linearity.</strong> <code>T{a x₁ + b x₂} = (n+1)(a x₁[n−1] + b x₂[n−1]) = a(n+1)x₁[n−1] + b(n+1)x₂[n−1] = a·y₁[n] + b·y₂[n]</code>. <strong>Linear.</strong></p>
+        <p><strong>Time-invariance.</strong> <code>T{x[n−n₀]} = (n+1)x[n−n₀−1]</code> but <code>y[n−n₀] = (n−n₀+1)x[n−n₀−1]</code>. They differ by <code>n₀</code>. <strong>Not time-invariant.</strong></p>
+        <p><strong>Causality.</strong> <code>y[n]</code> uses <code>x[n−1]</code>, a past sample. <strong>Causal.</strong></p>
+        <p><strong>Stability.</strong> Take the bounded input <code>x[n] = e^{jn}</code> (|x| = 1). Then <code>|y[n]| = |n+1|·|e^{j(n−1)}| = |n+1|</code>, which is unbounded. <strong>Not stable.</strong></p>
+        <div class="note"><strong>Pattern to imitate.</strong> Four short paragraphs, each with the test named, the substitution written, and the verdict in bold. About 1 mark per property.</div>
+      </details>
+
+      <details class="work">
+        <summary>Worked solution · 2024–25 control Exercise 2.2 (5 marks)</summary>
+        <p><strong>Question.</strong> For <code>h[n] = (1/2)ⁿu[n] + 2ⁿu[−n−1]</code>, is the system causal and/or stable?</p>
+        <p><strong>Causality.</strong> <code>h[n]</code> is non-zero for <code>n ≤ −1</code> (the term <code>2ⁿu[−n−1]</code>), so the system is <strong>not causal</strong>.</p>
+        <p><strong>Stability.</strong> <code>Σₙ |h[n]| = Σₙ₌₀^∞ (1/2)ⁿ + Σₙ₌₋∞^(-1) 2ⁿ = 2 + 1 = 3 &lt; ∞</code>. <strong>Stable.</strong></p>
+        <div class="tip"><strong>Note the sums.</strong> <code>Σₙ₌₀^∞ (1/2)ⁿ = 2</code> and <code>Σₙ₌₋∞^(-1) 2ⁿ = 1</code> (the anti-causal geometric series is finite because 2ⁿ shrinks as n → −∞). Both are finite ⇒ stable.</div>
+      </details>
+    </section>
+
+    <!-- ================= 6. IMPULSE RESPONSE ================= -->
+    <section class="topic" id="impulse">
+      <h2><span class="kicker">6</span>Impulse response and the LTI idea</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p1-6" data-progress="ch1-impulse">
+        <label for="p1-6">I know that an LTI system is completely described by its impulse response.
+          <span class="done-meta">the key to Ch 2, Ch 4 and Ch 5</span></label>
+      </div>
+
+      <p>Feed the system the impulse <code>δ[n]</code> and record what comes out. That record is the <strong>impulse response</strong> <code>h[n]</code> — and for an LTI system it is everything you need:</p>
+
+      <div class="formula">y[n] = x[n] * h[n] &nbsp;&nbsp;&nbsp; (LTI ⇒ output = convolution of input with impulse response)</div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Question</th><th>Answer in terms of h[n]</th></tr></thead>
+          <tbody>
+            <tr><td>Is it causal?</td><td><code>h[n] = 0</code> for all <code>n &lt; 0</code></td></tr>
+            <tr><td>Is it stable?</td><td><code>Σₙ |h[n]| &lt; ∞</code></td></tr>
+            <tr><td>Is it memoryless?</td><td><code>h[n] = K·δ[n]</code> only</td></tr>
+            <tr><td>What is the output to a unit step?</td><td><code>y[n] = u[n] * h[n]</code> — the running sum of <code>h</code></td></tr>
+            <tr><td>Is it LTI?</td><td><code>h[n]</code> fully characterises an LTI system; a general system needs more</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>Why this matters for the control.</strong> The 2023 True/False block is built on these two lines:
+        “An LTI system with a <em>finite-duration</em> impulse response is always stable” — <strong>True</strong>, because a finite sequence is automatically absolutely summable.
+        “The impulse response of a <em>causal</em> LTI system satisfies <code>Σ|h[n]|² &lt; ∞</code>” — <strong>False</strong>, because causal says nothing about the size of <code>h</code> (take <code>h[n] = u[n]</code>).
+      </div>
+    </section>
+
+    <!-- ================= 7. EXAM ================= -->
+    <section class="topic" id="exam">
+      <h2><span class="kicker">7</span>Exam connections</h2>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <span class="tag">2023 control · Ex 4</span>
+        <div class="q"><code>x[n] = h[n] = u[n+20] − u[n−21]</code>. The convolution <code>y[n]</code> has a peak of 41 at <code>n = 0</code> and is zero outside <code>[−40, 40]</code>. True or false?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">True</button>
+          <button type="button" data-opt="b">False — the peak is 40 and the support is [−41, 41]</button>
+          <button type="button" data-opt="c">False — the support is [−20, 20]</button>
+        </div>
+        <details><summary>Solution</summary>
+          <div class="sol"><strong>True.</strong> Each sequence has 41 ones (<code>−20 ≤ n ≤ 20</code>). Their convolution is a triangle of base 81 and height 41, peaking at <code>n = 0</code>. The support is <code>[−20,20] + [−20,20] = [−40,40]</code>. The height equals the <em>length</em> of one rectangle, because at <code>n = 0</code> all 41 ones overlap with all 41 ones.</div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <span class="tag">Recitation 1 · Ex 3</span>
+        <div class="q">Which of these is <em>not</em> a linear system? <code>(a)</code> <code>y[n] = x[n]x[n]</code> &nbsp; <code>(b)</code> <code>y[n] = |x[n]|</code> &nbsp; <code>(c)</code> <code>y[n] = 3x[n] + x[n−2]</code> &nbsp; <code>(d)</code> <code>y[n] = x[n−1]</code></div>
+        <div class="opts">
+          <button type="button" data-opt="a">Only (b)</button>
+          <button type="button" data-opt="b">Only (a)</button>
+          <button type="button" data-opt="c">Both (a) and (b)</button>
+          <button type="button" data-opt="d">All of them</button>
+        </div>
+        <details><summary>Solution</summary>
+          <div class="sol"><strong>Both (a) and (b).</strong> <code>T{a x₁ + b x₂} = (a x₁ + b x₂)² ≠ a x₁² + b x₂²</code>, and <code>|a x₁ + b x₂| ≠ a|x₁| + b|x₂|</code>. Any product of two inputs, any square, any absolute value or sign function destroys linearity. (c) and (d) are linear.</div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <span class="tag">Make-up exam · Ex 1</span>
+        <div class="q">Is <code>y[n] = x[n] − x[n−2]</code> stable?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">Yes — its impulse response is δ[n] − δ[n−2], and Σ|h[n]| = 2</button>
+          <button type="button" data-opt="b">No — it depends on two samples</button>
+          <button type="button" data-opt="c">No — it is not memoryless</button>
+          <button type="button" data-opt="d">Yes, but only because it is causal</button>
+        </div>
+        <details><summary>Solution</summary>
+          <div class="sol"><strong>Yes.</strong> Write it as a convolution: <code>y[n] = x[n] * (δ[n] − δ[n−2])</code>, so <code>h[n] = δ[n] − δ[n−2]</code> and <code>Σ|h[n]| = 1 + 1 = 2 &lt; ∞</code>. Bounded input ⇒ bounded output. (Causality and stability are independent, as always: this system is also causal and non-memoryless.)</div>
+        </details>
+      </div>
+
+      <div class="note" style="margin-top:24px">
+        <strong>Checklist for this chapter.</strong> Before you close the book, be able to: (1) state the four tests without looking; (2) decide causality and stability from <code>h[n]</code> in two lines; (3) compute a convolution of two rectangles and two exponentials and state the support; (4) say why a real periodic signal can still have complex Fourier coefficients.
+      </div>
+    </section>
+
+    <footer class="foot">
+      Next: <a href="ch2.html">Chapter 2 — DT LTI Systems</a> · back to <a href="ch0.html">the exam map</a>.
+    </footer>
+  </main>
+</div>
+<script src="js/viz-core.js"></script>
+<script src="js/app.js"></script>
+<script src="js/viz-ch1.js"></script>
+</body>
+</html>

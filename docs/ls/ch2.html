@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 2 — DT LTI Systems | EE351 Linear Systems II</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Ch. 2 — DT LTI Systems</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EE351 Companion<small>Linear Systems II</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch0.html"><span class="num">00</span>Overview</a>
+      <a href="ch1.html"><span class="num">01</span>DT signals &amp; systems</a>
+      <a href="ch2.html" class="active"><span class="num">02</span>DT LTI systems</a>
+      <a href="ch3.html"><span class="num">03</span>DT Fourier series</a>
+      <a href="ch4.html"><span class="num">04</span>DTFT &amp; DFT</a>
+      <a href="ch5.html"><span class="num">05</span>Z-transform</a>
+      <div class="nav-label">Practice</div>
+      <a href="practice.html"><span class="num">✎</span>Past-control practice</a>
+      <a href="formulas.html"><span class="num">Σ</span>Formula sheet</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Chapter 2</span>
+      <h1>Discrete-Time LTI Systems</h1>
+      <p class="lede">Once a system is LTI, one sequence describes it completely. This chapter is about that sequence: how to get it from a difference equation, how to read causality and stability off it, and how interconnections combine.</p>
+    </header>
+
+    <div class="toc">
+      <strong>On this page</strong>
+      <ol>
+        <li><a href="#lti">The LTI idea</a></li>
+        <li><a href="#diff">Difference equations</a></li>
+        <li><a href="#inter">Interconnections: cascade, parallel</a></li>
+        <li><a href="#deconv">Deconvolution</a></li>
+        <li><a href="#real">Realisations and the system function</a></li>
+        <li><a href="#exam">Exam connections</a></li>
+      </ol>
+    </div>
+
+    <!-- ================= LTI ================= -->
+    <section class="topic" id="lti">
+      <h2><span class="kicker">1</span>The LTI idea</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p2-1" data-progress="ch2-lti">
+        <label for="p2-1">I know that for an LTI system the impulse response is a complete description.
+          <span class="done-meta">the bridge to Ch 3, Ch 4 and Ch 5</span></label>
+      </div>
+
+      <p>An LTI system satisfies linearity and time-invariance. The consequence is enormous: <strong>the output is the convolution of the input with the impulse response</strong>, and nothing else about the system matters.</p>
+
+      <div class="formula">y[n] = x[n] * h[n] = Σₖ x[k]h[n−k]</div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>In terms of h[n]</th><th>Consequence</th></tr></thead>
+          <tbody>
+            <tr><td>Causal</td><td><code>h[n] = 0</code> for <code>n &lt; 0</code></td><td>The sum only needs past samples</td></tr>
+            <tr><td>Stable</td><td><code>Σₙ |h[n]| &lt; ∞</code></td><td>Bounded in ⇒ bounded out</td></tr>
+            <tr><td>Memoryless</td><td><code>h[n] = Kδ[n]</code></td><td>Only a gain</td></tr>
+            <tr><td>Time-reversible</td><td><code>h[−n]</code> must be causal <em>and</em> stable</td><td>Needed for deconvolution</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>Linearity is what makes the sum work.</strong> The response to <code>x[n] = Σₖ x[k]δ[n−k]</code> is <code>Σₖ x[k]h[n−k]</code> by linearity, and time-invariance is what lets you use the <em>same</em> <code>h</code> for every shifted impulse. Drop either assumption and the convolution sum is wrong.
+      </div>
+    </section>
+
+    <!-- ================= DIFFERENCE EQUATIONS ================= -->
+    <section class="topic" id="diff">
+      <h2><span class="kicker">2</span>Difference equations and recursion</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p2-2" data-progress="ch2-diff">
+        <label for="p2-2">I can compute the impulse response of a difference equation by recursion.
+          <span class="done-meta">and read causality and stability from it</span></label>
+      </div>
+
+      <div class="formula">
+        Σ<sub>k=0</sub><sup>M</sup> a<sub>k</sub> y[n−k] = Σ<sub>k=0</sub><sup>N</sup> b<sub>k</sub> x[n−k]
+        &nbsp;&nbsp;⇒&nbsp;&nbsp;
+        y[n] = −(1/a₀) Σ<sub>k=1</sub><sup>M</sup> a<sub>k</sub> y[n−k] + (1/a₀) Σ<sub>k=0</sub><sup>N</sup> b<sub>k</sub> x[n−k]
+      </div>
+
+      <p>Set the input to the impulse <code>x[n] = δ[n]</code> and the output becomes the impulse response <code>h[n]</code>. The recurrence is then</p>
+
+      <div class="formula">h[n] = −(1/a₀) Σ<sub>k=1</sub><sup>M</sup> a<sub>k</sub> h[n−k] &nbsp;+&nbsp; (b₀/a₀) δ[n] &nbsp;&nbsp; (n ≥ 0)</div>
+
+      <p>with <code>h[n] = 0</code> for <code>n &lt; 0</code>. The recursion is mechanical: at each step you only need earlier values.</p>
+
+      <div class="viz" id="viz-diff">
+        <div class="viz-head"><span class="vt">Difference-equation solver</span><span class="vh">impulse response, step response, and the recursion table</span></div>
+        <div class="viz-body"></div>
+      </div>
+
+      <details class="work">
+        <summary>Worked example · first-order system</summary>
+        <p><strong>System:</strong> <code>y[n] = ½ y[n−1] + x[n]</code>.</p>
+        <p><strong>Impulse response.</strong> Put <code>x[n] = δ[n]</code>:</p>
+        <div class="formula">h[n] = ½ h[n−1] + δ[n], &nbsp; h[−1] = 0</div>
+        <p><code>h[0] = ½·0 + 1 = 1</code>; <code>h[1] = ½·1 + 0 = ½</code>; <code>h[2] = ¼</code>; in general <code>h[n] = (½)ⁿu[n]</code>.</p>
+        <p><strong>Properties.</strong> <code>h[n] = 0</code> for <code>n &lt; 0</code> ⇒ <strong>causal</strong>. <code>Σₙ |h[n]| = 1/(1−½) = 2 &lt; ∞</code> ⇒ <strong>stable</strong>.</p>
+        <p><strong>Step response.</strong> With <code>x[n] = u[n]</code>, <code>y[n] = u[n]*h[n] = Σₖ₌₀ⁿ (½)ᵏ = 2(1 − (½)ⁿ⁺¹)</code>, which starts at 1 and settles at 2.</p>
+        <div class="tip"><strong>The pattern.</strong> A stable first-order system with a pole inside the unit circle has an impulse response that decays and a step response that settles to the DC gain <code>1/(1−a)</code>.</div>
+      </details>
+    </section>
+
+    <!-- ================= INTERCONNECTIONS ================= -->
+    <section class="topic" id="inter">
+      <h2><span class="kicker">3</span>Interconnections: cascade and parallel</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p2-3" data-progress="ch2-inter">
+        <label for="p2-3">I can write the overall impulse response of a cascade and of a parallel pair.
+          <span class="done-meta">Recitation 2, Exercise 3</span></label>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Interconnection</th><th>Impulse response</th><th>In the z-domain</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Cascade</strong> (h₁ then h₂)</td><td><code>h = h₁ * h₂</code></td><td><code>H(z) = H₁(z)H₂(z)</code></td></tr>
+            <tr><td><strong>Parallel</strong> (sum of outputs)</td><td><code>h = h₁ + h₂</code></td><td><code>H(z) = H₁(z) + H₂(z)</code></td></tr>
+            <tr><td><strong>Difference</strong> (subtract outputs)</td><td><code>h = h₁ − h₂</code></td><td><code>H(z) = H₁(z) − H₂(z)</code></td></tr>
+            <tr><td><strong>Feedback</strong> (h₁ forward, h₂ backward, gain g)</td><td><code>h = h₁ / (1 + g h₁h₂)</code></td><td><code>H = H₁/(1 + g H₁H₂)</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>Why the cascade is a convolution.</strong> The impulse enters the first system, which produces <code>h₁[n]</code>; that signal is the input to the second system, which produces <code>h₂ * h₁</code>. So the overall impulse response is <code>h₁ * h₂</code> — the order does not matter.
+      </div>
+
+      <div class="viz" id="viz-cascade">
+        <div class="viz-head"><span class="vt">Cascade explorer &amp; deconvolution</span><span class="vh">Recitation 2 Exercise 3 — recover h₂ from h₁ and the overall response</span></div>
+        <div class="viz-body"></div>
+      </div>
+    </section>
+
+    <!-- ================= DECONVOLUTION ================= -->
+    <section class="topic" id="deconv">
+      <h2><span class="kicker">4</span>Deconvolution</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p2-4" data-progress="ch2-deconv">
+        <label for="p2-4">I can recover a factor of a convolution when the other factor is known.
+          <span class="done-meta">Recitation 2 Ex 3 · this is the inverse of a system</span></label>
+      </div>
+
+      <p>Knowing <code>h = h₁ * h₂</code> and <code>h₁</code>, you can solve for <code>h₂</code>. Two ways:</p>
+
+      <ol class="clean">
+        <li><strong>Recursion.</strong> Write the convolution as an equation and solve it step by step. For <code>h₁[n] = δ[n] − δ[n−2]</code>:<br>
+        <code>h[n] = h₂[n] − h₂[n−2]</code> ⇒ <code>h₂[n] = h[n] + h₂[n−2]</code>, with <code>h₂[n] = 0</code> for <code>n &lt; 0</code>.</li>
+        <li><strong>Polynomial division in z.</strong> <code>H₂(z) = H(z)/H₁(z)</code>. Since <code>H₁(z) = 1 − z⁻²</code>, the division is a running sum with lag 2 — the same recursion in disguise.</li>
+      </ol>
+
+      <div class="warn">
+        <strong>Deconvolution needs care.</strong> The recursion <code>h₂[n] = h[n] + h₂[n−2]</code> has to be run for <em>every</em> residue class mod 2, and you must continue far enough to see the pattern settle. Stopping early is how you lose the last marks of the question.
+      </div>
+    </section>
+
+    <!-- ================= REALISATIONS ================= -->
+    <section class="topic" id="real">
+      <h2><span class="kicker">5</span>Realisations and the system function</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="p2-5" data-progress="ch2-real">
+        <label for="p2-5">I can draw direct-form and cascade realisations and read the poles off them.
+          <span class="done-meta">Chapter 5 continues this with the ROC</span></label>
+      </div>
+
+      <p>A difference equation is one description of a system; a <strong>block diagram</strong> is another. The professor's slides build the same system in three ways, and the exam may ask you to draw any of them:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Realisation</th><th>How it is drawn</th><th>What it shows</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Direct form I</strong></td><td>One delay chain per side of the equation</td><td>Everything at once, but many delays</td></tr>
+            <tr><td><strong>Direct form II (canonical)</strong></td><td>One shared delay chain</td><td>Fewest delays — M of them for order M</td></tr>
+            <tr><td><strong>Cascade</strong></td><td>One first-order section per pole</td><td>The poles sit at the section roots</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>What matters for the exam.</strong> The system function <code>H(z) = Y(z)/X(z)</code> is the polynomial ratio you get from the difference equation, and its roots are the poles. Chapter 5 adds the one thing that decides causality and stability: <strong>the region of convergence</strong>.
+      </div>
+    </section>
+
+    <!-- ================= EXAM ================= -->
+    <section class="topic" id="exam">
+      <h2><span class="kicker">6</span>Exam connections</h2>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <span class="tag">Chapter 1 ↔ Chapter 2</span>
+        <div class="q">An LTI system has impulse response <code>h[n] = δ[n] + δ[n−3]</code>. Is it causal? Is it stable?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">Causal and stable — h[n] is zero for n &lt; 0 and Σ|h[n]| = 2</button>
+          <button type="button" data-opt="b">Causal but not stable, because the impulse has infinite energy</button>
+          <button type="button" data-opt="c">Not causal, because the impulse is shifted</button>
+          <button type="button" data-opt="d">Stable but not causal</button>
+        </div>
+        <details><summary>Solution</summary>
+          <div class="sol"><strong>Causal and stable.</strong> Causality: <code>h[n] = 0</code> for all <code>n &lt; 0</code> ✓. Stability: a finite-length impulse response is automatically absolutely summable, <code>Σ|h[n]| = 1 + 1 = 2</code> ✓. This is the generalisation of 2023 True/False 1: <em>any</em> LTI system with a finite-duration impulse response is stable.</div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <span class="tag">Recitation 2 · Ex 4</span>
+        <div class="q">The impulse response is <code>h[n] = 2ⁿu[−n−1]</code>. Is the system causal? Is it stable?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">Causal and stable</button>
+          <button type="button" data-opt="b">Not causal, and stable</button>
+          <button type="button" data-opt="c">Not causal, and not stable</button>
+          <button type="button" data-opt="d">Causal, and not stable</button>
+        </div>
+        <details><summary>Solution</summary>
+          <div class="sol"><strong>Not causal, but stable.</strong> <code>h[n] ≠ 0</code> for <code>n ≤ −1</code> ⇒ non-causal. <code>Σₙ₌₋∞^(-1) 2ⁿ = 1</code> ⇒ the sum is finite ⇒ stable. <strong>Magnitude is what matters for stability, not the direction.</strong> A sequence can grow as <code>n → −∞</code> and still be stable if it shrinks fast enough — here 2ⁿ shrinks.</div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <span class="tag">Recitation 2 · Ex 3</span>
+        <div class="q">Cascade of three causal LTI systems: <code>h₁[n] = δ[n] − δ[n−2]</code> and the overall response has <code>h[0]=1, h[1]=5, h[2]=10, h[3]=11, h[4]=8, h[5]=4, h[6]=1</code>. What is <code>h₂[2]</code> if <code>h = h₁ * h₂</code>?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">10</button>
+          <button type="button" data-opt="b">11</button>
+          <button type="button" data-opt="c">11 — because h₂[n] = h[n] + h₂[n−2], so h₂[2] = 10 + h₂[0] = 10 + 1</button>
+          <button type="button" data-opt="d">5</button>
+        </div>
+        <details><summary>Solution</summary>
+          <div class="sol"><strong>11.</strong> <code>h[n] = h₂[n] − h₂[n−2]</code> ⇒ <code>h₂[n] = h[n] + h₂[n−2]</code>. So <code>h₂[0] = 1</code>, <code>h₂[1] = 5</code>, <code>h₂[2] = 10 + h₂[0] = 11</code>. Continuing: <code>h₂[3] = 11 + 5 = 16</code>, <code>h₂[4] = 8 + 11 = 19</code>, <code>h₂[5] = 4 + 16 = 20</code>, <code>h₂[6] = 1 + 19 = 20</code>, and it settles at 20.</div>
+        </details>
+      </div>
+
+      <div class="note" style="margin-top:24px">
+        <strong>Checklist.</strong> Be able to: (1) compute an impulse response from a difference equation by recursion; (2) state causality and stability from <code>h[n]</code> with the reason; (3) write the overall impulse response of a cascade and of a parallel pair; (4) run a deconvolution recursion to the point where the pattern settles.
+      </div>
+    </section>
+
+    <footer class="foot">
+      Next: <a href="ch3.html">Chapter 3 — DT Fourier Series</a> · back to <a href="ch0.html">the exam map</a>.
+    </footer>
+  </main>
+</div>
+<script src="js/viz-core.js"></script>
+<script src="js/app.js"></script>
+<script src="js/viz-ch2.js"></script>
+</body>
+</html>

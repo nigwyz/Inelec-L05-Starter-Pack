@@ -399,9 +399,9 @@ input:focus, select:focus, button:focus-visible, a:focus-visible {
 /* Stat cards */
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 20px 0; }
 .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
-.stat .k { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); font-weight: 750; }
-.stat .v { font-size: 1.5rem; font-weight: 800; color: var(--brand); line-height: 1.2; }
-.stat .s { font-size: .76rem; color: var(--ink-3); }
+.stat .k { display: block; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); font-weight: 750; }
+.stat .v { display: block; font-size: 1.5rem; font-weight: 800; color: var(--brand); line-height: 1.2; }
+.stat .s { display: block; font-size: .76rem; color: var(--ink-3); }
 
 /* Exam mapping pills */
 .pill { display: inline-block; font-size: .72rem; font-weight: 750; padding: 2px 8px; border-radius: 99px; background: var(--brand-soft); color: var(--brand); margin: 2px 3px 2px 0; white-space: nowrap; }
