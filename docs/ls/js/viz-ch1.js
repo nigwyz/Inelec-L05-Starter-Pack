@@ -64,6 +64,8 @@
     sliderRow("ω =", 0.1, 3.0, 0.05, "w");
     sliderRow("φ =", 0, 3.14, 0.05, "ph");
 
+    $("#sp-preset").value = state.preset;
+    $("#sp-op").value = state.op;
     $("#sp-preset").addEventListener("change", (e) => { state.preset = e.target.value; draw(); });
     $("#sp-op").addEventListener("change", (e) => { state.op = e.target.value; draw(); });
 

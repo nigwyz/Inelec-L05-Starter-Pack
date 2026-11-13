@@ -58,10 +58,11 @@
   const verdict = el("div", { class: "note", style: "margin-top:12px" });
   box.appendChild(verdict);
 
+  $("#dfs-n").value = state.N;
   $("#dfs-preset").addEventListener("change", (e) => {
     const p = PRESETS[e.target.value];
     state.N = p.N; state.a = p.a.map((z) => z.slice());
-    $("#dfs-n").value = p.N;
+    $("#dfs-n").value = String(p.N);
     draw();
   });
   $("#dfs-n").addEventListener("change", (e) => {

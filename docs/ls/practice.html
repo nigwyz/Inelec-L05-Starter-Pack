@@ -22,31 +22,497 @@
       <a href="ch4.html"><span class="num">04</span>DTFT &amp; DFT</a>
       <a href="ch5.html"><span class="num">05</span>Z-transform</a>
       <div class="nav-label">Practice</div>
-      <a href="practice.html"><span class="num">✎</span>Past-control practice</a>
+      <a href="practice.html" class="active"><span class="num">✎</span>Past-control practice</a>
       <a href="formulas.html"><span class="num">Σ</span>Formula sheet</a>
     </nav>
     <div class="progress-wrap">
-      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="progress-label"><span>Practice progress</span><span class="js-progress-text">0 / 0</span></div>
       <div class="bar"><i class="js-progress-bar"></i></div>
     </div>
   </aside>
+
   <main class="main">
     <header class="chapter-head">
-      <span class="eyebrow">Practice · in progress</span>
+      <span class="eyebrow">Practice · controls only</span>
       <h1>Past-Control Practice</h1>
+      <p class="lede">Every question below comes from a recovered control (2023 test, 2024–25 control) or from the make-up exam that followed it. Solutions are hidden until you try. Work on paper first — the control is written, not multiple choice.</p>
     </header>
-    <div class="note" style="margin-top:24px">
-      <strong>This page is being written right now.</strong> The chapter is already outlined and the worked
-      control-exam solutions are prepared; it is published in a moment. Everything you need for the
-      control is in <a href="ch1.html">Chapter 1</a>, <a href="ch2.html">Chapter 2</a> and
-      <a href="ch3.html">Chapter 3</a> — those are complete.
+
+    <div class="exam">
+      <strong>How to use this page.</strong> Do not read the solutions. Take one block, set a timer of 1 minute per mark, write the full answer including the test you used, then open the solution and mark yourself against it. The mark scheme is always the same: <em>test named → substitution written → verdict → plot</em>.
     </div>
-    <div class="tip">
-      <strong>While you wait.</strong> The exam map on <a href="ch0.html">the overview page</a> lists every
-      recovered control question with its marks. Start with Exercise 2 and Exercise 3 of the 2023 paper:
-      together they are 10.5 of the 20 marks.
+
+    <div class="toc">
+      <strong>Blocks</strong>
+      <ol>
+        <li><a href="#b1">Block 1 · System properties (2023 Ex 2, 2024–25 Ex 2)</a></li>
+        <li><a href="#b2">Block 2 · True / False (2023 Ex 1)</a></li>
+        <li><a href="#b3">Block 3 · Fourier series (2023 Ex 3, 2024–25 Ex 3)</a></li>
+        <li><a href="#b4">Block 4 · Convolution (2023 Ex 4, 2024–25 Ex 4)</a></li>
+        <li><a href="#b5">Block 5 · Coefficient manipulation (2023 Ex 5)</a></li>
+        <li><a href="#b6">Block 6 · Make-up exam (extra)</a></li>
+        <li><a href="#b7">Block 7 · Recitation drills 1–3</a></li>
+      </ol>
     </div>
-    <footer class="foot">Back to <a href="index.html">the start page</a> · <a href="ch0.html">the exam map</a>.</footer>
+
+    <!-- ================= BLOCK 1 ================= -->
+    <section class="topic" id="b1">
+      <h2><span class="kicker">1</span>System properties</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="q1" data-progress="practice-b1">
+        <label for="q1">I answered Block 1 closed-book and marked it against the solutions.
+          <span class="done-meta">15 minutes · 10.5 marks in the real papers</span></label>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <span class="tag">2023 control · Ex 2.1 (5.5 marks)</span>
+        <div class="q">For <code>y[n] = (n+1)x[n−1]</code>, which combination is correct?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">Linear, time-invariant, causal, stable</button>
+          <button type="button" data-opt="b">Linear, time-invariant, causal, unstable</button>
+          <button type="button" data-opt="c">Linear, time-varying, causal, unstable</button>
+          <button type="button" data-opt="d">Non-linear, time-varying, causal, unstable</button>
+        </div>
+        <details><summary>Full solution</summary>
+          <div class="sol">
+            <p><strong>Linearity.</strong> <code>T{ax₁+bx₂} = (n+1)(ax₁[n−1]+bx₂[n−1]) = a(n+1)x₁[n−1] + b(n+1)x₂[n−1] = a y₁[n] + b y₂[n]</code> ⇒ <strong>linear</strong>.</p>
+            <p><strong>Time-invariance.</strong> <code>T{x[n−n₀]} = (n+1)x[n−n₀−1]</code>, but <code>y[n−n₀] = (n−n₀+1)x[n−n₀−1]</code>. They differ by <code>n₀</code> ⇒ <strong>not time-invariant</strong>.</p>
+            <p><strong>Causality.</strong> Only <code>x[n−1]</code> is used ⇒ <strong>causal</strong>.</p>
+            <p><strong>Stability.</strong> <code>x[n] = e^{jn}</code> is bounded, but <code>|y[n]| = |n+1| → ∞</code> ⇒ <strong>not stable</strong>.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <span class="tag">2023 control · Ex 2.2 (part of 5.5 marks)</span>
+        <div class="q"><code>h[n] = (1/2)ⁿu[n] + 2ⁿu[−n−1]</code>. Which is true?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">Causal and stable</button>
+          <button type="button" data-opt="b">Not causal, stable (Σ|h| = 3)</button>
+          <button type="button" data-opt="c">Not causal, not stable</button>
+          <button type="button" data-opt="d">Causal, not stable</button>
+        </div>
+        <details><summary>Full solution</summary>
+          <div class="sol">
+            <p><strong>Causality.</strong> The term <code>2ⁿu[−n−1]</code> is non-zero for <code>n ≤ −1</code>, so <code>h[n] ≠ 0</code> for some <code>n &lt; 0</code> ⇒ <strong>not causal</strong>.</p>
+            <p><strong>Stability.</strong> <code>Σ|h[n]| = Σₙ₌₀^∞(1/2)ⁿ + Σₙ₌₋∞^(-1)2ⁿ = 2 + 1 = 3 &lt; ∞</code> ⇒ <strong>stable</strong>.</p>
+            <p class="muted">The anti-causal sum is finite because 2ⁿ <em>shrinks</em> as n → −∞.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="d">
+        <span class="tag">2024–25 control · Ex 2.1 (5 marks)</span>
+        <div class="q">For <code>y[n] = cos(π/10)·x[n−2]</code>, which combination is correct?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">Linear, time-varying, non-causal, stable</button>
+          <button type="button" data-opt="b">Linear, time-invariant, non-causal, unstable</button>
+          <button type="button" data-opt="c">Not linear, time-invariant, causal, stable</button>
+          <button type="button" data-opt="d">Linear, time-invariant, causal, stable (and has memory)</button>
+        </div>
+        <details><summary>Full solution</summary>
+          <div class="sol">
+            <p><strong>Linear</strong>: the gain is a constant, so superposition holds.</p>
+            <p><strong>Time-invariant</strong>: <code>T{x[n−n₀]} = cos(π/10)x[n−n₀−2] = y[n−n₀]</code> ✓.</p>
+            <p><strong>Causal</strong>: <code>x[n−2]</code> is a past sample ✓.</p>
+            <p><strong>Stable</strong>: <code>|y[n]| ≤ |cos(π/10)|·M ≤ M</code> ✓.</p>
+            <p><strong>Memoryless?</strong> No — it uses <code>x[n−2]</code>. The question did not ask, but this is the trap: the system is LTI and stable yet it has memory.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <span class="tag">Make-up exam · Ex 1 (3.5 marks)</span>
+        <div class="q"><code>y[n] = x[n] − x[n−2]</code>. Which set of answers is correct?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">Linear · not memoryless · time-invariant · stable</button>
+          <button type="button" data-opt="b">Linear · memoryless · time-invariant · stable</button>
+          <button type="button" data-opt="c">Not linear · memoryless · time-varying · unstable</button>
+          <button type="button" data-opt="d">Linear · not memoryless · time-varying · stable</button>
+        </div>
+        <details><summary>Full solution</summary>
+          <div class="sol">
+            <p><strong>Linear</strong>: superposition holds on both terms.</p>
+            <p><strong>Not memoryless</strong>: <code>y[n]</code> needs <code>x[n−2]</code>.</p>
+            <p><strong>Time-invariant</strong>: both shifts are fixed.</p>
+            <p><strong>Stable</strong>: <code>h[n] = δ[n] − δ[n−2]</code>, <code>Σ|h[n]| = 2 &lt; ∞</code>.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ================= BLOCK 2 ================= -->
+    <section class="topic" id="b2">
+      <h2><span class="kicker">2</span>True / False — 2023 Exercise 1</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="q2" data-progress="practice-b2">
+        <label for="q2">I justified each True/False statement in one line.
+          <span class="done-meta">2 marks · wrong answers count negatively</span></label>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Statement</th><th>Answer</th><th>One-line reason</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>1</td><td>An LTI system with a real finite-duration impulse response is always stable.</td>
+              <td><span class="pill good">TRUE</span></td>
+              <td>A finite sequence is absolutely summable: <code>Σ|h[n]|</code> is a finite sum of finite numbers.</td>
+            </tr>
+            <tr>
+              <td>2</td><td>The impulse response of a causal LTI system satisfies <code>Σ|h[n]|² &lt; ∞</code>.</td>
+              <td><span class="pill warm">FALSE</span></td>
+              <td>Causality only says <code>h[n] = 0</code> for <code>n &lt; 0</code>. <code>h[n] = u[n]</code> is causal and has infinite energy.</td>
+            </tr>
+            <tr>
+              <td>3</td><td>The output of an LTI system is always determined by the convolution sum.</td>
+              <td><span class="pill good">TRUE</span></td>
+              <td><code>y[n] = x[n]*h[n]</code> — that is the definition of an LTI system.</td>
+            </tr>
+            <tr>
+              <td>4</td><td>A real discrete-time periodic signal has real Fourier series coefficients.</td>
+              <td><span class="pill warm">FALSE</span></td>
+              <td>A real signal only forces <code>a₋ₖ = aₖ*</code>. Example: <code>cos(2πn/N + π/4)</code> has <code>a₁ = ½e^{−jπ/4}</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warn">
+        <strong>Negative marking.</strong> With 4 statements and −1 per wrong answer, a blind guess has expected value 0 but a systematic 50/50 guess loses marks. Only answer the ones you can justify.
+      </div>
+    </section>
+
+    <!-- ================= BLOCK 3 ================= -->
+    <section class="topic" id="b3">
+      <h2><span class="kicker">3</span>Fourier series — the 15-mark block</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="q3" data-progress="practice-b3">
+        <label for="q3">I synthesised x[n] from aₖ and applied Parseval, both years.
+          <span class="done-meta">15 minutes · 2023 Ex 3 · 2024–25 Ex 3</span></label>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <span class="tag">2023 control · Ex 3.1</span>
+        <div class="q">N = 5, <code>aₖ = jᵏ</code> for −1 ≤ k ≤ 1, <code>aₖ = −1</code> for k = ±2. Which is <code>x[n]</code>?</div>
+        <div class="opts">
+          <button type="button" data-opt="a"><code>x[n] = 1 − 2sin(2πn/5) − 2cos(4πn/5)</code></button>
+          <button type="button" data-opt="b"><code>x[n] = 1 + 2sin(2πn/5) + 2cos(4πn/5)</code></button>
+          <button type="button" data-opt="c"><code>x[n] = −1 + 2cos(2πn/5)</code></button>
+          <button type="button" data-opt="d"><code>x[n] = 5δ[n]</code></button>
+        </div>
+        <details><summary>Full solution</summary>
+          <div class="sol">
+            <p><strong>Move to 0…4:</strong> <code>a₀=1, a₁=j, a₂=−1, a₃=a₋₂=−1, a₄=a₋₁=−j</code>.</p>
+            <p><code>x[0] = 1 + j − 1 − 1 − j = −1</code>.</p>
+            <p>Pairing conjugates with θ = 2πn/5:</p>
+            <p><code>x[n] = 1 + j(e^{jθ} − e^{−jθ}) − (e^{j2θ} + e^{−j2θ}) = 1 − 2sinθ − 2cos2θ</code>.</p>
+            <p>Check: <code>x[0] = 1 − 0 − 2 = −1</code> ✓. Values over one period: <code>−1, 0.7159, −0.7936, 1.5575, 4.5201</code>.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <span class="tag">2023 control · Ex 3.2</span>
+        <div class="q">Same signal. <code>Σₙ₌₀⁴ |x[n]|² = ?</code></div>
+        <div class="opts">
+          <button type="button" data-opt="a">5</button>
+          <button type="button" data-opt="b">25</button>
+          <button type="button" data-opt="c">15</button>
+          <button type="button" data-opt="d">125</button>
+        </div>
+        <details><summary>Full solution</summary>
+          <div class="sol"><p><code>Σ|aₖ|² = |1|²+|j|²+|−1|²+|−1|²+|−j|² = 5</code>. Parseval: <code>Σ|x[n]|² = N·5 = 25</code>.</p></div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <span class="tag">2024–25 control · Ex 3.1</span>
+        <div class="q">N = 7, <code>a₀ = 0</code>, <code>a±₁ = 1</code>, <code>a±₂ = 2</code>, <code>a±₃ = 1</code>. Which is <code>x[n]</code>?</div>
+        <div class="opts">
+          <button type="button" data-opt="a"><code>2cos(2πn/7) + 2cos(4πn/7) + 2cos(6πn/7)</code></button>
+          <button type="button" data-opt="b"><code>cos(2πn/7) + 2cos(4πn/7) + cos(6πn/7)</code></button>
+          <button type="button" data-opt="c"><code>2cos(2πn/7) + 4cos(4πn/7) + 2cos(6πn/7)</code></button>
+          <button type="button" data-opt="d"><code>4cos(2πn/7) + 2cos(4πn/7) + 4cos(6πn/7)</code></button>
+        </div>
+        <details><summary>Full solution</summary>
+          <div class="sol">
+            <p>Real symmetric coefficients ⇒ pair <code>k</code> with <code>−k</code>:</p>
+            <p><code>x[n] = a₀ + Σₖ₌₁³ aₖ(e^{j2πkn/7} + e^{−j2πkn/7}) = 2a₁cos(2πn/7) + 2a₂cos(4πn/7) + 2a₃cos(6πn/7)</code></p>
+            <p><code>= 2cos(2πn/7) + 4cos(4πn/7) + 2cos(6πn/7)</code>.</p>
+            <p>Check: <code>x[0] = 8 = Σaₖ = 2(1+2+1)</code> ✓.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="d">
+        <span class="tag">2024–25 control · Ex 3.2</span>
+        <div class="q">Same signal. <code>Σₙ₌₀⁶ |x[n]|² = ?</code></div>
+        <div class="opts">
+          <button type="button" data-opt="a">12</button>
+          <button type="button" data-opt="b">42</button>
+          <button type="button" data-opt="c">84/7</button>
+          <button type="button" data-opt="d">84</button>
+        </div>
+        <details><summary>Full solution</summary>
+          <div class="sol"><p><code>Σ|aₖ|² = 0 + 2(1+4+1) = 12</code>. <code>Σ|x[n]|² = 7 × 12 = 84</code>.</p></div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <span class="tag">Make-up exam · Ex 2</span>
+        <div class="q">Periodic <code>x[n]</code> with <code>x[0]=1, x[±1]=0, x[±2]=0.5, x[±3]=1</code>. What is <code>a₀</code> (period N = 6)?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">1</button>
+          <button type="button" data-opt="b">0.5</button>
+          <button type="button" data-opt="c">2</button>
+          <button type="button" data-opt="d">1/6</button>
+        </div>
+        <details><summary>Full solution</summary>
+          <div class="sol">
+            <p><code>a₀ = (1/N)Σₙ x[n] = (1 + 0 + 0.5 + 1 + 0.5 + 0)/6 = 3/6 = 0.5</code>.</p>
+            <p>The other coefficients: <code>a₁ = −1/12</code>, <code>a₂ = 0.25</code>, <code>a₃ = 1/6</code>, <code>a₄ = 0.25</code>, <code>a₅ = −1/12</code> (all real, because x[n] is real and even).</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ================= BLOCK 4 ================= -->
+    <section class="topic" id="b4">
+      <h2><span class="kicker">4</span>Convolution</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="q4" data-progress="practice-b4">
+        <label for="q4">I computed both convolutions and drew both plots.
+          <span class="done-meta">10 marks across the two controls</span></label>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <span class="tag">2023 control · Ex 4 (5 marks)</span>
+        <div class="q"><code>x[n] = h[n] = u[n+20] − u[n−21]</code>. Which describes <code>y = x*h</code>?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">Rectangle of height 41 on [−40, 40]</button>
+          <button type="button" data-opt="b">Triangle of height 40 on [−41, 41]</button>
+          <button type="button" data-opt="c">Triangle of height 41 on [−40, 40], peak at n = 0</button>
+          <button type="button" data-opt="d">Triangle of height 81 on [−40, 40]</button>
+        </div>
+        <details><summary>Full solution</summary>
+          <div class="sol">
+            <p>Each sequence is 1 on <code>−20 ≤ n ≤ 20</code> (41 samples).</p>
+            <p>Support: <code>[−20,20] + [−20,20] = [−40,40]</code>.</p>
+            <p>Overlap count: <code>n+41</code> for <code>−40 ≤ n ≤ 0</code>, and <code>41−n</code> for <code>0 ≤ n ≤ 40</code>.</p>
+            <p>So <code>y</code> is a triangle starting at 1, rising to <strong>41 at n = 0</strong>, back to 1 at n = 40.</p>
+            <p class="muted">Plot: 81 samples, symmetric, peak equal to the length of one rectangle.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <span class="tag">2024–25 control · Ex 4 (5 marks)</span>
+        <div class="q"><code>x[n] = h[n] = (1/3)ⁿu[n]</code>. What is <code>y[n]</code>?</div>
+        <div class="opts">
+          <button type="button" data-opt="a"><code>(n+1)(1/3)ⁿu[n]</code></button>
+          <button type="button" data-opt="b"><code>(9/8)(1/3)ⁿu[n]</code></button>
+          <button type="button" data-opt="c"><code>(1/3)ⁿu[n]</code></button>
+          <button type="button" data-opt="d"><code>2(1/3)ⁿu[n] − δ[n]</code></button>
+        </div>
+        <details><summary>Full solution</summary>
+          <div class="sol">
+            <p>For <code>n ≥ 0</code>, the index k runs over <code>0 ≤ k ≤ n</code> — that is <code>n+1</code> terms, each equal to <code>(1/3)ⁿ</code>.</p>
+            <p><code>y[n] = (n+1)(1/3)ⁿ</code> for <code>n ≥ 0</code>, and 0 for <code>n &lt; 0</code>.</p>
+            <p>Values: 1, 2/3, 1/3, 4/27, … The maximum is <code>2/3</code> at <code>n = 1</code>.</p>
+            <p class="muted"><strong>Why (b) is wrong:</strong> it replaces a finite sum of length n+1 by an infinite geometric series. See the warning on the exam-map page.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <span class="tag">Make-up exam · Ex 3 (4 marks)</span>
+        <div class="q"><code>x[n]=u[n]</code>, <code>h[n]=(1/5)ⁿu[n]</code>. What is <code>y[n]</code> for n ≥ 0?</div>
+        <div class="opts">
+          <button type="button" data-opt="a"><code>(1/5)ⁿu[n]</code></button>
+          <button type="button" data-opt="b"><code>(5/4)(1 − (1/5)ⁿ⁺¹)u[n]</code></button>
+          <button type="button" data-opt="c"><code>(5/4)(1/5)ⁿu[n]</code></button>
+          <button type="button" data-opt="d"><code>(n+1)(1/5)ⁿu[n]</code></button>
+        </div>
+        <details><summary>Full solution — both methods</summary>
+          <div class="sol">
+            <p><strong>Time domain.</strong> <code>y[n] = Σₖ₌₀ⁿ (1/5)ⁿ⁻ᵏ = Σₘ₌₀ⁿ (1/5)ᵐ = (1 − (1/5)ⁿ⁺¹)/(1 − 1/5) = (5/4)(1 − (1/5)ⁿ⁺¹)</code>.</p>
+            <p><strong>Z-transform.</strong> <code>X(z) = 1/(1−z⁻¹)</code>, <code>H(z) = 1/(1−⅕z⁻¹)</code>, both with |z| &gt; 1.</p>
+            <p><code>Y(z) = 1/[(1−z⁻¹)(1−⅕z⁻¹)] = A/(1−z⁻¹) + B/(1−⅕z⁻¹)</code> with <code>A = 5/4</code>, <code>B = −5/4</code>.</p>
+            <p>So <code>y[n] = (5/4)u[n] − (5/4)(1/5)ⁿu[n]</code> — the same result. It settles at <code>5/4</code>, the DC gain.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ================= BLOCK 5 ================= -->
+    <section class="topic" id="b5">
+      <h2><span class="kicker">5</span>Coefficient manipulation</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="q5" data-progress="practice-b5">
+        <label for="q5">I can do the shift and modulation rules without recomputing the sum.
+          <span class="done-meta">2023 Ex 5 · make-up Ex 5</span></label>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="d">
+        <span class="tag">2023 control · Ex 5 (2.5 marks)</span>
+        <div class="q">N = 8, <code>aₖ = −a₈₋ₖ</code>, and <code>y[n] = ((4+(−1)ⁿ)/2)x[n−1]</code>. Which is the correct structure of <code>cₖ</code>?</div>
+        <div class="opts">
+          <button type="button" data-opt="a"><code>cₖ = 2aₖ</code></button>
+          <button type="button" data-opt="b"><code>cₖ = aₖe^{−j2πk/8}</code></button>
+          <button type="button" data-opt="c"><code>cₖ = 4aₖ + aₖ₋₄</code></button>
+          <button type="button" data-opt="d"><code>cₖ = e^{−j2πk/8}{2aₖ − ½aₖ₋₄}, indices mod 8</code></button>
+        </div>
+        <details><summary>Full solution</summary>
+          <div class="sol">
+            <p><code>(4+(−1)ⁿ)/2 = 2 + ½(−1)ⁿ</code>: a constant plus a modulation.</p>
+            <p>Shift: <code>x[n−1]</code> multiplies bin k by <code>e^{−j2πk/8}</code>.</p>
+            <p>Modulation by <code>(−1)ⁿ = e^{jπn}</code> shifts the spectrum by <code>N/2 = 4</code> bins.</p>
+            <p>So <code>cₖ = 2aₖe^{−j2πk/8} + ½aₖ₋₄e^{−j2π(k−4)/8}</code>. Since <code>e^{−j2π(k−4)/8} = −e^{−j2πk/8}</code>,</p>
+            <p><code>cₖ = e^{−j2πk/8}{2aₖ − ½aₖ₋₄}</code>, all indices mod 8.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <span class="tag">Make-up exam · Ex 5 (3 marks)</span>
+        <div class="q">N even. <code>x[n] − x[n+N/2]</code> equals which sum?</div>
+        <div class="opts">
+          <button type="button" data-opt="a"><code>2Σ_{k odd} aₖ e^{j2πkn/N}</code></button>
+          <button type="button" data-opt="b"><code>2Σ_{k even} aₖ e^{j2πkn/N}</code></button>
+          <button type="button" data-opt="c"><code>Σₖ aₖ e^{j2πkn/N}</code></button>
+          <button type="button" data-opt="d"><code>0</code></button>
+        </div>
+        <details><summary>Full solution</summary>
+          <div class="sol">
+            <p><code>x[n+N/2] = Σₖ aₖ e^{jπk}e^{j2πkn/N} = Σₖ aₖ(−1)ᵏe^{j2πkn/N}</code>.</p>
+            <p>Subtracting: the factor is <code>1−(−1)ᵏ</code>, which is 2 for odd k and 0 for even k ⇒ <code>2Σ_{k odd}</code>.</p>
+            <p>Adding gives <code>2Σ_{k even} aₖe^{j2πkn/N}</code>.</p>
+            <p>And <code>x*(−n)</code> has coefficients <code>aₖ*</code>.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ================= BLOCK 6 ================= -->
+    <section class="topic" id="b6">
+      <h2><span class="kicker">6</span>Make-up exam — the Z-transform questions</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="q6" data-progress="practice-b6">
+        <label for="q6">I found h[n] for the causal and the anti-causal case.
+          <span class="done-meta">make-up Ex 4 · the ROC is the whole question</span></label>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <span class="tag">Make-up exam · Ex 4 (4 marks)</span>
+        <div class="q"><code>H(z) = (2z⁻¹−1)/[(1−½z⁻¹)(1−⅓z⁻¹)]</code>. For the <strong>causal</strong> system, <code>h[n] = ?</code></div>
+        <div class="opts">
+          <button type="button" data-opt="a"><code>9(½)ⁿu[n] − 10(⅓)ⁿu[n]</code></button>
+          <button type="button" data-opt="b"><code>−9(½)ⁿu[n] + 10(⅓)ⁿu[n]</code></button>
+          <button type="button" data-opt="c"><code>9(½)ⁿu[−n−1] − 10(⅓)ⁿu[−n−1]</code></button>
+          <button type="button" data-opt="d"><code>10(½)ⁿu[n] − 9(⅓)ⁿu[n]</code></button>
+        </div>
+        <details><summary>Full solution</summary>
+          <div class="sol">
+            <p>Partial fractions: <code>H(z) = A/(1−½z⁻¹) + B/(1−⅓z⁻¹)</code>.</p>
+            <p><code>A(1−⅓z⁻¹) + B(1−½z⁻¹) = 2z⁻¹ − 1</code> gives <code>A+B = −1</code> and <code>A/3 + B/2 = −2</code>.</p>
+            <p>Solving: <code>A = 9</code>, <code>B = −10</code>. Check: <code>9 − 3z⁻¹ − 10 + 5z⁻¹ = −1 + 2z⁻¹</code> ✓.</p>
+            <p><strong>Causal</strong> (ROC |z| &gt; ½): <code>h[n] = 9(½)ⁿu[n] − 10(⅓)ⁿu[n]</code>.</p>
+            <p><strong>Anti-causal</strong> (ROC |z| &lt; ⅓): every term becomes left-sided: <code>h[n] = −9(½)ⁿu[−n−1] + 10(⅓)ⁿu[−n−1]</code>.</p>
+            <p class="muted">Notice the ROC decides which of the two answers is the right one. The algebra is identical; only the strip of convergence differs.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="warn">
+        <strong>The ROC is the answer.</strong> The same <code>H(z)</code> gives a decaying right-sided <code>h[n]</code> for the causal choice and a growing left-sided one for the anti-causal choice. Always write the ROC next to <code>H(z)</code> before inverting.
+      </div>
+    </section>
+
+    <!-- ================= BLOCK 7 ================= -->
+    <section class="topic" id="b7">
+      <h2><span class="kicker">7</span>Recitation drills 1–3</h2>
+
+      <div class="done-row">
+        <input type="checkbox" id="q7" data-progress="practice-b7">
+        <label for="q7">I worked the recitation 1–3 exercises that the control reuses.
+          <span class="done-meta">periodicity · energy/power · convolution · properties</span></label>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <span class="tag">Recitation 1 · Ex 1</span>
+        <div class="q">Is <code>x[n] = cos(2n)</code> periodic?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">Yes, with period 2π</button>
+          <button type="button" data-opt="b">Yes, with period 2</button>
+          <button type="button" data-opt="c">No — 2/(2π) is irrational</button>
+          <button type="button" data-opt="d">Yes, with period π</button>
+        </div>
+        <details><summary>Solution</summary>
+          <div class="sol"><p>We need <code>2(n+N) = 2n + 2πm</code>, i.e. <code>N = πm</code> for some integer m. Since π is irrational, no integer N works ⇒ <strong>not periodic</strong>. A discrete-time sinusoid is periodic only when its frequency is a rational multiple of 2π.</p></div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <span class="tag">Recitation 1 · Ex 2</span>
+        <div class="q">What type of signal is <code>x[n] = u[n]</code>, and what is its value?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">Energy signal, E = 1</button>
+          <button type="button" data-opt="b">Power signal, P = ½</button>
+          <button type="button" data-opt="c">Power signal, P = 1</button>
+          <button type="button" data-opt="d">Neither</button>
+        </div>
+        <details><summary>Solution</summary>
+          <div class="sol"><p><code>E = Σₙ₌₀^∞ 1 = ∞</code>, so it is not an energy signal. Its average power over <code>[0, M]</code> is <code>(M+1)/(2M+1) → ½</code>, so it is a <strong>power signal with P = ½</strong>.</p></div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <span class="tag">Recitation 2 · Ex 2</span>
+        <div class="q"><code>x[n] = δ[n−4]</code>, <code>h[n] = 2ⁿu[n−1]</code>. What is <code>y[n]</code>?</div>
+        <div class="opts">
+          <button type="button" data-opt="a"><code>2^{n−4}u[n−5]</code></button>
+          <button type="button" data-opt="b"><code>2ⁿu[n−1]</code></button>
+          <button type="button" data-opt="c"><code>2^{n+4}u[n+3]</code></button>
+          <button type="button" data-opt="d"><code>δ[n−4]·2ⁿ</code></button>
+        </div>
+        <details><summary>Solution</summary>
+          <div class="sol"><p>Convolution with a shifted impulse is a shift: <code>δ[n−4] * h[n] = h[n−4] = 2^{n−4}u[n−5]</code>.</p><p>The support check: <code>h</code> starts at <code>n = 1</code>, shifted by 4 ⇒ starts at <code>n = 5</code> ✓.</p></div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <span class="tag">Recitation 3 · the central idea</span>
+        <div class="q">You observe <code>T{δ[n]} = h[n]</code> and <code>T{δ[n−1]} = h[n−1]</code>. What does that prove?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">That the system is time-invariant</button>
+          <button type="button" data-opt="b">Nothing yet — two consistent pairs cannot prove time-invariance for every input and every shift</button>
+          <button type="button" data-opt="c">That the system is linear</button>
+          <button type="button" data-opt="d">That the impulse response is finite</button>
+        </div>
+        <details><summary>Solution</summary>
+          <div class="sol">
+            <p><strong>Nothing yet.</strong> Time-invariance is the statement <code>T{x[n−n₀]} = y[n−n₀]</code> for <em>every</em> input and <em>every</em> shift. Testing it on two impulses is consistent with time-invariance but cannot establish it.</p>
+            <p>What observations <em>can</em> do is <strong>disprove</strong> a property. If you observed <code>T{δ[n−1]} = h[n+1]</code> instead, that single pair would be enough to conclude the system is <strong>not</strong> time-invariant.</p>
+            <p>That asymmetry is the whole point of Recitation 3: a counter-example is a proof; a consistent example is not.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="tip" style="margin-top:20px">
+        <strong>The recitation 3 rule to remember.</strong> If the system is known to be time-invariant, then <code>T{x[n−n₀]} = y[n−n₀]</code> lets you predict outputs for shifted inputs. If it is known to be linear, <code>T{ax₁+bx₂} = ay₁+by₂</code> lets you predict outputs for combinations. If neither is known, you can only check consistency — never prove.
+      </div>
+    </section>
+
+    <footer class="foot">
+      Back to <a href="ch0.html">the exam map</a> · <a href="formulas.html">formula sheet</a> · <a href="ch1.html">Chapter 1</a>.
+    </footer>
   </main>
 </div>
 <script src="js/app.js"></script>

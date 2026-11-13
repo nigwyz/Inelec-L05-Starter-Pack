@@ -104,7 +104,7 @@
   /* ---------- axis frame ---------- */
   function frame(ctx, W, H, opts) {
     const o = opts || {};
-    const m = Object.assign({ l: 46, r: 14, t: 14, b: 30 }, o.margin || {});
+    const m = Object.assign({ l: 56, r: 14, t: 14, b: 30 }, o.margin || {});
     const pw = W - m.l - m.r, ph = H - m.t - m.b;
     const xMin = o.xMin, xMax = o.xMax, yMin = o.yMin, yMax = o.yMax;
     const sx = (x) => m.l + ((x - xMin) / (xMax - xMin)) * pw;
@@ -138,7 +138,7 @@
     yt.forEach((v) => { ctx.fillText(String(v), m.l - 6, sy(v)); });
     if (o.xlabel) { ctx.textAlign = "center"; ctx.fillStyle = "#46536b"; ctx.fillText(o.xlabel, m.l + pw / 2, H - 4); }
     if (o.ylabel) {
-      ctx.save(); ctx.translate(11, m.t + ph / 2); ctx.rotate(-Math.PI / 2);
+      ctx.save(); ctx.translate(13, m.t + ph / 2); ctx.rotate(-Math.PI / 2);
       ctx.textAlign = "center"; ctx.fillText(o.ylabel, 0, 0); ctx.restore();
     }
     return { sx, sy, m, pw, ph };

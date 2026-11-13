@@ -23,30 +23,327 @@
       <a href="ch5.html"><span class="num">05</span>Z-transform</a>
       <div class="nav-label">Practice</div>
       <a href="practice.html"><span class="num">✎</span>Past-control practice</a>
-      <a href="formulas.html"><span class="num">Σ</span>Formula sheet</a>
+      <a href="formulas.html" class="active"><span class="num">Σ</span>Formula sheet</a>
     </nav>
     <div class="progress-wrap">
-      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="progress-label"><span>Reference</span><span class="js-progress-text">0 / 0</span></div>
       <div class="bar"><i class="js-progress-bar"></i></div>
     </div>
   </aside>
+
   <main class="main">
     <header class="chapter-head">
-      <span class="eyebrow">Reference · in progress</span>
+      <span class="eyebrow">Reference</span>
       <h1>Formula Sheet</h1>
+      <p class="lede">Everything the control can ask for, on two screens. The shaded rows are the ones that appear most often in the past papers.</p>
     </header>
-    <div class="note" style="margin-top:24px">
-      <strong>This page is being written right now.</strong> The chapter is already outlined and the worked
-      control-exam solutions are prepared; it is published in a moment. Everything you need for the
-      control is in <a href="ch1.html">Chapter 1</a>, <a href="ch2.html">Chapter 2</a> and
-      <a href="ch3.html">Chapter 3</a> — those are complete.
+
+    <div class="toc">
+      <strong>On this page</strong>
+      <ol>
+        <li><a href="#signals">Signals</a></li>
+        <li><a href="#systems">Systems</a></li>
+        <li><a href="#conv">Convolution</a></li>
+        <li><a href="#dfs">Fourier series</a></li>
+        <li><a href="#dtft">DTFT</a></li>
+        <li><a href="#dft">DFT</a></li>
+        <li><a href="#z">Z-transform</a></li>
+        <li><a href="#inverse">Inverse Z-transform</a></li>
+      </ol>
     </div>
-    <div class="tip">
-      <strong>While you wait.</strong> The exam map on <a href="ch0.html">the overview page</a> lists every
-      recovered control question with its marks. Start with Exercise 2 and Exercise 3 of the 2023 paper:
-      together they are 10.5 of the 20 marks.
-    </div>
-    <footer class="foot">Back to <a href="index.html">the start page</a> · <a href="ch0.html">the exam map</a>.</footer>
+
+    <!-- ============ SIGNALS ============ -->
+    <section class="topic" id="signals">
+      <h2><span class="kicker">1</span>Signals</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Signal</th><th>Definition</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td>Impulse</td><td><code>δ[n] = 1</code> at n = 0, else 0</td><td><code>x[n]δ[n−n₀] = x[n₀]δ[n−n₀]</code></td></tr>
+            <tr><td>Unit step</td><td><code>u[n] = 1</code> for n ≥ 0</td><td><code>u[n] − u[n−1] = δ[n]</code></td></tr>
+            <tr><td>Anti-causal step</td><td><code>u[−n−1] = 1</code> for n ≤ −1</td><td>1 <em>before</em> zero, not at zero</td></tr>
+            <tr><td>Exponential</td><td><code>aⁿu[n]</code></td><td>decays if |a| &lt; 1</td></tr>
+            <tr><td>Sinusoid</td><td><code>A cos(ω₀n + φ)</code></td><td>periodic only if ω₀/2π ∈ ℚ</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="formula">
+        <span class="k">Energy</span> E = Σₙ |x[n]|² &nbsp;·&nbsp;
+        <span class="k">Power</span> P = lim<sub>N→∞</sub> (1/(2N+1)) Σₙ₌₋ᴺᴺ |x[n]|²
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Signal</th><th>Type</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td><code>δ[n]</code></td><td>energy</td><td>E = 1</td></tr>
+            <tr><td><code>aⁿu[n]</code>, |a| &lt; 1</td><td>energy</td><td>E = 1/(1−|a|²)</td></tr>
+            <tr><td><code>A cos(ω₀n+φ)</code></td><td>power</td><td>P = A²/2</td></tr>
+            <tr><td><code>u[n]</code></td><td>power</td><td>P = ½</td></tr>
+            <tr><td><code>A</code> (constant)</td><td>power</td><td>P = A²</td></tr>
+            <tr><td><code>aⁿu[n]</code>, |a| &gt; 1</td><td>neither</td><td>E = P = ∞</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ SYSTEMS ============ -->
+    <section class="topic" id="systems">
+      <h2><span class="kicker">2</span>Systems</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>Test</th><th>For LTI, in terms of h</th></tr></thead>
+          <tbody>
+            <tr><td>Linear</td><td><code>T{ax₁+bx₂} = aT{x₁}+bT{x₂}</code></td><td>—</td></tr>
+            <tr><td>Time-invariant</td><td><code>T{x[n−n₀]} = y[n−n₀]</code></td><td>—</td></tr>
+            <tr><td>Causal</td><td>output depends only on <code>k ≤ n</code></td><td><code>h[n] = 0</code> for <code>n &lt; 0</code></td></tr>
+            <tr><td>Stable (BIBO)</td><td>bounded in ⇒ bounded out</td><td><code>Σₙ |h[n]| &lt; ∞</code></td></tr>
+            <tr><td>Memoryless</td><td>output depends only on <code>x[n]</code></td><td><code>h[n] = Kδ[n]</code></td></tr>
+            <tr><td>Invertible</td><td>distinct inputs give distinct outputs</td><td><code>h*hᵢₙᵥ = δ</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>Interconnections.</strong> Cascade <code>h = h₁*h₂</code> (<code>H = H₁H₂</code>) · Parallel <code>h = h₁+h₂</code> (<code>H = H₁+H₂</code>) · Feedback <code>H = H₁/(1+H₁H₂)</code>.
+      </div>
+    </section>
+
+    <!-- ============ CONVOLUTION ============ -->
+    <section class="topic" id="conv">
+      <h2><span class="kicker">3</span>Convolution</h2>
+
+      <div class="formula">
+        <span class="k">y[n]</span> = Σₖ x[k]h[n−k] = Σₖ h[k]x[n−k]
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Rule</th><th>Statement</th></tr></thead>
+          <tbody>
+            <tr><td>Support</td><td><code>[n₁,n₂] * [m₁,m₂] = [n₁+m₁, n₂+m₂]</code></td></tr>
+            <tr><td>Length</td><td><code>L = L₁ + L₂ − 1</code></td></tr>
+            <tr><td>Impulse</td><td><code>x * δ[n−n₀] = x[n−n₀]</code></td></tr>
+            <tr><td>Step</td><td><code>x * u[n] = Σₖ₌₋∞ⁿ x[k]</code> (running sum)</td></tr>
+            <tr><td>Two rectangles</td><td>triangle (or trapezoid if lengths differ)</td></tr>
+            <tr><td>Two geometrics</td><td><code>(aⁿu[n])*(bⁿu[n]) = (aⁿ⁺¹−bⁿ⁺¹)/(a−b) u[n]</code> for a ≠ b</td></tr>
+            <tr><td>Equal geometrics</td><td><code>(aⁿu[n])*(aⁿu[n]) = (n+1)aⁿu[n]</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warn">
+        <strong>The “n+1 terms” rule.</strong> A convolution sum is always finite. If you find yourself summing an infinite geometric series, the number of overlapping terms is not what you think it is.
+      </div>
+    </section>
+
+    <!-- ============ DFS ============ -->
+    <section class="topic" id="dfs">
+      <h2><span class="kicker">4</span>Discrete Fourier series</h2>
+
+      <div class="formula">
+        <span class="k">Synthesis</span> x[n] = Σ<sub>k=0</sub><sup>N−1</sup> aₖ e<sup>j2πkn/N</sup>
+        &nbsp;&nbsp;·&nbsp;&nbsp;
+        <span class="k">Analysis</span> aₖ = (1/N) Σ<sub>n=0</sub><sup>N−1</sup> x[n] e<sup>−j2πkn/N</sup>
+      </div>
+
+      <div class="formula">
+        <span class="k">Parseval</span> Σ<sub>n=0</sub><sup>N−1</sup> |x[n]|² = N Σ<sub>k=0</sub><sup>N−1</sup> |aₖ|²
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>Time domain</th><th>Coefficients</th></tr></thead>
+          <tbody>
+            <tr><td>Linearity</td><td><code>αx[n] + βy[n]</code></td><td><code>αaₖ + βbₖ</code></td></tr>
+            <tr><td>Time shift</td><td><code>x[n−n₀]</code></td><td><code>aₖ e<sup>−j2πkn₀/N</sup></code></td></tr>
+            <tr><td>Frequency shift</td><td><code>x[n] e<sup>j2πk₀n/N</sup></code></td><td><code>aₖ₋ₖ₀</code></td></tr>
+            <tr><td>Modulation by (−1)ⁿ</td><td><code>x[n](−1)ⁿ</code></td><td><code>aₖ₋N/2</code></td></tr>
+            <tr><td>Time reversal</td><td><code>x[−n]</code></td><td><code>a₋ₖ</code></td></tr>
+            <tr><td>Conjugation</td><td><code>x*[n]</code></td><td><code>a₋ₖ*</code></td></tr>
+            <tr><td>Convolution</td><td><code>x[n] * y[n]</code> (periodic)</td><td><code>N aₖ bₖ</code></td></tr>
+            <tr><td>Multiplication</td><td><code>x[n]y[n]</code></td><td><code>Σₘ aₘbₖ₋ₘ</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tip">
+        <strong>Symmetry.</strong> Real <code>x[n]</code> ⇒ <code>a₋ₖ = aₖ*</code>. Real and even <code>x[n]</code> ⇒ <code>aₖ</code> real and even, so <code>x[n] = a₀ + 2Σₖ₌₁ aₖcos(2πkn/N)</code>. Real and odd ⇒ <code>aₖ</code> purely imaginary and odd.
+      </div>
+    </section>
+
+    <!-- ============ DTFT ============ -->
+    <section class="topic" id="dtft">
+      <h2><span class="kicker">5</span>DTFT</h2>
+
+      <div class="formula">
+        <span class="k">X(e<sup>jω</sup>)</span> = Σₙ x[n] e<sup>−jωn</sup>
+        &nbsp;&nbsp;·&nbsp;&nbsp;
+        <span class="k">x[n]</span> = (1/2π) ∫<sub>−π</sub><sup>π</sup> X(e<sup>jω</sup>) e<sup>jωn</sup> dω
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Signal</th><th>DTFT</th></tr></thead>
+          <tbody>
+            <tr><td><code>δ[n]</code></td><td>1</td></tr>
+            <tr><td><code>δ[n−n₀]</code></td><td><code>e^{−jωn₀}</code></td></tr>
+            <tr><td><code>aⁿu[n]</code>, |a| &lt; 1</td><td><code>1/(1−ae^{−jω})</code></td></tr>
+            <tr><td><code>u[n]</code></td><td><code>1/(1−e^{−jω}) + πδ(ω−2πk)</code></td></tr>
+            <tr><td><code>1</code> (DC)</td><td><code>2π Σₖ δ(ω−2πk)</code></td></tr>
+            <tr><td><code>cos(ω₀n)</code></td><td><code>π[δ(ω−ω₀)+δ(ω+ω₀)]</code> (periodised)</td></tr>
+            <tr><td>Rectangle of length L</td><td><code>sin(ωL/2)/sin(ω/2)</code> (Dirichlet)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>Time</th><th>Frequency</th></tr></thead>
+          <tbody>
+            <tr><td>Periodicity</td><td>—</td><td><code>X(e^{j(ω+2π)}) = X(e^{jω})</code></td></tr>
+            <tr><td>Shift</td><td><code>x[n−n₀]</code></td><td><code>e^{−jωn₀}X</code></td></tr>
+            <tr><td>Modulation</td><td><code>e^{jω₀n}x[n]</code></td><td><code>X(e^{j(ω−ω₀)})</code></td></tr>
+            <tr><td>Convolution</td><td><code>x*h</code></td><td><code>X·H</code></td></tr>
+            <tr><td>Multiplication</td><td><code>x·h</code></td><td><code>(1/2π)X ⊛ H</code></td></tr>
+            <tr><td>Parseval</td><td><code>Σ|x[n]|²</code></td><td><code>(1/2π)∫|X|²dω</code></td></tr>
+            <tr><td>Symmetry</td><td><code>x[n]</code> real</td><td><code>X(e^{−jω}) = X*(e^{jω})</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ DFT ============ -->
+    <section class="topic" id="dft">
+      <h2><span class="kicker">6</span>DFT</h2>
+
+      <div class="formula">
+        <span class="k">X[k]</span> = Σ<sub>n=0</sub><sup>N−1</sup> x[n] W<sub>N</sub><sup>kn</sup>, &nbsp;
+        <span class="k">x[n]</span> = (1/N) Σ<sub>k=0</sub><sup>N−1</sup> X[k] W<sub>N</sub><sup>−kn</sup>, &nbsp;
+        W<sub>N</sub> = e<sup>−j2π/N</sup>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Fact</th><th>Statement</th></tr></thead>
+          <tbody>
+            <tr><td>Relation to DFS</td><td><code>X[k] = N aₖ</code></td></tr>
+            <tr><td>Relation to DTFT</td><td><code>X[k] = X(e^{j2πk/N})</code> — samples of the DTFT at N points</td></tr>
+            <tr><td>Periodicity</td><td><code>X[k+N] = X[k]</code></td></tr>
+            <tr><td>Parseval</td><td><code>Σ|x[n]|² = (1/N)Σ|X[k]|²</code></td></tr>
+            <tr><td>Circular shift</td><td><code>x[(n−n₀) mod N] ↔ W<sub>N</sub><sup>kn₀</sup>X[k]</code></td></tr>
+            <tr><td>Circular convolution</td><td><code>x ⊛ h ↔ X[k]H[k]</code></td></tr>
+            <tr><td>Zero padding</td><td>more points in frequency, <em>same</em> continuous DTFT</td></tr>
+            <tr><td>Symmetry</td><td>real x ⇒ <code>X[N−k] = X*[k]</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>Radix-2 FFT.</strong> A length-<code>N = 2^m</code> DFT costs <code>N log₂N</code> complex multiplies instead of <code>N²</code>. The decimation-in-time butterfly is
+        <code>X = E + W<sub>N</sub><sup>k</sup>O</code>, <code>X' = E − W<sub>N</sub><sup>k</sup>O</code>, where E and O are the even- and odd-indexed sub-DFTs.
+      </div>
+    </section>
+
+    <!-- ============ Z ============ -->
+    <section class="topic" id="z">
+      <h2><span class="kicker">7</span>Z-transform</h2>
+
+      <div class="formula">
+        <span class="k">X(z)</span> = Σₙ x[n] z<sup>−n</sup> &nbsp;&nbsp;·&nbsp;&nbsp; ROC = the set of z where the sum converges
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Signal</th><th>X(z)</th><th>ROC</th></tr></thead>
+          <tbody>
+            <tr><td><code>δ[n]</code></td><td>1</td><td>all z</td></tr>
+            <tr><td><code>δ[n−n₀]</code></td><td><code>z^{−n₀}</code></td><td>all z (except 0 or ∞)</td></tr>
+            <tr><td><code>u[n]</code></td><td><code>1/(1−z⁻¹)</code></td><td>|z| &gt; 1</td></tr>
+            <tr><td><code>aⁿu[n]</code></td><td><code>1/(1−az⁻¹)</code></td><td>|z| &gt; |a|</td></tr>
+            <tr><td><code>−aⁿu[−n−1]</code></td><td><code>1/(1−az⁻¹)</code></td><td>|z| &lt; |a|</td></tr>
+            <tr><td><code>n aⁿu[n]</code></td><td><code>az⁻¹/(1−az⁻¹)²</code></td><td>|z| &gt; |a|</td></tr>
+            <tr><td><code>cos(ω₀n)u[n]</code></td><td><code>(1−z⁻¹cosω₀)/(1−2z⁻¹cosω₀+z⁻²)</code></td><td>|z| &gt; 1</td></tr>
+            <tr><td><code>sin(ω₀n)u[n]</code></td><td><code>z⁻¹sinω₀/(1−2z⁻¹cosω₀+z⁻²)</code></td><td>|z| &gt; 1</td></tr>
+            <tr><td>finite-length <code>x[n]</code></td><td>polynomial</td><td>all z except 0 and/or ∞</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>ROC rules — the exam-deciding part</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Signal type</th><th>ROC</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td>Right-sided (causal)</td><td>outside the largest pole: <code>|z| &gt; r</code></td><td><code>aⁿu[n]</code>: <code>|z| &gt; |a|</code></td></tr>
+            <tr><td>Left-sided (anti-causal)</td><td>inside the smallest pole: <code>|z| &lt; r</code></td><td><code>−aⁿu[−n−1]</code>: <code>|z| &lt; |a|</code></td></tr>
+            <tr><td>Two-sided</td><td>annulus <code>r₁ &lt; |z| &lt; r₂</code></td><td>sum of a causal and an anti-causal term</td></tr>
+            <tr><td>Finite length</td><td>whole plane (except 0/∞)</td><td><code>δ[n] − δ[n−3]</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>Time</th><th>z-domain</th></tr></thead>
+          <tbody>
+            <tr><td>Linearity</td><td><code>αx+βy</code></td><td><code>αX+βY</code></td></tr>
+            <tr><td>Shift</td><td><code>x[n−n₀]</code></td><td><code>z^{−n₀}X(z)</code></td></tr>
+            <tr><td>Scaling</td><td><code>aⁿx[n]</code></td><td><code>X(z/a)</code>, ROC scaled by |a|</td></tr>
+            <tr><td>Reversal</td><td><code>x[−n]</code></td><td><code>X(1/z)</code>, ROC inverted</td></tr>
+            <tr><td>Convolution</td><td><code>x*h</code></td><td><code>X(z)H(z)</code>, ROC ∩</td></tr>
+            <tr><td>Differentiation</td><td><code>n x[n]</code></td><td><code>−z dX/dz</code></td></tr>
+            <tr><td>Initial value</td><td><code>x[0]</code> (causal)</td><td><code>lim<sub>z→∞</sub> X(z)</code></td></tr>
+            <tr><td>Final value</td><td><code>lim x[n]</code> (causal, stable)</td><td><code>lim<sub>z→1</sub>(1−z⁻¹)X(z)</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="exam">
+        <strong>System function.</strong> <code>H(z) = Y(z)/X(z)</code>. Poles are the roots of the denominator, zeros the roots of the numerator.
+        <strong>Causal ⇔ ROC outside the outermost pole.</strong>
+        <strong>Stable ⇔ the ROC contains the unit circle.</strong>
+        <strong>Causal <em>and</em> stable ⇔ all poles strictly inside the unit circle.</strong>
+      </div>
+    </section>
+
+    <!-- ============ INVERSE ============ -->
+    <section class="topic" id="inverse">
+      <h2><span class="kicker">8</span>Inverse Z-transform</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Method</th><th>When to use it</th><th>How</th></tr></thead>
+          <tbody>
+            <tr><td>Table lookup</td><td>the transform is a standard pair</td><td>match the ROC too</td></tr>
+            <tr><td>Partial fractions</td><td>rational <code>H(z)</code> with simple poles</td><td>split into <code>A/(1−pz⁻¹)</code> terms, then invert each with its ROC</td></tr>
+            <tr><td>Power series</td><td><code>log</code>, <code>e^z</code>, non-rational</td><td>expand in <code>z⁻¹</code> (right-sided) or <code>z</code> (left-sided) and read the coefficients</td></tr>
+            <tr><td>Long division</td><td>to get the first few samples</td><td>divide numerator by denominator</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="formula">
+        <span class="k">Partial fractions</span> H(z) = Σ<sub>i</sub> A<sub>i</sub>/(1−p<sub>i</sub>z⁻¹) &nbsp;→&nbsp;
+        causal: A<sub>i</sub>p<sub>i</sub><sup>n</sup>u[n] &nbsp;·&nbsp;
+        anti-causal: −A<sub>i</sub>p<sub>i</sub><sup>n</sup>u[−n−1]
+      </div>
+
+      <div class="tip">
+        <strong>Check your answer.</strong> <code>h[0] = lim<sub>z→∞</sub>H(z)</code> for a causal system, and the ROC must contain the unit circle if the system is stable. If both fail, the partial fractions are wrong — not the ROC.
+      </div>
+
+      <div class="note" style="margin-top:22px">
+        <strong>What is not on this sheet.</strong> Chapter 6 (sampling and reconstruction) is not examined in the control, so it is not included. The DTFT↔DFS↔DFT relations are on the <a href="ch4.html">Chapter 4</a> page.
+      </div>
+    </section>
+
+    <footer class="foot">
+      Back to <a href="ch0.html">the exam map</a> · <a href="practice.html">past-control practice</a> · <a href="ch1.html">Chapter 1</a>.
+    </footer>
   </main>
 </div>
 <script src="js/app.js"></script>
