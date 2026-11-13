@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formula Sheet — EE361 EMF</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/emf.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Formula Sheet</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EMF Companion<small>EE361 · Electromagnetics</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch0.html"><span class="num">00</span>How it fits</a>
+      <a href="ch1.html"><span class="num">01</span>Vectors &amp; coordinates</a>
+      <a href="ch2.html"><span class="num">02</span>Vector calculus</a>
+      <a href="ch3.html"><span class="num">03</span>Electrostatics</a>
+      <a href="ch4.html"><span class="num">04</span>Magnetostatics</a>
+      <a href="ch5.html"><span class="num">05</span>Maxwell</a>
+      <a href="ch6.html"><span class="num">06</span>Plane waves</a>
+      <div class="nav-label">Exam prep</div>
+      <a href="formulas.html" class="active"><span class="num">Σ</span>Formula sheet</a>
+      <a href="practice.html"><span class="num">✎</span>Practice</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Exam prep · Reference</span>
+      <h1>Formula Sheet</h1>
+      <p class="lede">Every formula the course uses, grouped by chapter and by coordinate system. Search it, then close it and write the sheet from memory. The exam rewards recall plus one correct application, not recognition.</p>
+    </header>
+
+    <div class="formula-tools">
+      <input type="search" id="formula-search" placeholder="Search: divergence, spherical, skin depth, η, Gauss…" aria-label="Search formulas">
+      <span class="small muted" id="formula-count">—</span>
+      <a class="btn btn-sm btn-outline" href="ch1.html#diff-elements">Open the visual chapters</a>
+    </div>
+
+    <div class="toc">
+      <strong>Jump to</strong>
+      <ol>
+        <li><a href="#constants">Constants</a></li>
+        <li><a href="#ch1">Ch. 1 — vectors &amp; coordinates</a></li>
+        <li><a href="#ch2">Ch. 2 — vector calculus</a></li>
+        <li><a href="#ch3">Ch. 3 — electrostatics</a></li>
+        <li><a href="#ch4">Ch. 4 — magnetostatics</a></li>
+        <li><a href="#ch5">Ch. 5 — Maxwell</a></li>
+        <li><a href="#ch6">Ch. 6 — plane waves</a></li>
+      </ol>
+    </div>
+
+    <!-- ================= CONSTANTS ================= -->
+    <section class="formula-section" id="constants">
+      <h2>Constants and units</h2>
+      <div class="eqgrid">
+        <div class="eqcard" data-tags="epsilon permittivity free space">
+          <div class="tag">Constant</div><div class="name">Vacuum permittivity</div>
+          <div class="eq">ε₀ = 1/(36π) × 10⁻⁹ ≈ 8.854 × 10⁻¹² F/m</div>
+          <div class="why">Use 10⁻⁹/(36π) when the problem gives charges in nC: the 36π cancels the 4π.</div>
+        </div>
+        <div class="eqcard" data-tags="mu permeability free space">
+          <div class="tag">Constant</div><div class="name">Vacuum permeability</div>
+          <div class="eq">μ₀ = 4π × 10⁻⁷ H/m</div>
+          <div class="why">Then μ₀/(4π) = 10⁻⁷ exactly; this is why Biot–Savart arithmetic stays clean.</div>
+        </div>
+        <div class="eqcard" data-tags="speed light c">
+          <div class="tag">Constant</div><div class="name">Speed of light</div>
+          <div class="eq">c = 1/√(μ₀ε₀) ≈ 3 × 10⁸ m/s</div>
+        </div>
+        <div class="eqcard" data-tags="impedance free space eta 377">
+          <div class="tag">Constant</div><div class="name">Free-space impedance</div>
+          <div class="eq">η₀ = √(μ₀/ε₀) = 120π ≈ 377 Ω</div>
+        </div>
+        <div class="eqcard" data-tags="charge electron">
+          <div class="tag">Constant</div><div class="name">Elementary charge</div>
+          <div class="eq">e = 1.602 × 10⁻¹⁹ C</div>
+        </div>
+        <div class="eqcard" data-tags="units volt ampere tesla weber">
+          <div class="tag">Units</div><div class="name">What the answer should be</div>
+          <div class="eq">E: V/m · D: C/m² · B: T = Wb/m² · H: A/m · V: V · Q: C · F: N</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CH1 ================= -->
+    <section class="formula-section" id="ch1">
+      <h2>Chapter 1 — Vectors &amp; coordinate systems</h2>
+
+      <h3>Vector algebra</h3>
+      <div class="eqgrid">
+        <div class="eqcard" data-tags="unit vector magnitude">
+          <div class="tag">Definition</div><div class="name">Vector and unit vector</div>
+          <div class="eq">A = A â<sub>A</sub>, &nbsp; |â<sub>A</sub>| = 1</div>
+        </div>
+        <div class="eqcard" data-tags="dot product projection angle">
+          <div class="tag">Product</div><div class="name">Dot product</div>
+          <div class="eq">A·B = AB cosθ = A<sub>x</sub>B<sub>x</sub> + A<sub>y</sub>B<sub>y</sub> + A<sub>z</sub>B<sub>z</sub></div>
+          <div class="why">Scalar. Projection of B on A: B cosθ = A·B/A.</div>
+        </div>
+        <div class="eqcard" data-tags="cross product determinant area normal">
+          <div class="tag">Product</div><div class="name">Cross product</div>
+          <div class="eq">|A×B| = AB sinθ</div>
+          <div class="eq" style="font-family:var(--mono);font-size:.92rem">A×B = | x̂ ŷ ẑ ; A<sub>x</sub> A<sub>y</sub> A<sub>z</sub> ; B<sub>x</sub> B<sub>y</sub> B<sub>z</sub> |</div>
+          <div class="why">Vector. Direction by the right-hand rule; magnitude = parallelogram area.</div>
+        </div>
+        <div class="eqcard" data-tags="triple product scalar vector">
+          <div class="tag">Product</div><div class="name">Triple products</div>
+          <div class="eq">A·(B×C) = B·(C×A) = C·(A×B)</div>
+          <div class="eq">A×(B×C) = B(A·C) − C(A·B)</div>
+          <div class="why">Scalar triple = signed volume of the parallelepiped.</div>
+        </div>
+      </div>
+
+      <h3>Coordinates</h3>
+      <div class="eqgrid">
+        <div class="eqcard" data-tags="cartesian rectangular xyz">
+          <div class="tag">System</div><div class="name">Cartesian (x, y, z)</div>
+          <div class="eq">−∞ &lt; x,y,z &lt; +∞</div>
+          <div class="eq">r = x x̂ + y ŷ + z ẑ</div>
+          <div class="why">Use for boxes, planes, and general points with no symmetry.</div>
+        </div>
+        <div class="eqcard" data-tags="cylindrical rho phi z">
+          <div class="tag">System</div><div class="name">Cylindrical (ρ, φ, z)</div>
+          <div class="eq">0 ≤ ρ &lt; ∞, &nbsp; 0 ≤ φ &lt; 2π</div>
+          <div class="eq">ρ = √(x² + y²), &nbsp; φ = tan⁻¹(y/x), &nbsp; z = z</div>
+          <div class="eq">A = A<sub>ρ</sub> ρ̂ + A<sub>φ</sub> φ̂ + A<sub>z</sub> ẑ</div>
+          <div class="why">Use for wires, cylinders, and coaxial structures.</div>
+        </div>
+        <div class="eqcard" data-tags="spherical r theta phi">
+          <div class="tag">System</div><div class="name">Spherical (r, θ, φ)</div>
+          <div class="eq">0 ≤ r &lt; ∞, &nbsp; 0 ≤ θ ≤ π, &nbsp; 0 ≤ φ &lt; 2π</div>
+          <div class="eq">r = √(x² + y² + z²), &nbsp; θ = cos⁻¹(z/r)</div>
+          <div class="eq">A = A<sub>r</sub> r̂ + A<sub>θ</sub> θ̂ + A<sub>φ</sub> φ̂</div>
+          <div class="why">Use for point charges, spheres, and cones. θ is measured from +z, not from the xy-plane.</div>
+        </div>
+      </div>
+
+      <h3>Unit-vector transformations</h3>
+      <p class="small muted">The matrices below convert <em>components at the same point</em>. Evaluate the angles at that point first.</p>
+
+      <div class="eqgrid">
+        <div class="eqcard" data-tags="cylindrical to cartesian matrix">
+          <div class="tag">Matrix</div><div class="name">Cylindrical → Cartesian</div>
+          <div class="eq">A<sub>x</sub> = cosφ A<sub>ρ</sub> − sinφ A<sub>φ</sub><br>A<sub>y</sub> = sinφ A<sub>ρ</sub> + cosφ A<sub>φ</sub><br>A<sub>z</sub> = A<sub>z</sub></div>
+        </div>
+        <div class="eqcard" data-tags="cartesian to cylindrical matrix">
+          <div class="tag">Matrix</div><div class="name">Cartesian → Cylindrical</div>
+          <div class="eq">A<sub>ρ</sub> = cosφ A<sub>x</sub> + sinφ A<sub>y</sub><br>A<sub>φ</sub> = −sinφ A<sub>x</sub> + cosφ A<sub>y</sub><br>A<sub>z</sub> = A<sub>z</sub></div>
+        </div>
+        <div class="eqcard" data-tags="spherical to cartesian matrix">
+          <div class="tag">Matrix</div><div class="name">Spherical → Cartesian</div>
+          <div class="eq" style="font-size:.92rem">A<sub>x</sub> = sinθ cosφ A<sub>r</sub> + cosθ cosφ A<sub>θ</sub> − sinφ A<sub>φ</sub><br>A<sub>y</sub> = sinθ sinφ A<sub>r</sub> + cosθ sinφ A<sub>θ</sub> + cosφ A<sub>φ</sub><br>A<sub>z</sub> = cosθ A<sub>r</sub> − sinθ A<sub>θ</sub></div>
+        </div>
+        <div class="eqcard" data-tags="cartesian to spherical matrix">
+          <div class="tag">Matrix</div><div class="name">Cartesian → Spherical</div>
+          <div class="eq" style="font-size:.92rem">A<sub>r</sub> = sinθ cosφ A<sub>x</sub> + sinθ sinφ A<sub>y</sub> + cosθ A<sub>z</sub><br>A<sub>θ</sub> = cosθ cosφ A<sub>x</sub> + cosθ sinφ A<sub>y</sub> − sinθ A<sub>z</sub><br>A<sub>φ</sub> = −sinφ A<sub>x</sub> + cosφ A<sub>y</sub></div>
+        </div>
+        <div class="eqcard" data-tags="cylindrical spherical matrix">
+          <div class="tag">Matrix</div><div class="name">Cylindrical ↔ Spherical</div>
+          <div class="eq">A<sub>ρ</sub> = sinθ A<sub>r</sub> + cosθ A<sub>θ</sub><br>A<sub>φ</sub> = A<sub>φ</sub><br>A<sub>z</sub> = cosθ A<sub>r</sub> − sinθ A<sub>θ</sub></div>
+          <div class="eq">A<sub>r</sub> = sinθ A<sub>ρ</sub> + cosθ A<sub>z</sub><br>A<sub>θ</sub> = cosθ A<sub>ρ</sub> − sinθ A<sub>z</sub></div>
+        </div>
+      </div>
+
+      <h3>Differential elements</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>Cartesian</th><th>Cylindrical</th><th>Spherical</th></tr></thead>
+          <tbody>
+            <tr><td><strong>dl</strong></td><td>dx x̂ + dy ŷ + dz ẑ</td><td>dρ ρ̂ + ρdφ φ̂ + dz ẑ</td><td>dr r̂ + rdθ θ̂ + r sinθ dφ φ̂</td></tr>
+            <tr><td><strong>dv</strong></td><td>dx dy dz</td><td>ρ dρ dφ dz</td><td>r² sinθ dr dθ dφ</td></tr>
+            <tr><td><strong>dS<sub>x/ρ/r</sub></strong></td><td>dy dz x̂</td><td>ρ dφ dz ρ̂</td><td>r² sinθ dθ dφ r̂</td></tr>
+            <tr><td><strong>dS<sub>y/φ/θ</sub></strong></td><td>dx dz ŷ</td><td>dρ dz φ̂</td><td>r sinθ dr dφ θ̂</td></tr>
+            <tr><td><strong>dS<sub>z/φ</sub></strong></td><td>dx dy ẑ</td><td>ρ dρ dφ ẑ</td><td>r dr dθ φ̂</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warn"><strong>The metric-factor test.</strong> If a length is a coordinate step, multiply by the coefficient: <span class="mono">ρdφ</span> and <span class="mono">r sinθ dφ</span>. If it is a surface, multiply by the Jacobian: <span class="mono">ρ</span> or <span class="mono">r² sinθ</span>. Most lost marks are here.</div>
+    </section>
+
+    <!-- ================= CH2 ================= -->
+    <section class="formula-section" id="ch2">
+      <h2>Chapter 2 — Vector calculus</h2>
+
+      <h3>Integrals and operators</h3>
+      <div class="eqgrid">
+        <div class="eqcard" data-tags="line integral work circulation">
+          <div class="tag">Integral</div><div class="name">Line integral</div>
+          <div class="eq">∫<sub>C</sub> f dl, &nbsp; ∫<sub>C</sub> F·dl, &nbsp; ∫<sub>C</sub> F×dl</div>
+          <div class="why">F·dl is work/circulation; it is a scalar. On a closed path it is ∮.</div>
+        </div>
+        <div class="eqcard" data-tags="surface integral flux">
+          <div class="tag">Integral</div><div class="name">Surface integral</div>
+          <div class="eq">Φ = ∫<sub>S</sub> F·dS = ∫<sub>S</sub> F·n̂ dS</div>
+          <div class="why">Only the normal component contributes. On a closed surface, n̂ points outward.</div>
+        </div>
+        <div class="eqcard" data-tags="volume integral charge">
+          <div class="tag">Integral</div><div class="name">Volume integral</div>
+          <div class="eq">Q = ∫<sub>V</sub> ρ<sub>v</sub> dv</div>
+        </div>
+
+        <div class="eqcard" data-tags="gradient cartesian">
+          <div class="tag">Operator</div><div class="name">Gradient — Cartesian</div>
+          <div class="eq">∇f = (∂f/∂x)x̂ + (∂f/∂y)ŷ + (∂f/∂z)ẑ</div>
+        </div>
+        <div class="eqcard" data-tags="gradient cylindrical">
+          <div class="tag">Operator</div><div class="name">Gradient — cylindrical</div>
+          <div class="eq">∇f = (∂f/∂ρ)ρ̂ + (1/ρ)(∂f/∂φ)φ̂ + (∂f/∂z)ẑ</div>
+        </div>
+        <div class="eqcard" data-tags="gradient spherical">
+          <div class="tag">Operator</div><div class="name">Gradient — spherical</div>
+          <div class="eq">∇f = (∂f/∂r)r̂ + (1/r)(∂f/∂θ)θ̂ + (1/(r sinθ))(∂f/∂φ)φ̂</div>
+        </div>
+
+        <div class="eqcard" data-tags="divergence cartesian">
+          <div class="tag">Operator</div><div class="name">Divergence — Cartesian</div>
+          <div class="eq">∇·A = ∂A<sub>x</sub>/∂x + ∂A<sub>y</sub>/∂y + ∂A<sub>z</sub>/∂z</div>
+        </div>
+        <div class="eqcard" data-tags="divergence cylindrical">
+          <div class="tag">Operator</div><div class="name">Divergence — cylindrical</div>
+          <div class="eq">∇·A = (1/ρ)∂(ρA<sub>ρ</sub>)/∂ρ + (1/ρ)∂A<sub>φ</sub>/∂φ + ∂A<sub>z</sub>/∂z</div>
+        </div>
+        <div class="eqcard" data-tags="divergence spherical">
+          <div class="tag">Operator</div><div class="name">Divergence — spherical</div>
+          <div class="eq" style="font-size:.96rem">∇·A = (1/r²)∂(r²A<sub>r</sub>)/∂r + (1/(r sinθ))∂(sinθ A<sub>θ</sub>)/∂θ + (1/(r sinθ))∂A<sub>φ</sub>/∂φ</div>
+        </div>
+
+        <div class="eqcard" data-tags="curl cartesian">
+          <div class="tag">Operator</div><div class="name">Curl — Cartesian</div>
+          <div class="eq" style="font-family:var(--mono);font-size:.9rem">| x̂ ŷ ẑ ; ∂/∂x ∂/∂y ∂/∂z ; A<sub>x</sub> A<sub>y</sub> A<sub>z</sub> |</div>
+        </div>
+        <div class="eqcard" data-tags="curl cylindrical">
+          <div class="tag">Operator</div><div class="name">Curl — cylindrical</div>
+          <div class="eq" style="font-size:.93rem">[(1/ρ)∂A<sub>z</sub>/∂φ − ∂A<sub>φ</sub>/∂z]ρ̂<br>+ [∂A<sub>ρ</sub>/∂z − ∂A<sub>z</sub>/∂ρ]φ̂<br>+ (1/ρ)[∂(ρA<sub>φ</sub>)/∂ρ − ∂A<sub>ρ</sub>/∂φ]ẑ</div>
+        </div>
+        <div class="eqcard" data-tags="curl spherical">
+          <div class="tag">Operator</div><div class="name">Curl — spherical</div>
+          <div class="eq" style="font-size:.9rem">(1/(r sinθ))[∂(A<sub>φ</sub> sinθ)/∂θ − ∂A<sub>θ</sub>/∂φ]r̂<br>+ (1/r)[(1/sinθ)∂A<sub>r</sub>/∂φ − ∂(rA<sub>φ</sub>)/∂r]θ̂<br>+ (1/r)[∂(rA<sub>θ</sub>)/∂r − ∂A<sub>r</sub>/∂θ]φ̂</div>
+        </div>
+
+        <div class="eqcard" data-tags="laplacian scalar">
+          <div class="tag">Operator</div><div class="name">Laplacian ∇²f = ∇·∇f</div>
+          <div class="eq">Cartesian: ∂²f/∂x² + ∂²f/∂y² + ∂²f/∂z²</div>
+          <div class="eq">Cylindrical: (1/ρ)∂(ρ∂f/∂ρ)/∂ρ + (1/ρ²)∂²f/∂φ² + ∂²f/∂z²</div>
+          <div class="eq">Spherical: (1/r²)∂(r²∂f/∂r)/∂r + (1/(r²sinθ))∂(sinθ∂f/∂θ)/∂θ + (1/(r²sin²θ))∂²f/∂φ²</div>
+        </div>
+
+        <div class="eqcard" data-tags="divergence theorem gauss">
+          <div class="tag">Theorem</div><div class="name">Divergence theorem</div>
+          <div class="eq">∮<sub>S</sub> A·dS = ∫<sub>V</sub> (∇·A) dv</div>
+          <div class="why">Closed surface ↔ enclosed volume. The normal is outward.</div>
+        </div>
+        <div class="eqcard" data-tags="stokes theorem circulation">
+          <div class="tag">Theorem</div><div class="name">Stokes's theorem</div>
+          <div class="eq">∮<sub>C</sub> A·dl = ∫<sub>S</sub> (∇×A)·dS</div>
+          <div class="why">Closed loop ↔ any open surface bounded by it. Orientation by the right-hand rule.</div>
+        </div>
+        <div class="eqcard" data-tags="identities zero curl gradient">
+          <div class="tag">Identity</div><div class="name">Two identities worth memorizing</div>
+          <div class="eq">∇·(∇×A) = 0</div>
+          <div class="eq">∇×(∇f) = 0</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CH3 ================= -->
+    <section class="formula-section" id="ch3">
+      <h2>Chapter 3 — Electrostatics</h2>
+
+      <div class="eqgrid">
+        <div class="eqcard" data-tags="coulomb force point charge">
+          <div class="tag">Law</div><div class="name">Coulomb's law</div>
+          <div class="eq">F<sub>12</sub> = (1/(4πε₀)) (Q₁Q₂/R²) â<sub>12</sub></div>
+          <div class="eq">F = (1/(4πε₀)) Σ q<sub>i</sub>(r − r<sub>i</sub>)/|r − r<sub>i</sub>|³ · q</div>
+        </div>
+        <div class="eqcard" data-tags="electric field point charge">
+          <div class="tag">Field</div><div class="name">Electric field</div>
+          <div class="eq">E = F/q<sub>t</sub> = (1/(4πε₀)) (q/R²) â<sub>R</sub></div>
+          <div class="eq">E = (1/(4πε₀)) Σ q<sub>i</sub>(r − r<sub>i</sub>)/|r − r<sub>i</sub>|³</div>
+          <div class="why">Points away from +q, toward −q. Units V/m.</div>
+        </div>
+        <div class="eqcard" data-tags="charge distributions line surface volume">
+          <div class="tag">Sources</div><div class="name">Charge elements</div>
+          <div class="eq">dq = ρ<sub>l</sub> dl = ρ<sub>s</sub> dS = ρ<sub>v</sub> dv</div>
+          <div class="why">ρ<sub>l</sub>: C/m, ρ<sub>s</sub>: C/m², ρ<sub>v</sub>: C/m³.</div>
+        </div>
+        <div class="eqcard" data-tags="field distributions integral">
+          <div class="tag">Field</div><div class="name">E of a distribution</div>
+          <div class="eq" style="font-size:.94rem">E = (1/(4πε₀)) ∫ (ρ<sub>l</sub> dl′)(r − r′)/|r − r′|³</div>
+          <div class="eq" style="font-size:.94rem">E = (1/(4πε₀)) ∫ (ρ<sub>s</sub> dS′)(r − r′)/|r − r′|³</div>
+          <div class="eq" style="font-size:.94rem">E = (1/(4πε₀)) ∫ (ρ<sub>v</sub> dv′)(r − r′)/|r − r′|³</div>
+        </div>
+        <div class="eqcard" data-tags="flux density D epsilon">
+          <div class="tag">Field</div><div class="name">Electric flux density</div>
+          <div class="eq">D = εE = ε₀ε<sub>r</sub>E</div>
+          <div class="why">D is independent of the medium; E is not.</div>
+        </div>
+        <div class="eqcard" data-tags="gauss law integral differential">
+          <div class="tag">Law</div><div class="name">Gauss's law</div>
+          <div class="eq">∮<sub>S</sub> D·dS = Q<sub>enc</sub> = ∫<sub>V</sub> ρ<sub>v</sub> dv</div>
+          <div class="eq">∇·D = ρ<sub>v</sub></div>
+        </div>
+        <div class="eqcard" data-tags="potential voltage work">
+          <div class="tag">Potential</div><div class="name">Electric scalar potential</div>
+          <div class="eq">V<sub>AB</sub> = V<sub>A</sub> − V<sub>B</sub> = −∫<sub>B</sub><sup>A</sup> E·dl</div>
+          <div class="eq">E = −∇V</div>
+          <div class="eq">V = (1/(4πε₀)) q/R &nbsp; (point charge, V(∞)=0)</div>
+        </div>
+        <div class="eqcard" data-tags="potential distribution">
+          <div class="tag">Potential</div><div class="name">V of a distribution</div>
+          <div class="eq" style="font-size:.94rem">V = (1/(4πε₀)) ∫ ρ<sub>l</sub> dl′/|r − r′|</div>
+          <div class="eq" style="font-size:.94rem">V = (1/(4πε₀)) ∫ ρ<sub>s</sub> dS′/|r − r′|</div>
+          <div class="eq" style="font-size:.94rem">V = (1/(4πε₀)) ∫ ρ<sub>v</sub> dv′/|r − r′|</div>
+        </div>
+        <div class="eqcard" data-tags="ring charge axis field">
+          <div class="tag">Result</div><div class="name">Ring of charge, on axis</div>
+          <div class="eq">E<sub>z</sub> = Q z/(4πε₀(b² + z²)<sup>3/2</sup>)</div>
+          <div class="why">b is the ring radius; E=0 at the center and →Q/(4πε₀z²) far away.</div>
+        </div>
+        <div class="eqcard" data-tags="disk annular axis field">
+          <div class="tag">Result</div><div class="name">Annular disk, on axis</div>
+          <div class="eq">E<sub>z</sub> = (ρ<sub>s</sub>/(2ε₀))[z/√(a²+z²) − z/√(b²+z²)]</div>
+          <div class="why">a = inner radius, b = outer radius. For a full disk set a=0.</div>
+        </div>
+        <div class="eqcard" data-tags="line charge infinite semi-infinite">
+          <div class="tag">Result</div><div class="name">Line charge fields</div>
+          <div class="eq">Infinite line: E = ρ<sub>l</sub>/(2πε₀ρ) ρ̂</div>
+          <div class="eq">Semi-infinite, at the end: E = ρ<sub>l</sub>/(4πε₀z) ẑ</div>
+        </div>
+        <div class="eqcard" data-tags="energy density capacitor">
+          <div class="tag">Energy</div><div class="name">Electrostatic energy density</div>
+          <div class="eq">w<sub>e</sub> = ½ D·E = ½ εE²</div>
+          <div class="why">J/m³. Useful when the field is known everywhere.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CH4 ================= -->
+    <section class="formula-section" id="ch4">
+      <h2>Chapter 4 — Magnetostatics</h2>
+
+      <div class="eqgrid">
+        <div class="eqcard" data-tags="biot savart current element">
+          <div class="tag">Law</div><div class="name">Biot–Savart law</div>
+          <div class="eq">dB = (μ₀/4π)(I dl×â<sub>R</sub>)/R²</div>
+          <div class="eq">B = (μ₀/4π) ∫ I dl′×R/R³</div>
+          <div class="why">dl points with the current; R points from the element to P.</div>
+        </div>
+        <div class="eqcard" data-tags="infinite wire field">
+          <div class="tag">Result</div><div class="name">Infinite straight wire</div>
+          <div class="eq">B = μ₀I/(2πρ) φ̂</div>
+          <div class="eq">H = I/(2πρ) φ̂</div>
+          <div class="why">Concentric circles; right-hand rule with the thumb along I.</div>
+        </div>
+        <div class="eqcard" data-tags="finite wire field">
+          <div class="tag">Result</div><div class="name">Finite wire</div>
+          <div class="eq">B = (μ₀I/(4πρ))[b/√(ρ²+b²) − a/√(ρ²+a²)] φ̂</div>
+          <div class="why">a and b are the signed endpoints on the z-axis; let a→−∞, b→∞ for the infinite case.</div>
+        </div>
+        <div class="eqcard" data-tags="ampere law circulation">
+          <div class="tag">Law</div><div class="name">Ampère's circuital law</div>
+          <div class="eq">∮<sub>C</sub> H·dl = I<sub>enc</sub></div>
+          <div class="eq">∮<sub>C</sub> B·dl = μ₀I<sub>enc</sub></div>
+          <div class="eq">B = μH = μ₀μ<sub>r</sub>H</div>
+        </div>
+        <div class="eqcard" data-tags="solenoid toroid">
+          <div class="tag">Result</div><div class="name">Solenoid and toroid</div>
+          <div class="eq">Solenoid: B = μ₀ n I &nbsp; (n = N/L)</div>
+          <div class="eq">Toroid: B = μ₀NI/(2πρ)</div>
+        </div>
+        <div class="eqcard" data-tags="magnetic force charge current">
+          <div class="tag">Force</div><div class="name">Magnetic force</div>
+          <div class="eq">F = qv×B</div>
+          <div class="eq">F = I L×B</div>
+          <div class="eq">F = q(E + v×B) &nbsp; (Lorentz force)</div>
+          <div class="why">F is perpendicular to both v and B; it does no work on a free charge.</div>
+        </div>
+        <div class="eqcard" data-tags="parallel wires force">
+          <div class="tag">Force</div><div class="name">Two parallel wires</div>
+          <div class="eq">F/L = μ₀I₁I₂/(2πd)</div>
+          <div class="why">Same direction → attract; opposite → repel.</div>
+        </div>
+        <div class="eqcard" data-tags="magnetic flux gauss">
+          <div class="tag">Law</div><div class="name">Gauss's law for B</div>
+          <div class="eq">∮<sub>S</sub> B·dS = 0</div>
+          <div class="eq">∇·B = 0</div>
+          <div class="why">No magnetic monopoles; B lines close on themselves.</div>
+        </div>
+        <div class="eqcard" data-tags="magnetic energy density">
+          <div class="tag">Energy</div><div class="name">Magnetic energy density</div>
+          <div class="eq">w<sub>m</sub> = ½ B·H = ½ μH²</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CH5 ================= -->
+    <section class="formula-section" id="ch5">
+      <h2>Chapter 5 — Maxwell's equations</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Law</th><th>Integral form</th><th>Differential form</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>Gauss (E)</td><td>∮D·dS = Q<sub>enc</sub></td><td>∇·D = ρ<sub>v</sub></td><td>Charge is the source of D.</td></tr>
+            <tr><td>Gauss (B)</td><td>∮B·dS = 0</td><td>∇·B = 0</td><td>No magnetic monopoles.</td></tr>
+            <tr><td>Faraday</td><td>∮E·dl = −d/dt ∫B·dS</td><td>∇×E = −∂B/∂t</td><td>A changing B makes a circulating E.</td></tr>
+            <tr><td>Ampère–Maxwell</td><td>∮H·dl = ∫J<sub>c</sub>·dS + ∫(∂D/∂t)·dS</td><td>∇×H = J<sub>c</sub> + ∂D/∂t</td><td>Current and changing D make a circulating H.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="eqgrid" style="margin-top:16px">
+        <div class="eqcard" data-tags="displacement current">
+          <div class="tag">Current</div><div class="name">Displacement current density</div>
+          <div class="eq">J<sub>d</sub> = ∂D/∂t</div>
+          <div class="eq">I<sub>d</sub> = ∫ J<sub>d</sub>·dS = ε dΦ<sub>E</sub>/dt</div>
+        </div>
+        <div class="eqcard" data-tags="continuity charge conservation">
+          <div class="tag">Conservation</div><div class="name">Continuity equation</div>
+          <div class="eq">∇·J + ∂ρ<sub>v</sub>/∂t = 0</div>
+          <div class="eq">∮<sub>S</sub> J·dS = −dQ/dt</div>
+        </div>
+        <div class="eqcard" data-tags="constitutive relations">
+          <div class="tag">Material</div><div class="name">Constitutive relations</div>
+          <div class="eq">D = εE, &nbsp; B = μH, &nbsp; J = σE</div>
+        </div>
+        <div class="eqcard" data-tags="faraday induced emf">
+          <div class="tag">Faraday</div><div class="name">Induced emf</div>
+          <div class="eq">emf = ∮E·dl = −dΦ<sub>B</sub>/dt</div>
+          <div class="why">Lenz: the induced current opposes the change in flux.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CH6 ================= -->
+    <section class="formula-section" id="ch6">
+      <h2>Chapter 6 — Uniform plane waves</h2>
+
+      <div class="eqgrid">
+        <div class="eqcard" data-tags="free space wave number k">
+          <div class="tag">Free space</div><div class="name">Wave number</div>
+          <div class="eq">k₀ = ω√(μ₀ε₀) = ω/c = 2π/λ</div>
+        </div>
+        <div class="eqcard" data-tags="wavelength frequency period">
+          <div class="tag">Free space</div><div class="name">Wavelength and period</div>
+          <div class="eq">λ = 2π/k₀ = c/f</div>
+          <div class="eq">T = 1/f = 2π/ω</div>
+        </div>
+        <div class="eqcard" data-tags="impedance free space">
+          <div class="tag">Free space</div><div class="name">Intrinsic impedance</div>
+          <div class="eq">η₀ = E<sub>x</sub>/H<sub>y</sub> = √(μ₀/ε₀) = 120π ≈ 377 Ω</div>
+        </div>
+        <div class="eqcard" data-tags="plane wave E H">
+          <div class="tag">Free space</div><div class="name">Traveling wave</div>
+          <div class="eq">E<sub>x</sub> = E<sub>x0</sub> cos(ωt − k₀z)</div>
+          <div class="eq">H<sub>y</sub> = (E<sub>x0</sub>/η₀) cos(ωt − k₀z)</div>
+          <div class="eq">E = η₀ H × ẑ, &nbsp; H = (1/η₀) ẑ × E</div>
+        </div>
+        <div class="eqcard" data-tags="medium dielectric k eta">
+          <div class="tag">Medium</div><div class="name">General medium</div>
+          <div class="eq">k = ω√(με) = β − jα</div>
+          <div class="eq">η = √(μ/ε), &nbsp; v<sub>p</sub> = 1/√(με), &nbsp; λ = 2π/β</div>
+          <div class="eq">n = √(ε<sub>r</sub>μ<sub>r</sub>) &nbsp; (refractive index)</div>
+        </div>
+        <div class="eqcard" data-tags="loss tangent dielectric">
+          <div class="tag">Loss</div><div class="name">Loss tangent</div>
+          <div class="eq">tan δ = σ/(ωε)</div>
+          <div class="why">Small tanδ → good dielectric. Large tanδ → good conductor.</div>
+        </div>
+        <div class="eqcard" data-tags="good conductor skin depth">
+          <div class="tag">Conductor</div><div class="name">Good conductor</div>
+          <div class="eq">α = β = √(πfμσ)</div>
+          <div class="eq">δ = 1/α = 1/√(πfμσ)</div>
+          <div class="eq">η = (1+j)√(ωμ/(2σ)) = (1+j)/(σδ)</div>
+          <div class="why">Field falls by e<sup>−1</sup> in one skin depth (37%); 5δ → &lt;1%.</div>
+        </div>
+        <div class="eqcard" data-tags="good dielectric attenuation">
+          <div class="tag">Dielectric</div><div class="name">Low-loss dielectric</div>
+          <div class="eq">α ≈ (σ/2)√(μ/ε), &nbsp; β ≈ ω√(με)</div>
+          <div class="eq">η ≈ √(μ/ε)</div>
+        </div>
+        <div class="eqcard" data-tags="decibels neper attenuation">
+          <div class="tag">Units</div><div class="name">Attenuation conversion</div>
+          <div class="eq">1 Np = 8.686 dB</div>
+          <div class="eq">α<sub>dB/m</sub> = 8.686 α<sub>Np/m</sub></div>
+        </div>
+        <div class="eqcard" data-tags="polarization linear circular">
+          <div class="tag">Polarization</div><div class="name">How to identify it</div>
+          <div class="eq">Δφ = 0 or π → linear</div>
+          <div class="eq">Δφ = ±π/2 and equal amplitudes → circular</div>
+          <div class="eq">otherwise → elliptical</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="tip">
+      <strong>How to use this page.</strong> Do not read it top to bottom the night before. Pick one chapter, close the laptop, write its formulas on blank paper, then open this page and mark what you missed. Repeat only the misses.
+    </div>
+
+    <div class="done-row" style="margin-top:20px">
+      <input type="checkbox" id="p-formulas" data-progress="formulas-recall">
+      <label for="p-formulas">I have written the Chapter 1–3 formulas from memory and checked them here.
+        <span class="done-meta">Formula sheet · recall</span></label>
+    </div>
+
+    <footer class="foot">Formula sheet · EE361 EMF · Notation follows K. Djafri's lecture chapters. Constants and unit conventions are SI.</footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+<script>
+(function () {
+  const input = document.getElementById("formula-search");
+  const cards = Array.from(document.querySelectorAll(".eqcard"));
+  const count = document.getElementById("formula-count");
+  function apply() {
+    const q = input.value.trim().toLowerCase();
+    let shown = 0;
+    cards.forEach((c) => {
+      const hay = (c.textContent + " " + (c.dataset.tags || "")).toLowerCase();
+      const ok = !q || hay.includes(q);
+      c.classList.toggle("hide", !ok);
+      if (ok) shown++;
+    });
+    count.textContent = shown + " / " + cards.length + " formulas";
+  }
+  input.addEventListener("input", apply);
+  apply();
+})();
+</script>
+</body>
+</html>

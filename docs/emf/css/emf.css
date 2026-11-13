@@ -1,0 +1,102 @@
+/* ============================================================
+   EE361 EMF — additions on top of the EE321 design system
+   ============================================================ */
+
+.viz-svg { width: 100%; height: auto; display: block; }
+.viz-svg text { font-family: var(--sans); }
+
+/* Math without MathJax */
+.eq {
+  display: block; text-align: center;
+  font-family: "STIX Two Math", "Cambria Math", Georgia, "Times New Roman", "DejaVu Sans", serif;
+  font-size: 1.08rem; line-height: 1.9; color: var(--ink);
+  overflow-x: auto; padding: 2px 0;
+}
+var, .v {
+  font-family: "STIX Two Math", "Cambria Math", Georgia, "Times New Roman", "DejaVu Sans", serif;
+  font-style: italic;
+}
+.eqbox {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 16px; margin: 14px 0;
+  overflow-x: auto;
+}
+.eqbox .eq { font-size: 1.12rem; }
+.eq .hl { color: var(--brand); font-weight: 700; }
+.eq small { font-size: .72em; color: var(--ink-3); }
+/* Formula sheet */
+.formula-tools {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  margin: 18px 0 8px;
+}
+.formula-tools input { min-width: 220px; flex: 1 1 240px; }
+.formula-section { margin: 34px 0; }
+.formula-section > h2 { scroll-margin-top: 20px; }
+.eqgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; }
+.eqgrid > * { min-width: 0; }
+.eqcard {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 12px; padding: 12px 14px;
+  min-width: 0;
+}
+.eqcard .tag { font-size: .68rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--accent); }
+.eqcard .name { font-size: .82rem; font-weight: 700; color: var(--ink-2); margin-top: 2px; }
+.eqcard .eq { text-align: left; font-size: 1rem; line-height: 1.75; margin-top: 4px; }
+.eqcard .why { font-size: .76rem; color: var(--ink-3); margin-top: 4px; }
+.eqcard.hide { display: none; }
+
+/* Matrices */
+.mat {
+  display: inline-grid; gap: 2px 14px; vertical-align: middle;
+  padding: 0 6px; position: relative; text-align: center;
+}
+.mat::before, .mat::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 6px;
+  border: 1.5px solid var(--ink-2);
+}
+.mat::before { left: 0; border-right: 0; }
+.mat::after { right: 0; border-left: 0; }
+
+/* Coordinate / definition cards */
+.def {
+  border-left: 3px solid var(--brand-2);
+  padding: 2px 0 2px 14px; margin: 14px 0;
+}
+.def strong { color: var(--brand); }
+
+/* Small graph legends */
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: .78rem; color: var(--ink-2); margin-top: 8px; }
+.legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
+
+/* Three-column comparison */
+.compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+.compare .card { margin: 0; }
+
+/* Mini table inside visual */
+.mini-table { width: 100%; font-size: .8rem; }
+.mini-table th, .mini-table td { padding: 6px 8px; }
+
+/* Long practice problems */
+.problem .q { font-weight: 500; }
+.problem .q strong { font-weight: 750; }
+.problem .sol { font-size: .92rem; }
+.problem .sol p:last-child { margin-bottom: 0; }
+.problem .sol .eq { text-align: left; }
+.problem summary { font-size: .9rem; }
+
+/* Chapter map */
+.map-row { display: flex; gap: 12px; align-items: flex-start; margin: 10px 0; }
+.map-row .n {
+  flex: none; width: 30px; height: 30px; border-radius: 8px;
+  background: var(--brand-soft); color: var(--brand);
+  display: grid; place-items: center; font-weight: 800; font-size: .85rem;
+}
+.map-row .b { flex: 1; min-width: 0; }
+
+/* Print */
+@media print {
+  .formula-tools, .done-row { display: none !important; }
+  .eqcard { break-inside: avoid; }
+}

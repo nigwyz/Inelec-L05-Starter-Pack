@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 6 — Uniform Plane Waves | EE361 EMF</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/emf.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Ch. 6 — Plane waves</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EMF Companion<small>EE361 · Electromagnetics</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch0.html"><span class="num">00</span>How it fits</a>
+      <a href="ch1.html"><span class="num">01</span>Vectors &amp; coordinates</a>
+      <a href="ch2.html"><span class="num">02</span>Vector calculus</a>
+      <a href="ch3.html"><span class="num">03</span>Electrostatics</a>
+      <a href="ch4.html"><span class="num">04</span>Magnetostatics</a>
+      <a href="ch5.html"><span class="num">05</span>Maxwell</a>
+      <a href="ch6.html" class="active"><span class="num">06</span>Plane waves</a>
+      <div class="nav-label">Exam prep</div>
+      <a href="formulas.html"><span class="num">Σ</span>Formula sheet</a>
+      <a href="practice.html"><span class="num">✎</span>Practice</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Chapter 6 · Time-varying fields</span>
+      <h1>Uniform plane waves</h1>
+      <p class="lede">A uniform plane wave is what Maxwell’s equations look like when nothing depends on x or y: one direction of travel, E and H perpendicular to it and to each other, and a single ratio η that ties their amplitudes together. The 2020 final opens with exactly this object, so this chapter is built around one exam skill — read a phasor, extract β, λ, ε<sub>r</sub> and η, then rebuild the fields.</p>
+      <p class="small muted" style="margin-top:-8px"><strong>Notation.</strong> Vectors are bold (<b>E</b>, <b>H</b>, <b>k</b>); phasors carry the subscript <span class="mono">s</span> (<span class="mono">E<sub>s</sub></span>). η is the intrinsic impedance, not a coordinate.</p>
+    </header>
+
+    <div class="toc">
+      <strong>On this page</strong>
+      <ol>
+        <li><a href="#free-space">Free space</a></li>
+        <li><a href="#dielectrics">Dielectrics</a></li>
+        <li><a href="#conductors">Conductors</a></li>
+        <li><a href="#polarization">Polarization</a></li>
+        <li><a href="#check">Check yourself</a></li>
+      </ol>
+    </div>
+
+    <div class="exam">
+      <strong>The exam contract.</strong>
+      From <em>H<sub>s</sub></em> = H<sub>0</sub> e<sup>−jβ·r</sup> you must be able to do five moves:
+      (1) read β and the direction k̂;
+      (2) λ = 2π/β;
+      (3) n = βc/ω, then ε<sub>r</sub> = n²/μ<sub>r</sub>;
+      (4) η = η<sub>0</sub>√(μ<sub>r</sub>/ε<sub>r</sub>);
+      (5) E<sub>s</sub> = η H<sub>s</sub> × k̂.
+      The wave exercises in the 2020 final are variations on those five lines.
+      <a href="practice.html">Drill the pattern →</a>
+    </div>
+
+    <section class="topic" id="free-space">
+      <h2><span class="kicker">6.1</span>Free space: the wave Maxwell predicted</h2>
+
+      <p>Set ρ = 0 and J = 0. Faraday and Ampère become two coupled curls:</p>
+      <div class="eqbox">
+        <span class="eq">∇ × E = −μ<sub>0</sub> ∂H/∂t &nbsp;&nbsp;&nbsp; ∇ × H = ε<sub>0</sub> ∂E/∂t</span>
+      </div>
+
+      <p>Take the curl of Faraday’s law and substitute Ampère’s law into the right-hand side:</p>
+      <div class="eqbox">
+        <span class="eq">∇ × ∇ × E = −μ<sub>0</sub> ∂/∂t (∇ × H) = −μ<sub>0</sub>ε<sub>0</sub> ∂²E/∂t²</span><br>
+        <span class="eq">∇(∇·E) − ∇²E = −μ<sub>0</sub>ε<sub>0</sub> ∂²E/∂t²</span><br>
+        <span class="eq">∇²E = μ<sub>0</sub>ε<sub>0</sub> ∂²E/∂t² &nbsp;&nbsp;&nbsp; because ∇·E = 0</span>
+      </div>
+
+      <p>That is the <strong>wave equation</strong>: the Laplacian of E at a point is proportional to its acceleration in time. A shape that satisfies it travels without changing shape, at the speed fixed by the two constants. For a sinusoid, replace ∂/∂t by jω and ∂²/∂t² by −ω². The result is the <strong>vector Helmholtz equation</strong>:</p>
+
+      <div class="eqbox">
+        <span class="eq">∇²E<sub>s</sub> + k<sub>0</sub>² E<sub>s</sub> = 0</span><br>
+        <span class="eq">k<sub>0</sub> = ω√(μ<sub>0</sub>ε<sub>0</sub>) = ω/c</span>
+      </div>
+
+      <p><strong>What k<sub>0</sub> means.</strong> It is the <em>phase constant</em>: the number of radians of phase the wave accumulates per metre of travel. It is not a spring constant, and it is not 1/λ — one wavelength contains 2π radians, which is where the 2π in λ = 2π/k<sub>0</sub> comes from.</p>
+
+      <p><strong>Uniform</strong> means the fields do not depend on x or y, only on z. Then ∂²/∂x² = ∂²/∂y² = 0, and the vector equation collapses to a scalar one:</p>
+      <div class="eqbox">
+        <span class="eq">d²E<sub>xs</sub>/dz² + k<sub>0</sub>² E<sub>xs</sub> = 0</span><br>
+        <span class="eq">⟹ &nbsp; E<sub>xs</sub> = E<sub>x0</sub> e<sup>−jk<sub>0</sub>z</sup></span>
+      </div>
+
+      <p>Reinsert e<sup>jωt</sup> and take the real part. The forward-travelling solution is a cosine whose argument is ωt − k<sub>0</sub>z:</p>
+      <div class="eqbox">
+        <span class="eq">E<sub>x</sub> = E<sub>x0</sub> cos(ωt − k<sub>0</sub>z)</span><br>
+        <span class="eq">H<sub>y</sub> = (E<sub>x0</sub>/η<sub>0</sub>) cos(ωt − k<sub>0</sub>z)</span><br>
+        <span class="eq">η<sub>0</sub> = √(μ<sub>0</sub>/ε<sub>0</sub>) = 120π ≈ 377 Ω</span>
+      </div>
+
+      <p>H comes from Faraday’s law, not from a separate guess: −jk<sub>0</sub>E<sub>x0</sub>e<sup>−jk<sub>0</sub>z</sup> = −jωμ<sub>0</sub>H<sub>ys</sub>, so H<sub>ys</sub> = (k<sub>0</sub>/ωμ<sub>0</sub>)E<sub>xs</sub> = E<sub>xs</sub>/η<sub>0</sub>. The electric and magnetic fields are <strong>in phase</strong> in a lossless medium; their ratio is the real constant η<sub>0</sub>.</p>
+
+      <p>The animation labels the magnetic field B rather than H. In a nonmagnetic medium B = μ<sub>0</sub>H, so B has the same phase and the same waveform as H; only its amplitude scale differs.</p>
+
+      <div class="eqbox">
+        <span class="eq">λ = 2π/k<sub>0</sub> = c/f &nbsp;&nbsp;&nbsp; v<sub>p</sub> = ω/k<sub>0</sub> = 1/√(μ<sub>0</sub>ε<sub>0</sub>) = c &nbsp;&nbsp;&nbsp; T = 1/f</span>
+      </div>
+
+      <p><strong>Why the crest moves.</strong> Track a crest by holding the phase constant: ωt − k<sub>0</sub>z = constant. Differentiate with respect to t: ω − k<sub>0</sub>(dz/dt) = 0, so dz/dt = ω/k<sub>0</sub>. The pattern shifts by one λ every T, which is the same statement.</p>
+
+      <p><strong>The triad.</strong> E is along x, H is along y, and E × H points along +z — the direction of propagation. Reverse either field and the wave travels the other way. In a plane wave E, H and k̂ form a right-handed orthogonal set, which is the whole content of E<sub>s</sub> = η H<sub>s</sub> × k̂.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Traveling wave</span><span class="vh">E vertical, B into the page; pause to measure λ</span></div>
+        <div class="viz-body" data-viz="wave-anim"></div>
+      </div>
+
+      <h3>Worked example 6.1 — the 2020 final, recomputed</h3>
+      <div class="card">
+        <p><strong>Given.</strong> A uniform plane wave in a medium with μ<sub>r</sub> = 3 has</p>
+        <div class="eqbox"><span class="eq">H<sub>s</sub> = 30 e<sup>−j36πx</sup> ẑ &nbsp;mA/m</span></div>
+        <p>The paper’s header reads f = 300 MHz. Find β, λ, ε<sub>r</sub> and η, then rebuild E.</p>
+
+        <p><strong>1 · Read β and the direction.</strong> The exponent is −j36πx, so β = 36π rad/m and k̂ = +x̂. No computation yet; this is the single most common place to lose marks by “finding” β from f when it is already printed in the exponent.</p>
+
+        <p><strong>2 · Wavelength, always from β.</strong></p>
+        <div class="eqbox"><span class="eq">λ = 2π/β = 2π/(36π) = 1/18 m = 0.05556 m = 5.56 cm</span></div>
+
+        <p><strong>3 · Speed and refractive index.</strong> The official solution substitutes ω = 2π(900 MHz), so do that first:</p>
+        <div class="eqbox">
+          <span class="eq">ω = 2π × 9 × 10<sup>8</sup> = 5.655 × 10<sup>9</sup> rad/s</span><br>
+          <span class="eq">v<sub>p</sub> = ω/β = 5.655 × 10<sup>9</sup> / (36π) = 5.0 × 10<sup>7</sup> m/s</span><br>
+          <span class="eq">n = c/v<sub>p</sub> = 3 × 10<sup>8</sup> / 5.0 × 10<sup>7</sup> = 6</span>
+        </div>
+
+        <p><strong>4 · Permittivity.</strong> For a nonmagnetic-looking problem the trap is forgetting that n² = μ<sub>r</sub>ε<sub>r</sub>, not ε<sub>r</sub> alone:</p>
+        <div class="eqbox">
+          <span class="eq">μ<sub>r</sub>ε<sub>r</sub> = n² = 36 &nbsp;⟹&nbsp; ε<sub>r</sub> = 36/3 = 12</span>
+        </div>
+
+        <p><strong>5 · Intrinsic impedance.</strong></p>
+        <div class="eqbox">
+          <span class="eq">η = η<sub>0</sub>√(μ<sub>r</sub>/ε<sub>r</sub>) = 377√(3/12) = 377 × 0.5 = 188.5 Ω</span>
+        </div>
+
+        <p><strong>6 · Rebuild E.</strong> H is along ẑ and k̂ is along x̂, so ẑ × x̂ = ŷ:</p>
+        <div class="eqbox">
+          <span class="eq">E<sub>s</sub> = η H<sub>s</sub> × k̂ = 188.5 × 0.030 ŷ = 5.66 e<sup>−j36πx</sup> ŷ &nbsp;V/m</span>
+        </div>
+        <p>In the time domain: E<sub>y</sub>(x,t) = 5.66 cos(ωt − 36πx) V/m, with ω = 5.655 × 10<sup>9</sup> rad/s. E is along y, H is along z, and E × H points along +x — consistent with k̂.</p>
+      </div>
+
+      <div class="warn">
+        <strong>300 MHz or 900 MHz? This is the arithmetic to correct.</strong>
+        The scan’s header says 300 MHz, but the official line divides by 9 × 10<sup>8</sup> and every marked answer (ε<sub>r</sub> = 12, η = 188.5 Ω, λ = 5.56 cm) is the 900 MHz set. The next page of the same solution even writes ω = 2π × 900 MHz. At the printed 300 MHz:
+        ω = 1.885 × 10<sup>9</sup> rad/s,
+        v<sub>p</sub> = 1.667 × 10<sup>7</sup> m/s,
+        n = 18,
+        ε<sub>r</sub> = 324/3 = 108,
+        η = 377√(3/108) = 62.8 Ω.
+        λ is still 5.56 cm because β is given independently.
+        Keeping f = 300 MHz and forcing ε<sub>r</sub> = 12 would instead give β = 12π and λ = 16.7 cm; that set cannot produce the key’s 5.56 cm either.
+        <br><br>
+        <strong>Exam move:</strong> show the frequency you substitute. If the problem really says 300 MHz, the key’s ε<sub>r</sub> is wrong; if the key is right, the frequency is 900 MHz. Never silently mix them.
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Quantity</th><th>At 300 MHz</th><th>At 900 MHz (the key)</th></tr></thead>
+          <tbody>
+            <tr><td>ω</td><td>1.885 × 10<sup>9</sup> rad/s</td><td>5.655 × 10<sup>9</sup> rad/s</td></tr>
+            <tr><td>v<sub>p</sub> = ω/β</td><td>1.667 × 10<sup>7</sup> m/s</td><td>5.0 × 10<sup>7</sup> m/s</td></tr>
+            <tr><td>n = c/v<sub>p</sub></td><td>18</td><td>6</td></tr>
+            <tr><td>ε<sub>r</sub> = n²/μ<sub>r</sub></td><td>108</td><td>12</td></tr>
+            <tr><td>η = 377√(μ<sub>r</sub>/ε<sub>r</sub>)</td><td>62.8 Ω</td><td>188.5 Ω</td></tr>
+            <tr><td>λ = 2π/β</td><td>5.56 cm</td><td>5.56 cm</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>60-second drill</h3>
+      <p>At f = 150 MHz in free space, a wave has E<sub>x0</sub> = 50 V/m. Then ω = 2π(1.5 × 10<sup>8</sup>) = 9.425 × 10<sup>8</sup> rad/s, k<sub>0</sub> = ω/c = π rad/m, λ = 2π/π = 2 m, T = 1/f = 6.67 ns, H<sub>y0</sub> = 50/377 = 0.133 A/m. If you can produce that chain in under a minute, the free-space part is done.</p>
+
+      <div class="warn">
+        <strong>Common mistakes — free space.</strong>
+        <ul>
+          <li><strong>rad/s versus Hz.</strong> k = ω√(με) needs ω. At 300 MHz, ω = 1.885 × 10<sup>9</sup> rad/s and k<sub>0</sub> = 2π rad/m. Substituting f = 300 × 10<sup>6</sup> in place of ω gives k<sub>0</sub> = 1 rad/m and λ = 6.28 m — wrong by a factor of 2π.</li>
+          <li><strong>λ = 2π/β, not 1/β.</strong> β = 36π gives λ = 5.56 cm, not 1/(36π) = 8.84 mm.</li>
+          <li><strong>η is an amplitude ratio.</strong> E<sub>0</sub> = ηH<sub>0</sub>. If you need power density, S = ½ Re(E × H*) = E<sub>0</sub>²/(2η).</li>
+          <li><strong>Do not mix 377 and 120π mid-chain.</strong> Pick η<sub>0</sub> = 120π ≈ 376.99 Ω and keep it; rounding to 377 changes the third digit only.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="topic" id="dielectrics">
+      <h2><span class="kicker">6.2</span>Dielectrics: same wave, slower and shorter</h2>
+
+      <p>A perfect dielectric is free space with two dials: ε = ε<sub>0</sub>ε<sub>r</sub> and μ = μ<sub>0</sub>μ<sub>r</sub>. Maxwell’s equations do not change; only the constants do. The Helmholtz equation becomes ∇²E<sub>s</sub> + k²E<sub>s</sub> = 0 with</p>
+
+      <div class="eqbox">
+        <span class="eq">k = ω√(με) = k<sub>0</sub>√(ε<sub>r</sub>μ<sub>r</sub>)</span><br>
+        <span class="eq">η = √(μ/ε) = η<sub>0</sub>√(μ<sub>r</sub>/ε<sub>r</sub>)</span><br>
+        <span class="eq">v<sub>p</sub> = 1/√(με) = c/n &nbsp;&nbsp;&nbsp; λ = 2π/k = λ<sub>0</sub>/n &nbsp;&nbsp;&nbsp; n = √(ε<sub>r</sub>μ<sub>r</sub>)</span>
+      </div>
+
+      <p><strong>Intuition.</strong> The medium stores more energy per unit field, so the wave takes longer to hand the energy along: it slows down and its wavelength shrinks. The frequency does not change — the source sets it before the wave enters the medium. Since v = fλ, a smaller v at fixed f means a smaller λ. Everything scales by the single number n.</p>
+
+      <p>Most nonmagnetic media have μ<sub>r</sub> ≈ 1, so n ≈ √ε<sub>r</sub>. Glass with ε<sub>r</sub> = 4 has n = 2: half the speed, half the wavelength. Water with ε<sub>r</sub> = 81 has n = 9: one ninth of c.</p>
+
+      <p><strong>Real dielectrics are not perfect.</strong> A small conductivity adds loss, measured by the loss tangent tan δ = σ/(ωε) = ε″/ε′. Below 0.01 the medium is low-loss and the formulas above are accurate enough; above 100 it behaves as a good conductor (§6.3). The symbol δ is overloaded: here it is the loss angle, in §6.3 it is the skin depth.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Medium calculator</span><span class="vh">two stacked panels; move f, ε<sub>r</sub>, μ<sub>r</sub></span></div>
+        <div class="viz-body" data-viz="wave-params"></div>
+      </div>
+
+      <div class="exam">
+        <strong>The 2020-final inversion.</strong>
+        The exam gives β at a known f and asks for ε<sub>r</sub>. Rearrange the definition — do not start from η:
+        <span class="eq">n = βc/ω &nbsp;⟹&nbsp; ε<sub>r</sub> = n²/μ<sub>r</sub> = (βc/ω)²/μ<sub>r</sub></span>
+        The square is not optional. In the 2020 exercise, β = 36π rad/m at 900 MHz gives βc/ω = 6, n = 6, ε<sub>r</sub> = 36/3 = 12.
+        <a href="practice.html">Same pattern in practice →</a>
+      </div>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Impedance and matching</span><span class="vh">see where η equals 377 Ω</span></div>
+        <div class="viz-body" data-viz="impedance"></div>
+      </div>
+
+      <h3>Worked example 6.2 — polyethylene at 9.375 GHz</h3>
+      <div class="card">
+        <p><strong>Given.</strong> f = 9.375 GHz, ε<sub>r</sub> = 2.26, μ<sub>r</sub> = 1, E<sub>0</sub> = 500 V/m. Find β, λ, v<sub>p</sub>, η and H<sub>0</sub>.</p>
+
+        <p><strong>1 · Refractive index.</strong></p>
+        <div class="eqbox"><span class="eq">n = √(2.26 × 1) = 1.5033</span></div>
+
+        <p><strong>2 · Phase constant.</strong> Use either k = k<sub>0</sub>n or k = ω/v:</p>
+        <div class="eqbox">
+          <span class="eq">k<sub>0</sub> = 2πf/c = 2π(9.375 × 10<sup>9</sup>)/(3 × 10<sup>8</sup>) = 196.35 rad/m</span><br>
+          <span class="eq">β = k<sub>0</sub>n = 196.35 × 1.5033 = 295.2 rad/m</span>
+        </div>
+        <p>The lecture key writes “295 rad/s”. The number is right; the unit must be <strong>rad/m</strong>.</p>
+
+        <p><strong>3 · Wavelength and speed.</strong></p>
+        <div class="eqbox">
+          <span class="eq">λ = 2π/β = 2π/295.2 = 0.02129 m = 2.13 cm</span><br>
+          <span class="eq">v<sub>p</sub> = c/n = 3 × 10<sup>8</sup>/1.5033 = 1.996 × 10<sup>8</sup> m/s</span>
+        </div>
+
+        <p><strong>4 · Impedance.</strong></p>
+        <div class="eqbox"><span class="eq">η = η<sub>0</sub>/n = 376.99/1.5033 = 250.8 Ω</span></div>
+
+        <p><strong>5 · Magnetic amplitude.</strong></p>
+        <div class="eqbox"><span class="eq">H<sub>0</sub> = E<sub>0</sub>/η = 500/250.8 = 1.994 A/m</span></div>
+
+        <p><strong>Check.</strong> λ = v/f = 1.996 × 10<sup>8</sup>/9.375 × 10<sup>9</sup> = 2.13 cm. Both routes agree, so the 2π was not lost.</p>
+      </div>
+
+      <h3>Quick drill — 300 MHz in ε<sub>r</sub> = 4</h3>
+      <p>n = 2, v = 1.5 × 10<sup>8</sup> m/s, β = ω/v = (2π × 3 × 10<sup>8</sup>)/(1.5 × 10<sup>8</sup>) = 4π rad/m, λ = 0.5 m, η = 377/2 = 188.5 Ω. This is the same impedance as the 2020 final, but for a completely different reason: here μ<sub>r</sub> = 1 and ε<sub>r</sub> = 4; there μ<sub>r</sub> = 3 and ε<sub>r</sub> = 12. Both have μ<sub>r</sub>/ε<sub>r</sub> = 1/4.</p>
+
+      <div class="warn">
+        <strong>Common mistakes — dielectrics.</strong>
+        <ul>
+          <li><strong>k versus β.</strong> In a lossless dielectric k is real and equals β. In a conductor k is complex: with the course convention jk = α + jβ, k = β − jα. So β is the real part of k, and α is minus its imaginary part. Writing k = α + jβ instead of jk = α + jβ flips the sign of the attenuation.</li>
+          <li><strong>ε<sub>r</sub> versus ε.</strong> ε<sub>r</sub> = 2.26 is dimensionless; ε = 2.26ε<sub>0</sub> = 2.00 × 10<sup>−11</sup> F/m. Substitute the second into √(με), never the first.</li>
+          <li><strong>Missing square root.</strong> η = η<sub>0</sub>√(μ<sub>r</sub>/ε<sub>r</sub>), not η<sub>0</sub>(μ<sub>r</sub>/ε<sub>r</sub>). For ε<sub>r</sub> = 4 the answer is 188.5 Ω, not 94.2 Ω.</li>
+          <li><strong>Frequency is constant across the boundary.</strong> v and λ change by 1/n; f does not.</li>
+          <li><strong>n = √(ε<sub>r</sub>μ<sub>r</sub>), not ε<sub>r</sub>μ<sub>r</sub>.</strong> For the 2020 final, n² = 36, so n = 6.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="topic" id="conductors">
+      <h2><span class="kicker">6.3</span>Conductors: the wave dies by e<sup>−αz</sup></h2>
+
+      <p>A conductor is a dielectric with a leakage current J = σE. In phasor form, Ampère’s law is</p>
+      <div class="eqbox">
+        <span class="eq">∇ × H<sub>s</sub> = (σ + jωε)E<sub>s</sub> = jω(ε − jσ/ω)E<sub>s</sub></span>
+      </div>
+
+      <p>The real part σ is conduction current; the imaginary part ωε is displacement current. Their ratio decides which one dominates, and therefore which approximation you are allowed to use:</p>
+
+      <div class="eqbox">
+        <span class="eq">tan δ = σ/(ωε) = ε″/ε′</span><br>
+        <span class="eq">low-loss dielectric: tan δ &lt; 0.01 &nbsp;&nbsp;&nbsp; good conductor: tan δ ≫ 1 (the course uses &gt; 100)</span>
+      </div>
+
+      <p><strong>Why the wave decays.</strong> The conduction current heats the medium, so energy leaves the wave. Mathematically the propagation constant becomes complex. Write jk = α + jβ; then</p>
+      <div class="eqbox">
+        <span class="eq">E<sub>x</sub> = E<sub>x0</sub> e<sup>−αz</sup> cos(ωt − βz)</span>
+      </div>
+      <p>α is the attenuation constant in Np/m, β is the phase constant in rad/m. For a good conductor they turn out to be equal, and both are the reciprocal of the skin depth.</p>
+
+      <p><strong>Derivation in one line.</strong> With σ ≫ ωε, k² ≈ −jωμσ. Since √(−j) = (1 − j)/√2, k = (1 − j)√(ωμσ/2), hence jk = (1 + j)√(ωμσ/2) = (1 + j)√(πfμσ). Therefore</p>
+
+      <div class="eqbox">
+        <span class="eq">α = β = √(πfμσ)</span><br>
+        <span class="eq">δ = 1/α = 1/√(πfμσ)</span><br>
+        <span class="eq">η = (1 + j)√(ωμ/2σ) = (1 + j)/(σδ)</span><br>
+        <span class="eq">|η| = √(ωμ/σ) = √2/(σδ) &nbsp;&nbsp;&nbsp; ∠η = 45°</span>
+      </div>
+
+      <p><strong>Skin depth.</strong> At z = δ the field is e<sup>−1</sup> = 36.8% of its surface value; at 3δ it is 5.0%; at 5δ it is 0.67%, i.e. below 1%. That is why a conductor looks like a surface to a high-frequency wave: almost all the current is in the first few δ.</p>
+
+      <div class="eqbox">
+        <span class="eq">1 Np = 20 log<sub>10</sub>(e) dB = 8.686 dB</span>
+      </div>
+
+      <p>Because αδ = 1, <strong>every</strong> good conductor loses 8.686 dB of field amplitude per skin depth, whatever the material or frequency. That constant is worth memorising; it turns a δ calculation into a dB budget instantly. Power decays as e<sup>−2αz</sup>, so it loses 17.37 dB per δ.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Skin depth</span><span class="vh">pick a metal or sea water; slide the frequency</span></div>
+        <div class="viz-body" data-viz="skin-depth"></div>
+      </div>
+
+      <h3>Worked example 6.3 — sea water at five frequencies</h3>
+      <div class="card">
+        <p><strong>Given.</strong> σ = 4 S/m, ε<sub>r</sub> = 80, μ<sub>r</sub> = 1. Find δ and the depth at which the field falls to 10<sup>−3</sup> of its surface value.</p>
+
+        <p><strong>1 · Check the good-conductor condition at 1 kHz.</strong></p>
+        <div class="eqbox">
+          <span class="eq">σ/(ωε) = 4/(2π × 10<sup>3</sup> × 80 × 8.854 × 10<sup>−12</sup>) = 4/(4.45 × 10<sup>−6</sup>) = 8.99 × 10<sup>5</sup></span>
+        </div>
+        <p>Far greater than 1, so the approximation is excellent.</p>
+
+        <p><strong>2 · Skin depth at 1 kHz.</strong></p>
+        <div class="eqbox">
+          <span class="eq">πfμσ = π(10<sup>3</sup>)(4π × 10<sup>−7</sup>)(4) = 1.579 × 10<sup>−2</sup></span><br>
+          <span class="eq">δ = 1/√(1.579 × 10<sup>−2</sup>) = 1/0.1257 = 7.96 m</span>
+        </div>
+
+        <p><strong>3 · Attenuation and the 10<sup>−3</sup> depth.</strong></p>
+        <div class="eqbox">
+          <span class="eq">α = 1/δ = 0.1257 Np/m &nbsp;&nbsp; (×8.686 = 1.09 dB/m)</span><br>
+          <span class="eq">d = δ ln(10<sup>3</sup>) = 7.96 × 6.908 = 55.0 m</span>
+        </div>
+
+        <p><strong>4 · Repeat at higher f.</strong> δ ∝ 1/√f, so each ×100 in frequency divides δ by 10:</p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>f</th><th>Skin depth (m)</th><th>Attenuation (Np/m)</th><th>Attenuation (dB/m)</th><th>Depth for 10<sup>−3</sup> (m)</th></tr></thead>
+          <tbody>
+            <tr><td>1 kHz</td><td>7.96 m</td><td>0.126</td><td>1.09</td><td>55.0 m</td></tr>
+            <tr><td>10 kHz</td><td>2.52 m</td><td>0.397</td><td>3.45</td><td>17.4 m</td></tr>
+            <tr><td>100 kHz</td><td>0.796 m</td><td>1.257</td><td>10.9</td><td>5.50 m</td></tr>
+            <tr><td>1 MHz</td><td>0.252 m</td><td>3.97</td><td>34.5</td><td>1.74 m</td></tr>
+            <tr><td>10 MHz</td><td>0.0796 m</td><td>12.57</td><td>109</td><td>0.550 m</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>One rigor check.</strong> At 10 MHz the loss tangent is σ/(ωε) = 90, just below the course’s “&gt; 100” rule. The last row is therefore an estimate, but 90 is still large enough that the good-conductor formulas are within a few percent. At 1 GHz the same water has σ/(ωε) ≈ 0.9 and the approximation fails completely — that is why the frequency slider flags it.</p>
+
+      <p><strong>Impedance check at 1 MHz.</strong> |η| = √(ωμ/σ) = √(2π × 10<sup>6</sup> × 4π × 10<sup>−7</sup>/4) = 1.405 Ω, so η = 0.993 + j0.993 Ω. It is complex, with a 45° angle — not a real 1.4 Ω.</p>
+
+      <h3>Worked example 6.4 — copper at 60 Hz and 1 MHz</h3>
+      <div class="card">
+        <p><strong>Given.</strong> σ = 5.8 × 10<sup>7</sup> S/m, μ<sub>r</sub> = 1.</p>
+        <div class="eqbox">
+          <span class="eq">60 Hz: &nbsp; δ = 1/√(π × 60 × 4π × 10<sup>−7</sup> × 5.8 × 10<sup>7</sup>) = 8.53 mm</span><br>
+          <span class="eq">1 MHz: &nbsp; δ = 8.53 mm/√(10<sup>6</sup>/60) = 66.1 µm</span>
+        </div>
+        <p><strong>Attenuation.</strong> α = 1/δ: 117 Np/m at 60 Hz, 1.51 × 10<sup>4</sup> Np/m at 1 MHz. In dB: 1.02 dB/mm at 60 Hz, 131 dB/mm at 1 MHz.</p>
+        <p><strong>Impedance at 1 MHz.</strong> 1/(σδ) = 1/(5.8 × 10<sup>7</sup> × 6.61 × 10<sup>−5</sup>) = 2.61 × 10<sup>−4</sup> Ω, so η = (1 + j)2.61 × 10<sup>−4</sup> Ω, magnitude 3.69 × 10<sup>−4</sup> Ω. Tiny, as a good conductor should be.</p>
+        <p><strong>Why the two frequencies differ.</strong> δ ∝ f<sup>−1/2</sup>: a 16,667-fold increase in f shrinks δ by √16,667 ≈ 129. The 1 MHz wave lives in a layer thinner than a human hair, which is why RF current hugs the surface.</p>
+      </div>
+
+      <div class="exam">
+        <strong>2020 final link — Exercise 2.</strong>
+        The same 10 kHz sea-water calculation drives the submarine-depth part of the paper: compute δ, then invert E = E<sub>0</sub>e<sup>−z/δ</sup> to get z = δ ln(E<sub>0</sub>/E). The 2024–25 control does not contain waves, so the 2020 final is your best template for this section.
+        <a href="practice.html">Work the conductor set →</a>
+      </div>
+
+      <h3>Three media at a glance</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Quantity</th><th>Free space</th><th>Perfect dielectric</th><th>Good conductor</th></tr></thead>
+          <tbody>
+            <tr><td>α</td><td>0</td><td>0</td><td>1/δ = √(πfμσ)</td></tr>
+            <tr><td>β</td><td>k<sub>0</sub> = ω/c</td><td>ω√(με) = k<sub>0</sub>n</td><td>1/δ = √(πfμσ)</td></tr>
+            <tr><td>η</td><td>377 Ω</td><td>η<sub>0</sub>√(μ<sub>r</sub>/ε<sub>r</sub>)</td><td>(1 + j)/(σδ)</td></tr>
+            <tr><td>v<sub>p</sub></td><td>c</td><td>c/n</td><td>2√(πf/(μσ))</td></tr>
+            <tr><td>λ</td><td>c/f</td><td>λ<sub>0</sub>/n</td><td>2πδ</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The good-conductor column is the one to sanity-check first: α and β are equal, λ shrinks to a few δ, and η is complex at 45°. If your answer has a real η in that column, you have lost the phase.</p>
+
+      <div class="warn">
+        <strong>Common mistakes — conductors.</strong>
+        <ul>
+          <li><strong>The square root in δ.</strong> δ = 1/√(πfμσ), not 1/(πfμσ). Doubling f shrinks δ by √2, not by 2.</li>
+          <li><strong>η is complex, not real.</strong> η = (1 + j)/(σδ) has magnitude √2/(σδ) and angle +45°. Its real part is |η|/√2. Writing “η = 1.4 Ω” for sea water at 1 MHz loses the phase.</li>
+          <li><strong>α = β only for a good conductor.</strong> Do not carry that equality back to a low-loss dielectric, where α ≈ 0 and β = ω√(με).</li>
+          <li><strong>Np versus dB.</strong> e<sup>−1</sup> = 0.368 is −8.686 dB, not −1 dB. If a problem asks for dB, multiply α by 8.686.</li>
+          <li><strong>ε<sub>r</sub> does not belong in the good-conductor formula.</strong> δ = 1/√(πfμσ) contains σ and μ only. That is not a mistake in the formula; it is the physics — the displacement current is negligible.</li>
+          <li><strong>Check the approximation.</strong> At 1 GHz, sea water has σ/(ωε) ≈ 0.9, so it is no longer a good conductor and the simple δ formula is only indicative.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="topic" id="polarization">
+      <h2><span class="kicker">6.4</span>Polarization: the path of the E tip</h2>
+
+      <p>Polarization is the curve traced by the tip of E at a fixed z as time runs. For a wave travelling along +z, allow both transverse components and a phase on each:</p>
+
+      <div class="eqbox">
+        <span class="eq">E<sub>s</sub> = (E<sub>x0</sub>e<sup>jφ<sub>x</sub></sup> x̂ + E<sub>y0</sub>e<sup>jφ<sub>y</sub></sup> ŷ) e<sup>−jkz</sup></span><br>
+        <span class="eq">E<sub>x</sub> = E<sub>x0</sub> cos(ωt − kz + φ<sub>x</sub>) &nbsp;&nbsp; E<sub>y</sub> = E<sub>y0</sub> cos(ωt − kz + φ<sub>y</sub>)</span>
+      </div>
+
+      <p>Only the <strong>difference</strong> Δφ = φ<sub>y</sub> − φ<sub>x</sub> changes the shape. Adding the same phase to both components merely shifts the whole pattern in time.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Phase difference</th><th>Amplitudes</th><th>Polarization</th></tr></thead>
+          <tbody>
+            <tr><td>0° or 180°</td><td>any</td><td>Linear. The tip stays on a straight line; the slope is ±E<sub>y0</sub>/E<sub>x0</sub>.</td></tr>
+            <tr><td>+90°</td><td>E<sub>x0</sub> = E<sub>y0</sub></td><td>Left-hand circular (IEEE, e<sup>jωt</sup>: E × ∂E/∂t is opposite k).</td></tr>
+            <tr><td>−90°</td><td>E<sub>x0</sub> = E<sub>y0</sub></td><td>Right-hand circular (same convention: E × ∂E/∂t along k).</td></tr>
+            <tr><td>±90°</td><td>unequal</td><td>Ellipse with its axes along x and y.</td></tr>
+            <tr><td>anything else</td><td>any</td><td>Ellipse tilted relative to the axes.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>How to identify it from the phasor in ten seconds.</strong></p>
+      <ol>
+        <li>Write both coefficients in polar form. If one component is missing, the wave is linear along the other axis.</li>
+        <li>Compare the magnitudes. Equal magnitudes are <em>necessary</em> for circular, but not sufficient.</li>
+        <li>Compare the phases. 0 or 180° means linear; ±90° with equal magnitudes means circular; everything else is elliptical.</li>
+      </ol>
+
+      <svg class="viz-svg" viewBox="0 0 720 230" role="img" aria-label="Three polarization traces: linear, circular and elliptical">
+        <g stroke="#c3ccdc" stroke-width="1.2">
+          <line x1="55" y1="115" x2="185" y2="115"></line>
+          <line x1="120" y1="50" x2="120" y2="180"></line>
+          <line x1="295" y1="115" x2="425" y2="115"></line>
+          <line x1="360" y1="50" x2="360" y2="180"></line>
+          <line x1="535" y1="115" x2="665" y2="115"></line>
+          <line x1="600" y1="50" x2="600" y2="180"></line>
+        </g>
+        <line x1="84" y1="151" x2="156" y2="79" stroke="#2c4b9b" stroke-width="2.6" stroke-linecap="round"></line>
+        <circle cx="360" cy="115" r="34" fill="none" stroke="#2c4b9b" stroke-width="2.6"></circle>
+        <ellipse cx="600" cy="115" rx="48" ry="22" fill="none" stroke="#2c4b9b" stroke-width="2.6" transform="rotate(-20 600 115)"></ellipse>
+        <text x="120" y="207" text-anchor="middle" font-size="12" font-weight="700" fill="#46536b">Linear</text>
+        <text x="120" y="223" text-anchor="middle" font-size="11" fill="#8794aa">Δφ = 0° or 180°</text>
+        <text x="360" y="207" text-anchor="middle" font-size="12" font-weight="700" fill="#46536b">Circular</text>
+        <text x="360" y="223" text-anchor="middle" font-size="11" fill="#8794aa">Δφ = ±90°, equal amplitudes</text>
+        <text x="600" y="207" text-anchor="middle" font-size="12" font-weight="700" fill="#46536b">Elliptical</text>
+        <text x="600" y="223" text-anchor="middle" font-size="11" fill="#8794aa">every other case</text>
+        <text x="126" y="52" font-size="11" fill="#46536b">y</text>
+        <text x="188" y="119" font-size="11" fill="#46536b">x</text>
+        <text x="366" y="52" font-size="11" fill="#46536b">y</text>
+        <text x="428" y="119" font-size="11" fill="#46536b">x</text>
+        <text x="606" y="52" font-size="11" fill="#46536b">y</text>
+        <text x="668" y="119" font-size="11" fill="#46536b">x</text>
+      </svg>
+
+      <p><strong>Handedness, stated once.</strong> We use e<sup>jωt</sup>. The unambiguous test is the rotation vector E × ∂E/∂t: if it points along +k, the wave is right-hand circular; if it points along −k, left-hand. For Δφ = +90°, the tip starts at +x and moves toward −y, so E × ∂E/∂t points along −z: left-hand. Δφ = −90° gives right-hand. Textbooks that use e<sup>−jωt</sup> reverse the label, so state your convention. If the question only asks linear/circular/elliptical, handedness is a bonus, not the main answer.</p>
+
+      <h3>Worked example 6.5 — read the ellipse from the phasor</h3>
+      <div class="card">
+        <p><strong>Given.</strong> E<sub>s</sub> = (3x̂ + j4ŷ)e<sup>−jkz</sup> V/m, travelling along +z.</p>
+        <p><strong>1 · Identify the coefficients.</strong> E<sub>x0</sub> = 3, φ<sub>x</sub> = 0; E<sub>y0</sub> = 4, φ<sub>y</sub> = +90°. Magnitudes are unequal, so the wave cannot be circular.</p>
+        <p><strong>2 · Classify.</strong> Δφ = +90° with unequal amplitudes → elliptical, with axes along x and y. At z = 0:</p>
+        <div class="eqbox">
+          <span class="eq">E<sub>x</sub> = 3 cos(ωt) &nbsp;&nbsp; E<sub>y</sub> = 4 cos(ωt + 90°) = −4 sin(ωt)</span><br>
+          <span class="eq">(E<sub>x</sub>/3)² + (E<sub>y</sub>/4)² = cos² + sin² = 1</span>
+        </div>
+        <p>The tip traces an ellipse with semi-axes 3 and 4 V/m. Axial ratio = 4/3 = 1.33.</p>
+        <p><strong>3 · Handedness.</strong> At t = 0, E = +3x̂. A moment later E<sub>y</sub> is negative, so the tip moves toward −y. Then E × ∂E/∂t points along −z, opposite to k, so this is left-hand elliptical (IEEE).</p>
+        <p><strong>4 · Compare the special cases.</strong> 3x̂ + 3ŷ would be linear at 45° (Δφ = 0). 3x̂ + j3ŷ would be a circle of radius 3 (equal amplitudes, +90°) — left-hand circular. The j alone does not make a wave circular; the magnitudes must match too.</p>
+      </div>
+
+      <div class="warn">
+        <strong>Common mistakes — polarization.</strong>
+        <ul>
+          <li><strong>“Two components” does not mean elliptical.</strong> Equal amplitudes with Δφ = 0 is linear, no matter how many components are written.</li>
+          <li><strong>Magnitude ratio alone is not enough.</strong> Circular needs equal magnitudes <em>and</em> ±90°. Either condition alone gives an ellipse or a line.</li>
+          <li><strong>Handedness is convention-dependent.</strong> Under e<sup>−jωt</sup> the same phasor gets the opposite label. State your time convention, or use the rotation vector E × ∂E/∂t, which removes the ambiguity.</li>
+          <li><strong>j means 90°, not “imaginary field”.</strong> A factor j on one component is a quarter-cycle time shift.</li>
+          <li><strong>Polarization is about E.</strong> H is perpendicular to E and traces the same ellipse rotated by 90° in the transverse plane; do not classify from H and then attach it to E without checking the triad.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="topic" id="check">
+      <h2><span class="kicker">6.5</span>Check yourself</h2>
+      <p>Three questions, one per exam move. Answer first, then open the solution.</p>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <div class="q"><span class="tag">Q1 · dielectric</span><br>A 300 MHz uniform plane wave travels in a medium with μ<sub>r</sub> = 1 and ε<sub>r</sub> = 4. Which set is correct?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">β = 2π rad/m, λ = 1 m, v = 3 × 10<sup>8</sup> m/s</button>
+          <button type="button" data-opt="b">β = 4π rad/m, λ = 0.5 m, v = 1.5 × 10<sup>8</sup> m/s</button>
+          <button type="button" data-opt="c">β = 4π rad/m, λ = 0.25 m, v = 1.5 × 10<sup>8</sup> m/s</button>
+          <button type="button" data-opt="d">β = 2π rad/m, λ = 0.5 m, v = 1.5 × 10<sup>8</sup> m/s</button>
+        </div>
+        <details><summary>Show answer</summary>
+          <div class="sol">n = √4 = 2, so v = c/n = 1.5 × 10<sup>8</sup> m/s and β = ω/v = (2π × 3 × 10<sup>8</sup>)/(1.5 × 10<sup>8</sup>) = 4π rad/m. Then λ = 2π/β = 0.5 m. <strong>b.</strong> Option (c) divides λ by n twice; option (d) uses k<sub>0</sub> instead of k.</div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <div class="q"><span class="tag">Q2 · conductor</span><br>Copper has σ = 5.8 × 10<sup>7</sup> S/m and μ<sub>r</sub> = 1. What is its skin depth at 1 MHz?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">About 66 µm</button>
+          <button type="button" data-opt="b">About 6.6 µm</button>
+          <button type="button" data-opt="c">About 660 µm</button>
+          <button type="button" data-opt="d">About 47 µm</button>
+        </div>
+        <details><summary>Show answer</summary>
+          <div class="sol">δ = 1/√(πfμσ) = 1/√(π × 10<sup>6</sup> × 4π × 10<sup>−7</sup> × 5.8 × 10<sup>7</sup>) = 1/1.513 × 10<sup>4</sup> = 6.61 × 10<sup>−5</sup> m = 66 µm. <strong>a.</strong> A factor-of-10 slip gives 6.6 µm or 660 µm; 47 µm comes from putting 2π under the root instead of π.</div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <div class="q"><span class="tag">Q3 · polarization</span><br>E<sub>s</sub> = (5x̂ + j5ŷ)e<sup>−jkz</sup> V/m, travelling along +z. Using e<sup>jωt</sup>, what is the polarization?</div>
+        <div class="opts">
+          <button type="button" data-opt="a">Linear along x</button>
+          <button type="button" data-opt="b">Linear at 45°</button>
+          <button type="button" data-opt="c">Circular</button>
+          <button type="button" data-opt="d">Elliptical</button>
+        </div>
+        <details><summary>Show answer</summary>
+          <div class="sol">Equal magnitudes (5 and 5) and Δφ = φ<sub>y</sub> − φ<sub>x</sub> = +90°. Equal amplitudes plus a quarter-cycle phase difference makes the tip trace a circle, so the wave is circular. <strong>c.</strong> If the amplitudes differed, the same 90° would give an ellipse; if Δφ were 0° or 180°, it would be a straight line. Under the stated e<sup>jωt</sup> convention this particular +90° case is left-hand circular, but the exam’s classification is simply “circular”.</div>
+        </details>
+      </div>
+
+      <div class="done-row">
+        <input type="checkbox" id="ch6-core" data-progress="ch6-core">
+        <label for="ch6-core">I can read β from a phasor, get λ, recover ε<sub>r</sub>, compute η, and name the polarization.
+          <span class="done-meta">If any step is still shaky, redo Worked examples 6.1, 6.3 and 6.5 with the solutions covered.</span>
+        </label>
+      </div>
+
+      <div class="tip" style="margin-top:24px">
+        <strong>Next.</strong>
+        Take the five-move pattern to the mixed set, then check the one-page formula sheet before the exam.
+        <div class="actions" style="margin-top:12px">
+          <a class="btn btn-primary" href="practice.html">Practice the exam pattern →</a>
+          <a class="btn btn-outline" href="formulas.html">Open the formula sheet</a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      Chapter 6 · Uniform plane waves · EE361. Arithmetic recomputed against the 2020 final; the 2024–25 control covers electrostatics only. Conventions: e<sup>jωt</sup>, IEEE handedness, η<sub>0</sub> = 120π ≈ 377 Ω.
+    </footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+<script src="js/viz-common.js"></script>
+<script src="js/viz-ch6.js"></script>
+</body>
+</html>

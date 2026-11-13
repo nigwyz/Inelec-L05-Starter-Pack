@@ -1,0 +1,747 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 1 — Vectors &amp; coordinate systems | EE361 EMF</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/emf.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Ch. 1 — Vectors &amp; coordinates</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EMF Companion<small>EE361 · Electromagnetics</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch0.html"><span class="num">00</span>How it fits</a>
+      <a class="active" href="ch1.html"><span class="num">01</span>Vectors &amp; coordinates</a>
+      <a href="ch2.html"><span class="num">02</span>Vector calculus</a>
+      <a href="ch3.html"><span class="num">03</span>Electrostatics</a>
+      <a href="ch4.html"><span class="num">04</span>Magnetostatics</a>
+      <a href="ch5.html"><span class="num">05</span>Maxwell</a>
+      <a href="ch6.html"><span class="num">06</span>Plane waves</a>
+      <div class="nav-label">Exam prep</div>
+      <a href="formulas.html"><span class="num">Σ</span>Formula sheet</a>
+      <a href="practice.html"><span class="num">✎</span>Practice</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Chapter 01 · Vector analysis</span>
+      <h1>Vectors &amp; coordinate systems</h1>
+      <p class="lede">Every electromagnetic quantity — force, field, flux — has a direction, and every integral in this course is written in one of three coordinate systems. This chapter builds the algebra, the three systems, the six transformation matrices, and the differential elements. The control opens with exactly this skill: rewrite a uniform field in cylindrical and spherical coordinates.</p>
+      <p class="small muted" style="margin-top:-8px"><strong>Notation.</strong> Vectors carry an arrow (<span class="mono">A⃗</span>); unit vectors carry a hat (<span class="mono">x̂, ρ̂, r̂</span>). The same symbol without a mark is its magnitude.</p>
+    </header>
+
+    <div class="toc">
+      <strong>On this page</strong>
+      <ol>
+        <li><a href="#vectors">Vectors and unit vectors</a></li>
+        <li><a href="#products">Dot, cross and triple products</a></li>
+        <li><a href="#coords">The three coordinate systems</a></li>
+        <li><a href="#transform">Transformations and the control Q1</a></li>
+        <li><a href="#diff-elements">Differential elements</a></li>
+        <li><a href="#check">Check yourself</a></li>
+      </ol>
+    </div>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="vectors">
+      <h2>1.1 · Scalars, vectors, and why EMF is vector-heavy</h2>
+
+      <p>An electric field at a point is not a number. It is an arrow: a magnitude in V/m and a direction. The force on a charge is another arrow, F⃗ = qE⃗ + qv⃗ × B⃗. Flux is a dot product because only the field crossing a surface matters. Circulation is a cross product because rotation is measured perpendicular to the loop. That is why this course begins with arrows rather than with Maxwell's equations.</p>
+
+      <p>The exam pays for this immediately. The 2024–25 control gives 1.25 points for rewriting <span class="mono">F = 10x̂</span> in cylindrical and spherical components, before any field has been computed. Later flux and charge integrals depend just as directly on the differential elements built in this chapter.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Scalar</th><th>Vector</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Charge Q (C), potential V (V), energy W (J), work, time, mass, temperature, permittivity ε</td>
+              <td>Electric field E⃗ (V/m), displacement D⃗ (C/m²), magnetic field B⃗ (T), force F⃗ (N), velocity v⃗ (m/s)</td>
+            </tr>
+            <tr>
+              <td>One number; no direction; ordinary algebra</td>
+              <td>Magnitude and direction; arrow notation; component algebra</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="def">
+        <strong>Vector and unit vector.</strong> A vector is written A⃗ = A â<sub>A</sub>, where A = |A⃗| is the magnitude and â<sub>A</sub> is a unit vector in the direction of A⃗. A unit vector carries direction only:
+      </div>
+
+      <div class="eqbox">
+        <div class="eq">â<sub>A</sub> = A⃗ / |A⃗|,&nbsp;&nbsp; |â<sub>A</sub>| = 1,&nbsp;&nbsp; A⃗ = A<sub>x</sub> x̂ + A<sub>y</sub> ŷ + A<sub>z</sub> ẑ</div>
+        <div class="eq">|A⃗| = √(A<sub>x</sub>² + A<sub>y</sub>² + A<sub>z</sub>²)</div>
+      </div>
+
+      <p><strong>Addition and subtraction.</strong> Add components, never magnitudes. Place the tail of B⃗ at the tip of A⃗; the arrow from the origin to the new tip is A⃗ + B⃗. The same diagonal is obtained by starting with B⃗, so addition is commutative. Subtraction is addition of the negative: A⃗ − B⃗ points from the tip of B⃗ to the tip of A⃗.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Vector addition</span><span class="vh">move the four component sliders</span></div>
+        <div class="viz-body" data-viz="vec-add"></div>
+      </div>
+
+      <p><strong>Position vector.</strong> The position vector of a point P is the arrow from the origin O to P, written R⃗ = <strong>OP</strong>. In Cartesian coordinates R⃗ = x x̂ + y ŷ + z ẑ, and its magnitude is the distance OP. In cylindrical and spherical coordinates this arrow collapses to two or one terms — a simplification used constantly in Chapter 3. The position vector is <em>not</em> a general vector: it always starts at the origin.</p>
+
+      <div class="eqcard" style="margin:16px 0">
+        <span class="tag">Worked example 1</span>
+        <div class="name">Magnitude and unit vector of A = 3x̂ + 4ŷ + 12ẑ</div>
+        <div class="eq">
+          |A⃗| = √(3² + 4² + 12²) = √(9 + 16 + 144) = √169 = 13<br>
+          â<sub>A</sub> = (3/13) x̂ + (4/13) ŷ + (12/13) ẑ ≈ 0.2308 x̂ + 0.3077 ŷ + 0.9231 ẑ
+        </div>
+        <p class="why">Check: 0.2308² + 0.3077² + 0.9231² = 0.0533 + 0.0947 + 0.8521 = 1.0001 ≈ 1. The vector has length 13; the unit vector has length 1.</p>
+      </div>
+
+      <div class="warn">
+        <strong>Common mistakes.</strong>
+        <ul>
+          <li><strong>Adding magnitudes.</strong> |A⃗ + B⃗| = |A⃗| + |B⃗| only when the vectors are parallel and point the same way. Otherwise the triangle inequality gives a smaller result.</li>
+          <li><strong>Dividing by one component.</strong> Normalise with the full magnitude: â<sub>A</sub> = A⃗/|A⃗|, not A⃗/A<sub>x</sub>.</li>
+          <li><strong>Reversing a subtraction.</strong> A⃗ − B⃗ = −(B⃗ − A⃗). The direction of the arrow is part of the answer.</li>
+          <li><strong>Forgetting the units.</strong> A unit vector is dimensionless; a field vector is not.</li>
+        </ul>
+      </div>
+
+      <div class="note">
+        <strong>Source check.</strong> In the lecture's Example 1.4, A⃗ = B⃗ − C⃗ with B⃗ = h ẑ and C⃗ = R<sub>0</sub> ρ̂ gives A⃗ = h ẑ − R<sub>0</sub> ρ̂. The printed final line uses R<sub>0</sub> ρ̂ − h ẑ, which is −A⃗. The unit vector is (h ẑ − R<sub>0</sub> ρ̂)/√(h² + R<sub>0</sub>²); the sign fixes the direction.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="products">
+      <h2>1.2 · Dot, cross, and the two triple products</h2>
+
+      <p>Two vectors have two useful products. The dot product answers “how much of B⃗ lies along A⃗?” and returns a scalar. The cross product answers “how much area do A⃗ and B⃗ span, and which way does that area face?” and returns a vector. The triple products combine them into a volume and into a vector that lies in the plane of two of the three inputs.</p>
+
+      <h3>Dot product — projection, angle, work</h3>
+
+      <div class="eqbox">
+        <div class="eq">A⃗ · B⃗ = AB cos θ = A<sub>x</sub>B<sub>x</sub> + A<sub>y</sub>B<sub>y</sub> + A<sub>z</sub>B<sub>z</sub></div>
+      </div>
+
+      <p>The result is a number, so the dot product is also called the <em>scalar product</em>. It is commutative and distributive. Geometrically it multiplies the length of one vector by the component of the other along it. That component is the <strong>scalar projection</strong>:</p>
+
+      <div class="eqbox">
+        <div class="eq">B cos θ = (A⃗ · B⃗) / A = B⃗ · â<sub>A</sub></div>
+        <div class="eq">vector projection of B⃗ on A⃗ = (B cos θ) â<sub>A</sub> = (B⃗ · â<sub>A</sub>) â<sub>A</sub></div>
+      </div>
+
+      <p>Rearranging the definition gives the angle between two vectors. This is the fastest way to test whether two fields are perpendicular: if the dot product is zero, the angle is 90°.</p>
+
+      <div class="eqbox">
+        <div class="eq">cos θ = (A⃗ · B⃗) / (AB),&nbsp;&nbsp; A⃗ · B⃗ = 0 ⇔ θ = 90°</div>
+      </div>
+
+      <p><strong>Work and flux.</strong> Mechanical work is W = F⃗ · d⃗: only the force along the displacement does work. The same structure appears in electrostatics, where the flux through a surface is Φ = ∫ D⃗ · dS⃗. The dot product selects the component normal to the surface. A field parallel to a surface contributes zero flux, however strong it is.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Dot product and projection</span><span class="vh">drag θ past 90° and watch the sign flip</span></div>
+        <div class="viz-body" data-viz="dot-product"></div>
+      </div>
+
+      <div class="eqcard" style="margin:16px 0">
+        <span class="tag">Worked example 2</span>
+        <div class="name">Angle and projection for A = 3x̂ + 4ŷ + 12ẑ and B = 2x̂ + 3ŷ + 6ẑ</div>
+        <div class="eq">
+          A⃗ · B⃗ = (3)(2) + (4)(3) + (12)(6) = 6 + 12 + 72 = 90<br>
+          |A⃗| = 13,&nbsp;&nbsp; |B⃗| = √(4 + 9 + 36) = 7<br>
+          cos θ = 90 / (13 × 7) = 90/91 = 0.98901 → θ = 8.50°<br>
+          B cos θ = 90/13 = 6.92
+        </div>
+        <p class="why">The two vectors point almost the same way: the angle is only 8.5°, so the dot product is close to AB = 91. The projection of B on A is 6.92, slightly less than |B| = 7.</p>
+      </div>
+
+      <h3>Cross product — area, normal, right-hand rule</h3>
+
+      <div class="eqbox">
+        <div class="eq">A⃗ × B⃗ = (AB sin θ) â<sub>n</sub></div>
+        <div class="eq">â<sub>n</sub> = (â<sub>A</sub> × â<sub>B</sub>) / |sin θ|</div>
+      </div>
+
+      <p>The direction of A⃗ × B⃗ is normal to the plane containing the two vectors and follows the right-hand rule: curl the fingers from A⃗ toward B⃗; the thumb points along the product. The magnitude AB sin θ is the area of the parallelogram with sides A⃗ and B⃗. Half of that is the area of the triangle they form.</p>
+
+      <p>In Cartesian components the cross product is a determinant. Expand along the first row, remembering the minus sign on the middle term:</p>
+
+      <div class="eqbox">
+        <div class="eq">
+          A⃗ × B⃗ =
+          <span class="mat" style="grid-template-columns:repeat(3,auto)">
+            <span>x̂</span><span>ŷ</span><span>ẑ</span>
+            <span>A<sub>x</sub></span><span>A<sub>y</sub></span><span>A<sub>z</sub></span>
+            <span>B<sub>x</sub></span><span>B<sub>y</sub></span><span>B<sub>z</sub></span>
+          </span>
+          = (A<sub>y</sub>B<sub>z</sub> − A<sub>z</sub>B<sub>y</sub>) x̂ − (A<sub>x</sub>B<sub>z</sub> − A<sub>z</sub>B<sub>x</sub>) ŷ + (A<sub>x</sub>B<sub>y</sub> − A<sub>y</sub>B<sub>x</sub>) ẑ
+        </div>
+      </div>
+
+      <p>The cross product is anticommutative: A⃗ × B⃗ = −B⃗ × A⃗. It is distributive over addition, but it is not associative. Two nonzero vectors give zero exactly when they are parallel (θ = 0 or 180°), because sin θ = 0. This is the test for collinearity.</p>
+
+      <p><strong>Where it appears.</strong> Torque is τ⃗ = r⃗ × F⃗. The magnetic force on a moving charge is F⃗ = q v⃗ × B⃗, which is why a charge moving parallel to a magnetic field feels no force. Chapter 4 uses that cross product on every page; the 2024–25 control already asks for its magnitude in Question 3.</p>
+
+      <div class="exam">
+        <strong>Exam link.</strong> Control 2024–25 Q3 · 0.75 pts — a charge moves along a unit vector v̂ through a given B⃗. The force magnitude is |q| |v̂ × B⃗|, so the determinant and the right-hand rule must be automatic.
+      </div>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Cross product</span><span class="vh">change the angle and the two lengths</span></div>
+        <div class="viz-body" data-viz="cross-product"></div>
+      </div>
+
+      <div class="eqcard" style="margin:16px 0">
+        <span class="tag">Worked example 3</span>
+        <div class="name">Cross product of the same A and B</div>
+        <div class="eq">
+          A⃗ × B⃗ =
+          <span class="mat" style="grid-template-columns:repeat(3,auto)">
+            <span>x̂</span><span>ŷ</span><span>ẑ</span>
+            <span>3</span><span>4</span><span>12</span>
+            <span>2</span><span>3</span><span>6</span>
+          </span>
+          = x̂(24 − 36) − ŷ(18 − 24) + ẑ(9 − 8)<br>
+          = −12 x̂ + 6 ŷ + ẑ<br>
+          |A⃗ × B⃗| = √(144 + 36 + 1) = √181 = 13.45
+        </div>
+        <p class="why">Lagrange check: |A⃗ × B⃗|² + (A⃗ · B⃗)² = 181 + 8100 = 8281 = 13² × 7² = A²B². The vector is normal to both inputs: (−12)(3) + (6)(4) + (1)(12) = 0 and (−12)(2) + (6)(3) + (1)(6) = 0.</p>
+      </div>
+
+      <h3>Scalar and vector triple products</h3>
+
+      <p>The <strong>scalar triple product</strong> A⃗ · (B⃗ × C⃗) is a number. Its absolute value is the volume of the parallelepiped with edges A⃗, B⃗ and C⃗. The parentheses matter: compute the cross product first, then dot the result with the remaining vector.</p>
+
+      <div class="eqbox">
+        <div class="eq">
+          A⃗ · (B⃗ × C⃗) =
+          <span class="mat" style="grid-template-columns:repeat(3,auto)">
+            <span>A<sub>x</sub></span><span>A<sub>y</sub></span><span>A<sub>z</sub></span>
+            <span>B<sub>x</sub></span><span>B<sub>y</sub></span><span>B<sub>z</sub></span>
+            <span>C<sub>x</sub></span><span>C<sub>y</sub></span><span>C<sub>z</sub></span>
+          </span>
+        </div>
+        <div class="eq">A⃗ · (B⃗ × C⃗) = B⃗ · (C⃗ × A⃗) = C⃗ · (A⃗ × B⃗)</div>
+      </div>
+
+      <p>The cyclic swap leaves the value unchanged; swapping any two vectors flips the sign. If the triple product is zero, the three vectors are coplanar and the “volume” collapses to a plane.</p>
+
+      <p>The <strong>vector triple product</strong> A⃗ × (B⃗ × C⃗) is a vector. It lies in the plane of B⃗ and C⃗, not in the plane of A⃗ and B⃗. Expand it with the “BAC − CAB” rule:</p>
+
+      <div class="eqbox">
+        <div class="eq">A⃗ × (B⃗ × C⃗) = B⃗(A⃗ · C⃗) − C⃗(A⃗ · B⃗)</div>
+        <div class="eq">(A⃗ × B⃗) × C⃗ = B⃗(A⃗ · C⃗) − A⃗(B⃗ · C⃗)</div>
+      </div>
+
+      <p>The two expressions are different in general, so the cross product is not associative. Always keep the parentheses.</p>
+
+      <div class="eqcard" style="margin:16px 0">
+        <span class="tag">Worked example 4</span>
+        <div class="name">Triple products with A = x̂ + 2ŷ + 2ẑ, B = 2x̂ + ŷ, C = 3ŷ + ẑ</div>
+        <div class="eq">
+          B⃗ × C⃗ = (1·1 − 0·3) x̂ − (2·1 − 0·0) ŷ + (2·3 − 1·0) ẑ = x̂ − 2ŷ + 6ẑ<br>
+          A⃗ · (B⃗ × C⃗) = 1(1) + 2(−2) + 2(6) = 1 − 4 + 12 = 9 → volume = 9<br><br>
+          A⃗ · C⃗ = 0 + 6 + 2 = 8,&nbsp;&nbsp; A⃗ · B⃗ = 2 + 2 + 0 = 4<br>
+          A⃗ × (B⃗ × C⃗) = 8B⃗ − 4C⃗ = (16, 8, 0) − (0, 12, 4) = 16x̂ − 4ŷ − 4ẑ
+        </div>
+        <p class="why">Direct check: A⃗ × (x̂ − 2ŷ + 6ẑ) = x̂(2·6 − 2(−2)) − ŷ(1·6 − 2·1) + ẑ(1(−2) − 2·1) = 16x̂ − 4ŷ − 4ẑ. The scalar triple is a number; the vector triple is a vector.</p>
+      </div>
+
+      <div class="warn">
+        <strong>Common mistakes.</strong>
+        <ul>
+          <li><strong>Dropping the minus.</strong> A⃗ × B⃗ = −B⃗ × A⃗. A sign error here changes a force direction and usually costs the whole question.</li>
+          <li><strong>Reading the determinant left to right.</strong> The middle term is subtracted: −(A<sub>x</sub>B<sub>z</sub> − A<sub>z</sub>B<sub>x</sub>) ŷ.</li>
+          <li><strong>Adding a unit vector to a scalar.</strong> A⃗ · B⃗ is a number; it cannot be “x̂ + 3”.</li>
+          <li><strong>Mixing degrees and radians.</strong> Check the calculator mode before evaluating sin θ or cos θ.</li>
+          <li><strong>Writing (A⃗ · B⃗) × C⃗.</strong> That is a scalar crossed with a vector, which is not defined. If you mean scaling, write (A⃗ · B⃗)C⃗.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="coords">
+      <h2>1.3 · Cartesian, cylindrical, spherical</h2>
+
+      <p>A coordinate system is a labelling scheme for points plus a set of local directions. An <strong>orthogonal</strong> system has axes that meet at right angles at every point. All three systems below are orthogonal and right-handed. The physics does not change when you switch systems; the difficulty of the integral does. Choosing the system that matches the symmetry is the single highest-leverage move in this course.</p>
+
+      <h3>Cartesian (rectangular): (x, y, z)</h3>
+      <p>Three distances along three fixed perpendicular axes. The unit vectors x̂, ŷ, ẑ have the same direction at every point, which is why Cartesian components are the easiest to add and differentiate.</p>
+      <div class="def">
+        <strong>Ranges:</strong> −∞ &lt; x, y, z &lt; +∞.&nbsp;&nbsp;
+        <strong>Cyclic:</strong> x̂ × ŷ = ẑ, ŷ × ẑ = x̂, ẑ × x̂ = ŷ.&nbsp;&nbsp;
+        <strong>Position:</strong> R⃗ = x x̂ + y ŷ + z ẑ.
+      </div>
+      <p><strong>Use it when</strong> the boundary is a plane x = const, y = const or z = const: boxes, infinite sheets, straight wires along an axis, or fields with no angular symmetry.</p>
+
+      <h3>Cylindrical: (ρ, φ, z)</h3>
+      <p>ρ is the distance from the z-axis, not from the origin. φ is the azimuth measured from the positive x-axis in the xy-plane, counter-clockwise. z is the same height as in Cartesian coordinates.</p>
+      <div class="def">
+        <strong>Ranges:</strong> 0 ≤ ρ &lt; ∞,&nbsp; 0 ≤ φ &lt; 2π,&nbsp; −∞ &lt; z &lt; +∞.&nbsp;&nbsp;
+        <strong>Unit vectors:</strong> ρ̂ points away from the z-axis; φ̂ points in the direction of increasing φ; ẑ is vertical. ρ̂ and φ̂ depend on φ.<br>
+        <strong>Cyclic:</strong> ρ̂ × φ̂ = ẑ, φ̂ × ẑ = ρ̂, ẑ × ρ̂ = φ̂.&nbsp;&nbsp;
+        <strong>Position:</strong> R⃗ = ρ ρ̂ + z ẑ. There is no φ̂ term.
+      </div>
+      <p><strong>Use it when</strong> the boundary is a cylinder ρ = const: infinite line charges, coaxial cables, round wires along z, or anything with rotational symmetry about the z-axis.</p>
+
+      <h3>Spherical: (r, θ, φ)</h3>
+      <p>r is the distance from the origin. θ is the polar (zenith) angle measured from the positive z-axis; it is not the angle in the xy-plane. φ is the same azimuth as in cylindrical coordinates.</p>
+      <div class="def">
+        <strong>Ranges:</strong> 0 ≤ r &lt; ∞,&nbsp; 0 ≤ θ ≤ π,&nbsp; 0 ≤ φ &lt; 2π.&nbsp;&nbsp;
+        <strong>Unit vectors:</strong> r̂ points radially outward; θ̂ points toward increasing θ (south along the meridian); φ̂ points east. All three depend on θ and φ.<br>
+        <strong>Cyclic:</strong> r̂ × θ̂ = φ̂, θ̂ × φ̂ = r̂, φ̂ × r̂ = θ̂.&nbsp;&nbsp;
+        <strong>Position:</strong> R⃗ = r r̂.
+      </div>
+      <p><strong>Use it when</strong> the boundary is a sphere r = const or a cone θ = const: point charges, spherical shells, cones, or any problem with a point of symmetry at the origin.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>Cartesian</th><th>Cylindrical</th><th>Spherical</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Coordinates and ranges</strong></td>
+              <td>(x, y, z)<br>−∞ &lt; x, y, z &lt; ∞</td>
+              <td>(ρ, φ, z)<br>0 ≤ ρ &lt; ∞<br>0 ≤ φ &lt; 2π<br>−∞ &lt; z &lt; ∞</td>
+              <td>(r, θ, φ)<br>0 ≤ r &lt; ∞<br>0 ≤ θ ≤ π<br>0 ≤ φ &lt; 2π</td>
+            </tr>
+            <tr>
+              <td><strong>Unit vectors</strong></td>
+              <td>x̂, ŷ, ẑ<br>fixed everywhere</td>
+              <td>ρ̂, φ̂, ẑ<br>ρ̂ and φ̂ depend on φ</td>
+              <td>r̂, θ̂, φ̂<br>all depend on θ and φ</td>
+            </tr>
+            <tr>
+              <td><strong>Cyclic relation</strong></td>
+              <td>x̂ × ŷ = ẑ</td>
+              <td>ρ̂ × φ̂ = ẑ</td>
+              <td>r̂ × θ̂ = φ̂</td>
+            </tr>
+            <tr>
+              <td><strong>Position vector</strong></td>
+              <td>x x̂ + y ŷ + z ẑ</td>
+              <td>ρ ρ̂ + z ẑ</td>
+              <td>r r̂</td>
+            </tr>
+            <tr>
+              <td><strong>dℓ</strong></td>
+              <td>dx x̂ + dy ŷ + dz ẑ</td>
+              <td>dρ ρ̂ + ρ dφ φ̂ + dz ẑ</td>
+              <td>dr r̂ + r dθ θ̂ + r sin θ dφ φ̂</td>
+            </tr>
+            <tr>
+              <td><strong>Use when</strong></td>
+              <td>planes, boxes, straight axes</td>
+              <td>cylinders, wires, coaxial symmetry</td>
+              <td>points, spheres, cones</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Unit vectors in the three systems</span><span class="vh">toggle the system, then rotate φ and θ</span></div>
+        <div class="viz-body" data-viz="unit-vectors"></div>
+      </div>
+
+      <div class="tip">
+        <strong>Choosing in five seconds.</strong> Look at the boundary, not at the field. A surface described by x = const is Cartesian. A surface described by ρ = const is cylindrical. A surface described by r = const or θ = const is spherical. If two systems fit, choose the one that makes the limits constants.
+      </div>
+
+      <div class="warn">
+        <strong>Common mistakes.</strong>
+        <ul>
+          <li><strong>φ measured from the z-axis.</strong> The lecture's §I.3.2 sentence says this; it is a slip. φ is measured from the positive x-axis in the xy-plane. θ is the angle measured from +z.</li>
+          <li><strong>Confusing ρ and r.</strong> ρ = √(x² + y²) is the distance from the z-axis. r = √(x² + y² + z²) is the distance from the origin. They are equal only in the plane z = 0.</li>
+          <li><strong>Adding a φ̂ term to the position vector.</strong> In cylindrical coordinates R⃗ = ρ ρ̂ + z ẑ. Moving in φ does not move the point away from the origin, so there is no φ̂ component.</li>
+          <li><strong>Adding vectors given at different points.</strong> ρ̂, φ̂, r̂ and θ̂ are local. A vector at P and a vector at Q must be transformed to a common point before they are added.</li>
+          <li><strong>Wrong θ range.</strong> θ runs from 0 to π, not 0 to 2π. φ is the coordinate that goes all the way around.</li>
+        </ul>
+      </div>
+
+      <div class="note">
+        <strong>Source check.</strong> The spherical cyclic list in the lecture ends with φ̂ × r̂ = φ̂; the correct third relation is φ̂ × r̂ = θ̂. The cyclic order is r̂ → θ̂ → φ̂ → r̂.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="transform">
+      <h2>1.4 · Coordinate and unit-vector transformations</h2>
+
+      <p>A point has one location but three possible descriptions. Convert the coordinates first, then convert the components. Mixing the two steps is the usual source of wrong answers: the matrix entries depend on the angles at the point, so the angles must be known before the matrix is applied.</p>
+
+      <h3>Coordinate conversions</h3>
+      <div class="eqbox">
+        <div class="eq">ρ = √(x² + y²),&nbsp;&nbsp; φ = tan<sup>−1</sup>(y/x),&nbsp;&nbsp; z = z</div>
+        <div class="eq">r = √(x² + y² + z²) = √(ρ² + z²),&nbsp;&nbsp; θ = cos<sup>−1</sup>(z/r),&nbsp;&nbsp; φ = tan<sup>−1</sup>(y/x)</div>
+        <div class="eq">x = ρ cos φ = r sin θ cos φ,&nbsp;&nbsp; y = ρ sin φ = r sin θ sin φ,&nbsp;&nbsp; z = r cos θ</div>
+      </div>
+
+      <div class="note">
+        <strong>The inverse tangent is not enough.</strong> tan<sup>−1</sup>(y/x) cannot tell (1, 1) from (−1, −1). Use the quadrant: on paper, sketch the point; in code, use <span class="mono">atan2(y, x)</span>. The range 0 ≤ φ &lt; 2π fixes the convention used here.
+      </div>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Coordinate conversion, live</span><span class="vh">move x, y, z and compare all three descriptions</span></div>
+        <div class="viz-body" data-viz="coord-convert"></div>
+      </div>
+
+      <h3>The six unit-vector matrices</h3>
+
+      <p>Each matrix converts <em>components</em>, not coordinates. Read a row as one new unit vector expressed in the old basis, and a column as one old unit vector expressed in the new basis. Every matrix is orthogonal, so its inverse is its transpose: R→C is the transpose of C→R, and the same pairing holds for the other two systems.</p>
+
+      <div class="eqgrid">
+        <div class="eqcard">
+          <span class="tag">C → R</span>
+          <div class="name">Cylindrical components to Cartesian</div>
+          <div class="eq">
+            <span class="mat" style="grid-template-columns:auto"><span>A<sub>x</sub></span><span>A<sub>y</sub></span><span>A<sub>z</sub></span></span>
+            =
+            <span class="mat" style="grid-template-columns:repeat(3,auto)">
+              <span>cos&nbsp;φ</span><span>−sin&nbsp;φ</span><span>0</span>
+              <span>sin&nbsp;φ</span><span>cos&nbsp;φ</span><span>0</span>
+              <span>0</span><span>0</span><span>1</span>
+            </span>
+            <span class="mat" style="grid-template-columns:auto"><span>A<sub>ρ</sub></span><span>A<sub>φ</sub></span><span>A<sub>z</sub></span></span>
+          </div>
+          <div class="why">x̂ = cos φ ρ̂ − sin φ φ̂.</div>
+        </div>
+
+        <div class="eqcard">
+          <span class="tag">R → C</span>
+          <div class="name">Cartesian components to cylindrical</div>
+          <div class="eq">
+            <span class="mat" style="grid-template-columns:auto"><span>A<sub>ρ</sub></span><span>A<sub>φ</sub></span><span>A<sub>z</sub></span></span>
+            =
+            <span class="mat" style="grid-template-columns:repeat(3,auto)">
+              <span>cos&nbsp;φ</span><span>sin&nbsp;φ</span><span>0</span>
+              <span>−sin&nbsp;φ</span><span>cos&nbsp;φ</span><span>0</span>
+              <span>0</span><span>0</span><span>1</span>
+            </span>
+            <span class="mat" style="grid-template-columns:auto"><span>A<sub>x</sub></span><span>A<sub>y</sub></span><span>A<sub>z</sub></span></span>
+          </div>
+          <div class="why">The transpose of C→R.</div>
+        </div>
+
+        <div class="eqcard">
+          <span class="tag">S → R</span>
+          <div class="name">Spherical components to Cartesian</div>
+          <div class="eq">
+            <span class="mat" style="grid-template-columns:auto"><span>A<sub>x</sub></span><span>A<sub>y</sub></span><span>A<sub>z</sub></span></span>
+            =
+            <span class="mat" style="grid-template-columns:repeat(3,auto)">
+              <span>sin&nbsp;θ&nbsp;cos&nbsp;φ</span><span>cos&nbsp;θ&nbsp;cos&nbsp;φ</span><span>−sin&nbsp;φ</span>
+              <span>sin&nbsp;θ&nbsp;sin&nbsp;φ</span><span>cos&nbsp;θ&nbsp;sin&nbsp;φ</span><span>cos&nbsp;φ</span>
+              <span>cos&nbsp;θ</span><span>−sin&nbsp;θ</span><span>0</span>
+            </span>
+            <span class="mat" style="grid-template-columns:auto"><span>A<sub>r</sub></span><span>A<sub>θ</sub></span><span>A<sub>φ</sub></span></span>
+          </div>
+          <div class="why">r̂ = sin θ cos φ x̂ + sin θ sin φ ŷ + cos θ ẑ.</div>
+        </div>
+
+        <div class="eqcard">
+          <span class="tag">R → S</span>
+          <div class="name">Cartesian components to spherical</div>
+          <div class="eq">
+            <span class="mat" style="grid-template-columns:auto"><span>A<sub>r</sub></span><span>A<sub>θ</sub></span><span>A<sub>φ</sub></span></span>
+            =
+            <span class="mat" style="grid-template-columns:repeat(3,auto)">
+              <span>sin&nbsp;θ&nbsp;cos&nbsp;φ</span><span>sin&nbsp;θ&nbsp;sin&nbsp;φ</span><span>cos&nbsp;θ</span>
+              <span>cos&nbsp;θ&nbsp;cos&nbsp;φ</span><span>cos&nbsp;θ&nbsp;sin&nbsp;φ</span><span>−sin&nbsp;θ</span>
+              <span>−sin&nbsp;φ</span><span>cos&nbsp;φ</span><span>0</span>
+            </span>
+            <span class="mat" style="grid-template-columns:auto"><span>A<sub>x</sub></span><span>A<sub>y</sub></span><span>A<sub>z</sub></span></span>
+          </div>
+          <div class="why">The transpose of S→R.</div>
+        </div>
+
+        <div class="eqcard">
+          <span class="tag">C → S</span>
+          <div class="name">Cylindrical components to spherical</div>
+          <div class="eq">
+            <span class="mat" style="grid-template-columns:auto"><span>A<sub>r</sub></span><span>A<sub>θ</sub></span><span>A<sub>φ</sub></span></span>
+            =
+            <span class="mat" style="grid-template-columns:repeat(3,auto)">
+              <span>sin&nbsp;θ</span><span>0</span><span>cos&nbsp;θ</span>
+              <span>cos&nbsp;θ</span><span>0</span><span>−sin&nbsp;θ</span>
+              <span>0</span><span>1</span><span>0</span>
+            </span>
+            <span class="mat" style="grid-template-columns:auto"><span>A<sub>ρ</sub></span><span>A<sub>φ</sub></span><span>A<sub>z</sub></span></span>
+          </div>
+          <div class="why">r̂ = sin θ ρ̂ + cos θ ẑ.</div>
+        </div>
+
+        <div class="eqcard">
+          <span class="tag">S → C</span>
+          <div class="name">Spherical components to cylindrical</div>
+          <div class="eq">
+            <span class="mat" style="grid-template-columns:auto"><span>A<sub>ρ</sub></span><span>A<sub>φ</sub></span><span>A<sub>z</sub></span></span>
+            =
+            <span class="mat" style="grid-template-columns:repeat(3,auto)">
+              <span>sin&nbsp;θ</span><span>cos&nbsp;θ</span><span>0</span>
+              <span>0</span><span>0</span><span>1</span>
+              <span>cos&nbsp;θ</span><span>−sin&nbsp;θ</span><span>0</span>
+            </span>
+            <span class="mat" style="grid-template-columns:auto"><span>A<sub>r</sub></span><span>A<sub>θ</sub></span><span>A<sub>φ</sub></span></span>
+          </div>
+          <div class="why">The transpose of C→S.</div>
+        </div>
+      </div>
+
+      <h3>The control Q1: F = 10x̂ in cylindrical and spherical coordinates</h3>
+
+      <div class="exam">
+        <strong>Exam link.</strong> Control 2024–25 Q1 · 1.25 pts — a uniform field of magnitude 10 points along +x. Part (a) asks for its cylindrical components; part (b) asks for its spherical components. The marker wants the matrix, the multiplication and the final vector, not a guessed answer.
+      </div>
+
+      <p>Start in Cartesian: F⃗ = 10 x̂ + 0 ŷ + 0 ẑ, so the component column is (10, 0, 0). The field is uniform, but its cylindrical and spherical <em>components</em> are not constant: the basis vectors rotate from point to point.</p>
+
+      <div class="eqcard" style="margin:16px 0">
+        <span class="tag">Worked example 5 · Q1(a)</span>
+        <div class="name">Cartesian to cylindrical</div>
+        <div class="eq">
+          <span class="mat" style="grid-template-columns:auto"><span>F<sub>ρ</sub></span><span>F<sub>φ</sub></span><span>F<sub>z</sub></span></span>
+          =
+          <span class="mat" style="grid-template-columns:repeat(3,auto)">
+            <span>cos&nbsp;φ</span><span>sin&nbsp;φ</span><span>0</span>
+            <span>−sin&nbsp;φ</span><span>cos&nbsp;φ</span><span>0</span>
+            <span>0</span><span>0</span><span>1</span>
+          </span>
+          <span class="mat" style="grid-template-columns:auto"><span>10</span><span>0</span><span>0</span></span>
+          =
+          <span class="mat" style="grid-template-columns:auto"><span>10 cos&nbsp;φ</span><span>−10 sin&nbsp;φ</span><span>0</span></span>
+        </div>
+        <div class="eq">F⃗ = 10 cos φ ρ̂ − 10 sin φ φ̂ = 10(cos φ ρ̂ − sin φ φ̂)</div>
+        <p class="why">Check the magnitude: |F| = 10√(cos²φ + sin²φ) = 10. At φ = 0 the point is on the +x axis, where ρ̂ = x̂, so F = 10ρ̂. At φ = 90° it is on the +y axis, where x̂ = −φ̂, so F = −10φ̂.</p>
+      </div>
+
+      <div class="eqcard" style="margin:16px 0">
+        <span class="tag">Worked example 6 · Q1(b)</span>
+        <div class="name">Cartesian to spherical</div>
+        <div class="eq">
+          <span class="mat" style="grid-template-columns:auto"><span>F<sub>r</sub></span><span>F<sub>θ</sub></span><span>F<sub>φ</sub></span></span>
+          =
+          <span class="mat" style="grid-template-columns:repeat(3,auto)">
+            <span>sin&nbsp;θ&nbsp;cos&nbsp;φ</span><span>sin&nbsp;θ&nbsp;sin&nbsp;φ</span><span>cos&nbsp;θ</span>
+            <span>cos&nbsp;θ&nbsp;cos&nbsp;φ</span><span>cos&nbsp;θ&nbsp;sin&nbsp;φ</span><span>−sin&nbsp;θ</span>
+            <span>−sin&nbsp;φ</span><span>cos&nbsp;φ</span><span>0</span>
+          </span>
+          <span class="mat" style="grid-template-columns:auto"><span>10</span><span>0</span><span>0</span></span>
+          =
+          <span class="mat" style="grid-template-columns:auto"><span>10 sin&nbsp;θ cos&nbsp;φ</span><span>10 cos&nbsp;θ cos&nbsp;φ</span><span>−10 sin&nbsp;φ</span></span>
+        </div>
+        <div class="eq">F⃗ = 10[sin θ cos φ r̂ + cos θ cos φ θ̂ − sin φ φ̂]</div>
+        <p class="why">Magnitude check: 100(sin²θ cos²φ + cos²θ cos²φ + sin²φ) = 100(cos²φ + sin²φ) = 100. At θ = 90°, φ = 0 the point is on the +x axis, where r̂ = x̂ and θ̂ = −ẑ, so F = 10r̂, as required.</p>
+      </div>
+
+      <p><strong>Cross-check through cylindrical.</strong> The same answer must come out of the C→S matrix. With (F<sub>ρ</sub>, F<sub>φ</sub>, F<sub>z</sub>) = (10 cos φ, −10 sin φ, 0):</p>
+      <div class="eqbox">
+        <div class="eq">F<sub>r</sub> = sin θ (10 cos φ) + 0 + cos θ (0) = 10 sin θ cos φ</div>
+        <div class="eq">F<sub>θ</sub> = cos θ (10 cos φ) + 0 − sin θ (0) = 10 cos θ cos φ</div>
+        <div class="eq">F<sub>φ</sub> = 0 + 1(−10 sin φ) + 0 = −10 sin φ</div>
+      </div>
+      <p>The two routes agree. Use this as a self-check in the exam: if your cylindrical and spherical answers do not describe the same physical vector, one matrix was applied with the wrong angles.</p>
+
+      <div class="eqcard" style="margin:16px 0">
+        <span class="tag">Worked example 7</span>
+        <div class="name">A full point conversion: F⃗ at P(3, 4, 12)</div>
+        <p>At P, a vector is F⃗ = 9 x̂ + 8 ŷ + 36 ẑ. Convert the point first, then the components.</p>
+        <div class="eq">
+          ρ = √(3² + 4²) = 5,&nbsp;&nbsp; φ = tan<sup>−1</sup>(4/3) = 53.13°<br>
+          r = √(3² + 4² + 12²) = 13,&nbsp;&nbsp; θ = cos<sup>−1</sup>(12/13) = 22.62°<br>
+          sin θ = 5/13,&nbsp; cos θ = 12/13,&nbsp; sin φ = 4/5,&nbsp; cos φ = 3/5
+        </div>
+        <div class="eq">
+          <span class="mat" style="grid-template-columns:auto"><span>F<sub>r</sub></span><span>F<sub>θ</sub></span><span>F<sub>φ</sub></span></span>
+          =
+          <span class="mat" style="grid-template-columns:repeat(3,auto)">
+            <span>3/13</span><span>4/13</span><span>12/13</span>
+            <span>36/65</span><span>48/65</span><span>−25/65</span>
+            <span>−4/5</span><span>3/5</span><span>0</span>
+          </span>
+          <span class="mat" style="grid-template-columns:auto"><span>9</span><span>8</span><span>36</span></span>
+          =
+          <span class="mat" style="grid-template-columns:auto"><span>491/13</span><span>−192/65</span><span>−12/5</span></span>
+        </div>
+        <div class="eq">
+          F<sub>r</sub> = (27 + 32 + 432)/13 = 37.77<br>
+          F<sub>θ</sub> = (324 + 384 − 900)/65 = −2.95<br>
+          F<sub>φ</sub> = (−36 + 24)/5 = −2.40
+        </div>
+        <div class="eq">F⃗ = 37.77 r̂ − 2.95 θ̂ − 2.40 φ̂</div>
+        <p class="why">Magnitude check: 37.77² + 2.95² + 2.40² = 1426.5 + 8.70 + 5.76 = 1441.0, and 9² + 8² + 36² = 1441. Source check: the handwritten key rounds the θ̂ row to 0.38 and reports −2.81. With sin θ = 5/13 the exact value is −2.95; −2.81 does not preserve the magnitude.</p>
+      </div>
+
+      <div class="warn">
+        <strong>Common mistakes.</strong>
+        <ul>
+          <li><strong>Using the wrong direction.</strong> Converting Cartesian → cylindrical uses R→C, whose first row is (cos φ, sin φ, 0). Multiplying by C→R instead gives a different vector unless φ = 0.</li>
+          <li><strong>Forgetting that the matrix depends on the point.</strong> The entries contain φ and θ. Plug in the angles of the point where the vector is evaluated, not the angles of some other point.</li>
+          <li><strong>Converting coordinates but keeping components.</strong> A point and a vector are different objects. Convert (x, y, z) to (ρ, φ, z), then apply the matrix to (A<sub>x</sub>, A<sub>y</sub>, A<sub>z</sub>).</li>
+          <li><strong>Expecting constant components.</strong> A uniform Cartesian field has φ- and θ-dependent curvilinear components. That is correct, not a mistake.</li>
+          <li><strong>Losing a sign in φ.</strong> sin φ is positive in the first and second quadrants, negative in the third and fourth. Use atan2 and keep the quadrant.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="diff-elements">
+      <h2>1.5 · Differential length, volume and surface</h2>
+
+      <p>An integral is a sum over tiny pieces. In a curvilinear system the pieces are not all the same size: a step dφ moves you farther when ρ or r is large. The metric factors ρ, r and r sin θ convert coordinate steps into physical lengths. Miss one and the integral is dimensionally wrong even if every limit is right.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>System</th><th>Differential length dℓ⃗</th><th>Differential volume dv</th><th>Differential surfaces dS⃗</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Cartesian</strong></td>
+              <td>dx x̂ + dy ŷ + dz ẑ</td>
+              <td>dx dy dz</td>
+              <td>dy dz x̂<br>dx dz ŷ<br>dx dy ẑ</td>
+            </tr>
+            <tr>
+              <td><strong>Cylindrical</strong></td>
+              <td>dρ ρ̂ + ρ dφ φ̂ + dz ẑ</td>
+              <td>ρ dρ dφ dz</td>
+              <td>ρ dφ dz ρ̂<br>dρ dz φ̂<br>ρ dρ dφ ẑ</td>
+            </tr>
+            <tr>
+              <td><strong>Spherical</strong></td>
+              <td>dr r̂ + r dθ θ̂ + r sin θ dφ φ̂</td>
+              <td>r² sin θ dr dθ dφ</td>
+              <td>r² sin θ dθ dφ r̂<br>r sin θ dr dφ θ̂<br>r dr dθ φ̂</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Where the factors come from.</strong> In cylindrical coordinates a small change dφ traces an arc of length ρ dφ, so the φ-direction length element is ρ dφ. The volume is the product of the three edge lengths: dρ, ρ dφ and dz. In spherical coordinates the θ-arc is r dθ and the φ-arc is r sin θ dφ; the volume is dr · r dθ · r sin θ dφ = r² sin θ dr dθ dφ. Each surface element uses the two edge lengths on its face, with the unit vector normal to that face.</p>
+
+      <div class="tip">
+        <strong>Check the units.</strong> dℓ must have units of length. dv must be length³. Every dS⃗ must be length². If a candidate element has the wrong power of length, a metric factor is missing.
+      </div>
+
+      <div class="eqcard" style="margin:16px 0">
+        <span class="tag">Worked example 8</span>
+        <div class="name">Volume of a cylinder by cylindrical dv</div>
+        <p>A cylinder of radius ρ = 5 cm is concentric with the z-axis and extends from z = −3 cm to z = 3 cm. Sum the differential volumes.</p>
+        <div class="eq">
+          V = ∫<sub>φ=0</sub><sup>2π</sup> ∫<sub>ρ=0</sub><sup>5</sup> ∫<sub>z=−3</sub><sup>3</sup> ρ dρ dφ dz<br>
+          = [φ]<sub>0</sub><sup>2π</sup> · [ρ²/2]<sub>0</sub><sup>5</sup> · [z]<sub>−3</sub><sup>3</sup><br>
+          = (2π)(25/2)(6) = 150π = 471.24 cm³
+        </div>
+        <p class="why">Direct check: π ρ² h = π(5²)(6) = 150π = 471.24 cm³. In metres the same volume is π(0.05²)(0.06) = 4.712 × 10<sup>−4</sup> m³. The lecture reports 471.2 cm³; the extra digit is just rounding.</p>
+      </div>
+
+      <div class="eqcard" style="margin:16px 0">
+        <span class="tag">Worked example 9</span>
+        <div class="name">Charge in a sphere with ρ<sub>v</sub> = 4 cos²θ C/cm³</div>
+        <p>A sphere of radius 2 cm carries a volume charge density ρ<sub>v</sub> = 4 cos²θ C/cm³. The density depends on θ, so it cannot be pulled out of the θ-integral.</p>
+        <div class="eq">
+          Q = ∫<sub>φ=0</sub><sup>2π</sup> ∫<sub>θ=0</sub><sup>π</sup> ∫<sub>r=0</sub><sup>2</sup> (4 cos²θ) r² sin θ dr dθ dφ<br>
+          = 4 · (2π) · [r³/3]<sub>0</sub><sup>2</sup> · ∫<sub>0</sub><sup>π</sup> cos²θ sin θ dθ
+        </div>
+        <div class="eq">
+          ∫<sub>0</sub><sup>π</sup> cos²θ sin θ dθ = [−cos³θ/3]<sub>0</sub><sup>π</sup> = (−(−1)/3) − (−1/3) = 2/3<br>
+          Q = 4 · 2π · (8/3) · (2/3) = 128π/9 = 44.68 C
+        </div>
+        <p class="why">Units: C/cm³ × cm³ = C. Check the density: it is maximum on the z-axis (θ = 0, π) and zero on the equator (θ = π/2). The sin θ factor in dv still gives a finite total because the equatorial band has the most volume.</p>
+      </div>
+
+      <div class="exam">
+        <strong>Exam link.</strong> Control 2024–25 Exercise 1 · 6 pts — flux of D⃗ across a spherical shell sector, then a divergence-theorem check. The surface integral uses dS⃗ = r² sin θ dθ dφ r̂ on the outer sphere; the limits on θ and φ come straight from the region. Getting dS⃗ and the limits right is most of the six points.
+      </div>
+
+      <div class="warn">
+        <strong>Common mistakes.</strong>
+        <ul>
+          <li><strong>Dropping ρ or r.</strong> dℓ<sub>φ</sub> = ρ dφ, not dφ; dv<sub>spherical</sub> = r² sin θ dr dθ dφ, not dr dθ dφ.</li>
+          <li><strong>Using the wrong surface factor.</strong> dS<sub>θ</sub> = r sin θ dr dφ (one power of r), while dS<sub>r</sub> = r² sin θ dθ dφ (two powers).</li>
+          <li><strong>Integrating θ to 2π.</strong> θ runs 0 to π; φ runs 0 to 2π.</li>
+          <li><strong>Mixing centimetres and metres.</strong> Convert every length to the same unit before multiplying; the charge example above stays in cm and reports C because ρ<sub>v</sub> is per cm³.</li>
+          <li><strong>Forgetting that dS⃗ is a vector.</strong> For a closed surface use the outward normal; the sign of the flux depends on it.</li>
+        </ul>
+      </div>
+
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="check">
+      <h2>1.6 · Check yourself</h2>
+
+      <p>Answer first, then open the solution. If you miss one, redo the matching worked example above before moving to Chapter 2.</p>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <div class="tag">Check 1 · position vector</div>
+        <p class="q">Which expression is the position vector of a point P(ρ, φ, z) in cylindrical coordinates?</p>
+        <div class="opts">
+          <button type="button" data-opt="a">ρ ρ̂ + z ẑ</button>
+          <button type="button" data-opt="b">ρ ρ̂ + φ φ̂ + z ẑ</button>
+          <button type="button" data-opt="c">ρ ρ̂ + r θ̂</button>
+          <button type="button" data-opt="d">z ẑ + φ φ̂</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol">The arrow from the origin to P has a horizontal part ρ ρ̂ and a vertical part z ẑ. Increasing φ moves P around the z-axis but does not change its distance from the origin, so there is no φ̂ term. Answer: <strong>a</strong>.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <div class="tag">Check 2 · angle from a dot product</div>
+        <p class="q">A⃗ = 3x̂ + 4ŷ and B⃗ = −4x̂ + 3ŷ. What is the angle between them?</p>
+        <div class="opts">
+          <button type="button" data-opt="a">0°</button>
+          <button type="button" data-opt="b">45°</button>
+          <button type="button" data-opt="c">90°</button>
+          <button type="button" data-opt="d">180°</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol">A⃗ · B⃗ = (3)(−4) + (4)(3) = −12 + 12 = 0. A zero dot product means cos θ = 0, so θ = 90°. The two vectors are perpendicular. Answer: <strong>c</strong>.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <div class="tag">Check 3 · the control conversion</div>
+        <p class="q">F⃗ = 10x̂. Which expression gives F⃗ in cylindrical coordinates?</p>
+        <div class="opts">
+          <button type="button" data-opt="a">10 ρ̂</button>
+          <button type="button" data-opt="b">10(cos φ ρ̂ − sin φ φ̂)</button>
+          <button type="button" data-opt="c">10(sin φ ρ̂ + cos φ φ̂)</button>
+          <button type="button" data-opt="d">10(cos φ ρ̂ + sin φ φ̂)</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol">Use R→C with (A<sub>x</sub>, A<sub>y</sub>, A<sub>z</sub>) = (10, 0, 0). The first row gives F<sub>ρ</sub> = 10 cos φ; the second gives F<sub>φ</sub> = −10 sin φ; F<sub>z</sub> = 0. Hence F⃗ = 10(cos φ ρ̂ − sin φ φ̂). At φ = 0 this is 10ρ̂, as it must be on the +x axis. Answer: <strong>b</strong>.</div></details>
+      </div>
+
+      <p><strong>Blank-page checklist.</strong> Close the page and write these from memory:</p>
+      <ul>
+        <li>The three systems: coordinates, ranges, unit vectors, cyclic relation, position vector.</li>
+        <li>All six unit-vector matrices, or the three pairs and the transpose rule.</li>
+        <li>The conversion of <span class="mono">F = 10x̂</span> to cylindrical and spherical components.</li>
+        <li>The dℓ, dv and dS⃗ table in all three systems.</li>
+        <li>The cylinder volume 150π cm³ and the sphere charge 128π/9 C.</li>
+      </ul>
+
+      <div class="done-row">
+        <input type="checkbox" id="p-ch1" data-progress="ch1-core">
+        <label for="p-ch1">I can convert F = 10x̂ to cylindrical and spherical coordinates, and write the three dℓ/dv/dS sets without notes.
+          <span class="done-meta">Ch. 1 · core skill</span></label>
+      </div>
+
+      <div class="exam">
+        <strong>Next: Chapter 2.</strong> Vectors become operators: line, surface and volume integrals, then gradient, divergence, curl, and the divergence and Stokes theorems. The control's 6-point Exercise 1 is a divergence-theorem problem, so the dS⃗ work above is the foundation.
+        <p style="margin-top:10px"><a class="btn btn-primary" href="ch2.html">Continue to Chapter 2 →</a> <a class="btn btn-outline" href="practice.html">Practice the control set</a></p>
+      </div>
+    </section>
+
+    <footer class="foot">EE361 EMF Companion · Chapter 1 built from K. Djafri's lecture chapter and the 2024–25 control pattern. Original prose and diagrams; source PDFs are not redistributed. <a href="formulas.html">Formula sheet ↗</a></footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+<script src="js/viz-common.js"></script>
+<script src="js/viz-ch1.js"></script>
+</body>
+</html>

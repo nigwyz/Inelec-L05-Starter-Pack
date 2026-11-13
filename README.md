@@ -9,10 +9,13 @@ from and improve together.
 - **[Computer Architecture study site](https://nigwyz.github.io/Inelec-L05-Starter-Pack/)** —
   interactive companion for Chapters 1–3: digital design, the top-level computer,
   and the CPU, with past-control practice.
+- **[Electromagnetic Field Theory (EE361) companion](https://nigwyz.github.io/Inelec-L05-Starter-Pack/emf/)** —
+  exam-first companion built from the 2024–25 and 2021–22 controls, the
+  2013–2025 recitations, and K. Djafri's five lecture chapters: vectors and
+  coordinates, vector calculus, electrostatics, magnetostatics, Maxwell, plane
+  waves, a searchable formula sheet, and a control practice set.
 - [Computer Architecture source notes](Computer%20Architecture/README.md) —
   Markdown lessons, the binary-byte lab, and the site source.
-- Electromagnetic Field Theory (EE361) — original study notes and visualizations
-  will be added as we create them.
 
 ## Sharing policy
 

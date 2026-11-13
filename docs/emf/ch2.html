@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 2 — Vector calculus | EE361 EMF</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/emf.css">
+<style>
+  /* Chapter-scoped visual sizing and range styling: shared CSS untouched. */
+  .viz-svg { max-width: 760px; margin: 0 auto; }
+  .viz input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    height: 18px; background: transparent; cursor: pointer;
+  }
+  .viz input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px; border-radius: 3px; background: #dbe4f3;
+  }
+  .viz input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 15px; height: 15px; margin-top: -4.5px;
+    border-radius: 50%; background: #2c4b9b; border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #2c4b9b;
+  }
+  .viz input[type="range"]::-moz-range-track {
+    height: 6px; border-radius: 3px; background: #dbe4f3;
+  }
+  .viz input[type="range"]::-moz-range-progress {
+    height: 6px; border-radius: 3px; background: #2c4b9b;
+  }
+  .viz input[type="range"]::-moz-range-thumb {
+    width: 13px; height: 13px; border-radius: 50%;
+    background: #2c4b9b; border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #2c4b9b;
+  }
+</style>
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Ch. 2 — Vector calculus</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EMF Companion<small>EE361 · Electromagnetics</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch0.html"><span class="num">00</span>How it fits</a>
+      <a href="ch1.html"><span class="num">01</span>Vectors &amp; coordinates</a>
+      <a class="active" href="ch2.html"><span class="num">02</span>Vector calculus</a>
+      <a href="ch3.html"><span class="num">03</span>Electrostatics</a>
+      <a href="ch4.html"><span class="num">04</span>Magnetostatics</a>
+      <a href="ch5.html"><span class="num">05</span>Maxwell</a>
+      <a href="ch6.html"><span class="num">06</span>Plane waves</a>
+      <div class="nav-label">Exam prep</div>
+      <a href="formulas.html"><span class="num">Σ</span>Formula sheet</a>
+      <a href="practice.html"><span class="num">✎</span>Practice</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Chapter 2 · Vector calculus</span>
+      <h1>Line integrals, gradient, divergence, curl — and the two theorems</h1>
+      <p class="lede">This is the chapter that unlocks the control's six-point flux question. You will add a field along a curve, across a surface and through a volume; compress those sums into ∇f, ∇·A and ∇×A; then undo the compression with the divergence theorem and Stokes. Every operator is written in Cartesian, cylindrical and spherical coordinates, because the control's closed surface is spherical.</p>
+    </header>
+
+    <div class="exam">
+      <strong>Where this chapter pays.</strong> Control 2024–25, Exercise 1 is a closed-surface flux in spherical coordinates followed by a divergence-theorem check. <a href="#div-theorem">The worked example in §2.5</a> reproduces the full 27π result, face by face. Exercise 2 then uses the volume integral <var>Q</var> = ∫<var>ρ</var><sub>v</sub> d<var>v</var>, so the same differential-element discipline carries straight over.
+    </div>
+
+    <div class="toc">
+      <strong>On this page</strong>
+      <ol>
+        <li><a href="#integrals">Line, surface and volume integrals</a></li>
+        <li><a href="#gradient">Gradient and the directional derivative</a></li>
+        <li><a href="#divergence">Flux and divergence</a></li>
+        <li><a href="#curl">Circulation and curl</a></li>
+        <li><a href="#div-theorem">The divergence theorem — the 27π example</a></li>
+        <li><a href="#stokes">Stokes' theorem</a></li>
+        <li><a href="#check">Check yourself</a></li>
+      </ol>
+    </div>
+
+    <div class="note">
+      <strong>Notation, fixed once.</strong> Cylindrical coordinates are (ρ, φ, z); spherical coordinates are (r, θ, φ). In both, <var>φ</var> is the azimuth and <var>θ</var> is the polar angle measured from +z. The volume charge density is <var>ρ</var><sub>v</sub> (the subscript keeps it distinct from the cylindrical radius <var>ρ</var>). A bold letter is a vector; a hat is a unit vector.
+    </div>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="integrals">
+      <h2><span class="kicker">2.1</span>Line, surface and volume integrals</h2>
+
+      <p>All three integrals use the same recipe: cut the object into small pieces, multiply the field by the size of the piece, add, then shrink the pieces. What changes is the object — a curve, a sheet, or a solid — and therefore what “size” means.</p>
+
+      <h3>Line integral: work along a curve</h3>
+
+      <p>A curve <var>C</var> carries a differential displacement d<b>l</b>. Its direction is the direction of travel; its length is the small arc length d<var>l</var>. Reversing the traversal reverses d<b>l</b>.</p>
+
+      <div class="eqbox">
+        <div class="eq">∫<sub><var>C</var></sub> <var>f</var> d<var>l</var> &nbsp; (scalar) &nbsp;&nbsp;·&nbsp;&nbsp; ∫<sub><var>C</var></sub> <var>f</var> d<b>l</b> &nbsp; (vector)</div>
+        <div class="eq">∫<sub><var>C</var></sub> <b>F</b> · d<b>l</b> &nbsp; (work) &nbsp;&nbsp;·&nbsp;&nbsp; ∫<sub><var>C</var></sub> <b>F</b> × d<b>l</b> &nbsp; (vector)</div>
+      </div>
+
+      <p>The dot-product version is the one the exam uses. It is the work done by <b>F</b> along the path:</p>
+
+      <div class="eqbox">
+        <div class="eq"><var>W</var> = ∫<sub><var>C</var></sub> <b>F</b> · d<b>l</b> = ∫<sub><var>t</var><sub>0</sub></sub><sup><var>t</var><sub>1</sub></sup> <b>F</b>(<b>r</b>(<var>t</var>)) · <b>r</b>′(<var>t</var>) d<var>t</var></div>
+      </div>
+
+      <p>Only the component of <b>F</b> along the path contributes. If <b>F</b> is perpendicular to d<b>l</b> everywhere on a leg, that leg contributes zero — no matter how large the field is.</p>
+
+      <h3>Surface integral: flux through a sheet</h3>
+
+      <p>A surface element has area d<var>S</var> and a unit normal <b>n̂</b>. The vector area is d<b>S</b> = <b>n̂</b> d<var>S</var>. The normal is a choice, but for a <em>closed</em> surface the convention is fixed: it points outward.</p>
+
+      <div class="eqbox">
+        <div class="eq">Φ = ∫<sub><var>S</var></sub> <b>F</b> · d<b>S</b> = ∫<sub><var>S</var></sub> <b>F</b> · <b>n̂</b> d<var>S</var></div>
+      </div>
+
+      <p>Φ is the flux: the amount of <b>F</b> crossing the sheet. The tangential part of <b>F</b> slides along the sheet and contributes nothing. For a closed surface, positive flux means more field leaves the volume than enters it.</p>
+
+      <p>The other two surface integrals are less common but appear in the lecture's definitions: ∫<sub><var>S</var></sub> <var>f</var> d<b>S</b> is a vector, and ∫<sub><var>S</var></sub> <b>F</b> × d<b>S</b> is a vector.</p>
+
+      <h3>Volume integral: total charge</h3>
+
+      <div class="eqbox">
+        <div class="eq">∫<sub><var>V</var></sub> <var>f</var> d<var>v</var> &nbsp; (scalar) &nbsp;&nbsp;·&nbsp;&nbsp; ∫<sub><var>V</var></sub> <b>F</b> d<var>v</var> &nbsp; (vector)</div>
+        <div class="eq"><var>Q</var> = ∫<sub><var>V</var></sub> <var>ρ</var><sub>v</sub> d<var>v</var></div>
+      </div>
+
+      <p>The volume integral adds a density over a solid. If the density is charge per unit volume, the result is total charge. If it is mass per unit volume, the result is total mass. The integrand supplies the physics; the integral supplies the bookkeeping.</p>
+
+      <h3>The differential elements you must be able to write from memory</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>System</th><th>d<b>l</b></th><th>d<var>v</var></th><th>Surface elements</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Cartesian</strong> (<var>x</var>, <var>y</var>, <var>z</var>)</td>
+              <td>d<var>x</var> x̂ + d<var>y</var> ŷ + d<var>z</var> ẑ</td>
+              <td>d<var>x</var> d<var>y</var> d<var>z</var></td>
+              <td>d<var>y</var> d<var>z</var> x̂, &nbsp; d<var>x</var> d<var>z</var> ŷ, &nbsp; d<var>x</var> d<var>y</var> ẑ</td>
+            </tr>
+            <tr>
+              <td><strong>Cylindrical</strong> (<var>ρ</var>, <var>φ</var>, <var>z</var>)</td>
+              <td>d<var>ρ</var> ρ̂ + <var>ρ</var> d<var>φ</var> φ̂ + d<var>z</var> ẑ</td>
+              <td><var>ρ</var> d<var>ρ</var> d<var>φ</var> d<var>z</var></td>
+              <td><var>ρ</var> d<var>φ</var> d<var>z</var> ρ̂, &nbsp; d<var>ρ</var> d<var>z</var> φ̂, &nbsp; <var>ρ</var> d<var>ρ</var> d<var>φ</var> ẑ</td>
+            </tr>
+            <tr>
+              <td><strong>Spherical</strong> (<var>r</var>, <var>θ</var>, <var>φ</var>)</td>
+              <td>d<var>r</var> r̂ + <var>r</var> d<var>θ</var> θ̂ + <var>r</var> sin<var>θ</var> d<var>φ</var> φ̂</td>
+              <td><var>r</var><sup>2</sup> sin<var>θ</var> d<var>r</var> d<var>θ</var> d<var>φ</var></td>
+              <td><var>r</var><sup>2</sup> sin<var>θ</var> d<var>θ</var> d<var>φ</var> r̂, &nbsp; <var>r</var> sin<var>θ</var> d<var>r</var> d<var>φ</var> θ̂, &nbsp; <var>r</var> d<var>r</var> d<var>θ</var> φ̂</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Those factors are not decoration. The <var>ρ</var> in cylindrical d<b>l</b>, the <var>r</var><sup>2</sup> sin<var>θ</var> in spherical d<var>v</var>, and the <var>r</var> sin<var>θ</var> in the spherical φ̂ direction are the source of every metric factor in the gradient, divergence and curl formulas that follow.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Line integral on two paths</span><span class="vh">drag <var>t</var>; switch the route</span></div>
+        <div class="viz-body" data-viz="line-integral"></div>
+      </div>
+
+      <h3>Worked Example 2.1 — two paths, one answer</h3>
+
+      <p>Take <b>F</b> = <var>y</var> x̂ + <var>x</var> ŷ. Evaluate ∫<b>F</b>·d<b>l</b> from the origin to (1, 1, 0) along two routes:</p>
+      <ul>
+        <li><strong>Path 1:</strong> (0, 0, 0) → (1, 0, 0) → (1, 1, 0).</li>
+        <li><strong>Path 2:</strong> the straight segment (0, 0, 0) → (1, 1, 0).</li>
+      </ul>
+
+      <h4>Path 1, first leg: (0, 0, 0) → (1, 0, 0)</h4>
+      <p>On this leg <var>y</var> = 0, <var>z</var> = 0, so d<var>y</var> = d<var>z</var> = 0 and d<b>l</b> = d<var>x</var> x̂. The field on the leg is <b>F</b> = 0 x̂ + <var>x</var> ŷ. Therefore</p>
+      <div class="eqbox"><div class="eq"><b>F</b> · d<b>l</b> = (0 x̂ + <var>x</var> ŷ) · (d<var>x</var> x̂) = 0 &nbsp; ⟹ &nbsp; ∫<sub>0</sub><sup>1</sup> 0 d<var>x</var> = 0</div></div>
+      <p>The field points in ŷ; the path points in x̂. They are perpendicular, so this leg does no work.</p>
+
+      <h4>Path 1, second leg: (1, 0, 0) → (1, 1, 0)</h4>
+      <p>Now <var>x</var> = 1, <var>z</var> = 0, so d<var>x</var> = d<var>z</var> = 0 and d<b>l</b> = d<var>y</var> ŷ. The field is <b>F</b> = <var>y</var> x̂ + 1 ŷ, so</p>
+      <div class="eqbox"><div class="eq"><b>F</b> · d<b>l</b> = (<var>y</var> x̂ + ŷ) · (d<var>y</var> ŷ) = d<var>y</var></div>
+      <div class="eq">∫<sub>0</sub><sup>1</sup> d<var>y</var> = 1</div></div>
+      <p>Path 1 total: 0 + 1 = <strong>1</strong>.</p>
+
+      <h4>Path 2: the straight line</h4>
+      <p>Parameterize the segment by <var>t</var> from 0 to 1: <var>x</var> = <var>t</var>, <var>y</var> = <var>t</var>, <var>z</var> = 0. Then d<var>x</var> = d<var>y</var> = d<var>t</var> and d<b>l</b> = (x̂ + ŷ) d<var>t</var>. The field is <b>F</b> = <var>t</var> x̂ + <var>t</var> ŷ, so</p>
+      <div class="eqbox"><div class="eq"><b>F</b> · d<b>l</b> = (<var>t</var> x̂ + <var>t</var> ŷ) · (x̂ + ŷ) d<var>t</var> = 2<var>t</var> d<var>t</var></div>
+      <div class="eq">∫<sub>0</sub><sup>1</sup> 2<var>t</var> d<var>t</var> = [<var>t</var><sup>2</sup>]<sub>0</sub><sup>1</sup> = 1</div></div>
+
+      <p>Both routes give 1. The field is path-independent — and the potential below proves it for every path, not just these two.</p>
+
+      <div class="tip">
+        <strong>The shortcut.</strong> <b>F</b> = <var>y</var> x̂ + <var>x</var> ŷ is the gradient of <var>f</var> = <var>xy</var>: ∂<var>f</var>/∂<var>x</var> = <var>y</var>, ∂<var>f</var>/∂<var>y</var> = <var>x</var>. Therefore the integral from <var>A</var> to <var>B</var> is <var>f</var>(<var>B</var>) − <var>f</var>(<var>A</var>) = <var>xy</var>|<sub>(1,1)</sub> − <var>xy</var>|<sub>(0,0)</sub> = 1. In the exam, show the path integral — but use the potential to check it.
+      </div>
+
+      <h3>Path independence, stated precisely</h3>
+      <p>For a field <b>F</b> on a simply connected region, these three statements are equivalent:</p>
+      <ol>
+        <li>∫<sub><var>A</var></sub><sup><var>B</var></sup> <b>F</b>·d<b>l</b> has the same value for every path from <var>A</var> to <var>B</var>.</li>
+        <li>∮<sub><var>C</var></sub> <b>F</b>·d<b>l</b> = 0 for every closed loop <var>C</var>.</li>
+        <li><b>F</b> = ∇<var>f</var> for some scalar potential <var>f</var> (equivalently, ∇×<b>F</b> = 0).</li>
+      </ol>
+      <p>In electrostatics the potential is written with a minus sign, <b>E</b> = −∇<var>V</var>, because the electric force pushes a positive charge from high potential to low potential. The mathematics is the same; the sign is a physics convention.</p>
+
+      <div class="warn">
+        <strong>Direction and limits.</strong> ∫<sub><var>A</var></sub><sup><var>B</var></sup> = −∫<sub><var>B</var></sub><sup><var>A</var></sup>. In Example 2.1, the first leg contributes zero because <var>y</var> = 0 there, not because the integral of <var>x</var> is zero. Write the parameterization of each leg separately and keep its limits. A sign error on one leg is the most common way to lose the whole line-integral mark.
+      </div>
+
+      <h3>Two quick checks that prepare the control</h3>
+
+      <p><strong>Surface flux.</strong> For <b>D</b> = 3<var>r</var><sup>2</sup> r̂ through a sphere of radius <var>b</var>:</p>
+      <div class="eqbox"><div class="eq">∮ <b>D</b>·d<b>S</b> = ∫<sub>0</sub><sup>2π</sup>∫<sub>0</sub><sup>π</sup> (3<var>b</var><sup>2</sup>)(<var>b</var><sup>2</sup> sin<var>θ</var>) d<var>θ</var> d<var>φ</var> = 3<var>b</var><sup>4</sup>(2)(2π) = 12π<var>b</var><sup>4</sup></div></div>
+      <p>At <var>b</var> = 2 this is 192π C. The radial field is constant on the sphere, so the integral collapses to (field) × (area).</p>
+
+      <p><strong>Volume charge.</strong> For <var>ρ</var><sub>v</sub> = <var>ρ</var><sub>0</sub> <var>r</var>/<var>a</var> inside a sphere of radius <var>a</var>:</p>
+      <div class="eqbox"><div class="eq"><var>Q</var> = ∫<sub>0</sub><sup>2π</sup>∫<sub>0</sub><sup>π</sup>∫<sub>0</sub><sup><var>a</var></sup> (<var>ρ</var><sub>0</sub><var>r</var>/<var>a</var>) <var>r</var><sup>2</sup> sin<var>θ</var> d<var>r</var> d<var>θ</var> d<var>φ</var> = (<var>ρ</var><sub>0</sub>/<var>a</var>)(2π)(2)(<var>a</var><sup>4</sup>/4) = π<var>ρ</var><sub>0</sub><var>a</var><sup>3</sup></div></div>
+      <p>The same setup, with different θ limits, is Control 2024–25 Exercise 2. The integration is mechanical once d<var>v</var> is written correctly.</p>
+
+      <div class="exam">
+        <strong>Exam skill unlocked.</strong> Given a field and a curve, you can parameterize each leg, compute <b>F</b>·d<b>l</b>, and integrate. Given a closed surface, you can write d<b>S</b> on each face with the correct outward normal.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="gradient">
+      <h2><span class="kicker">2.2</span>Gradient and the directional derivative</h2>
+
+      <p>A scalar field <var>f</var>(<var>x</var>, <var>y</var>, <var>z</var>) assigns a number to every point — temperature, pressure, potential. The gradient turns that scalar field into a vector field that answers two questions: <em>which way is uphill?</em> and <em>how steep is it?</em></p>
+
+      <h3>From a differential to a direction</h3>
+      <p>The chain rule gives the change in <var>f</var> over a small displacement d<b>l</b>:</p>
+      <div class="eqbox">
+        <div class="eq">d<var>f</var> = (∂<var>f</var>/∂<var>x</var>)d<var>x</var> + (∂<var>f</var>/∂<var>y</var>)d<var>y</var> + (∂<var>f</var>/∂<var>z</var>)d<var>z</var></div>
+        <div class="eq">= [(∂<var>f</var>/∂<var>x</var>) x̂ + (∂<var>f</var>/∂<var>y</var>) ŷ + (∂<var>f</var>/∂<var>z</var>) ẑ] · (d<var>x</var> x̂ + d<var>y</var> ŷ + d<var>z</var> ẑ) = ∇<var>f</var> · d<b>l</b></div>
+      </div>
+      <p>Divide by the step length d<var>l</var>:</p>
+      <div class="eqbox"><div class="eq">d<var>f</var>/d<var>l</var> = ∇<var>f</var> · (d<b>l</b>/d<var>l</var>) = ∇<var>f</var> · <b>û</b> = |∇<var>f</var>| cos<var>θ</var></div></div>
+      <p>where <b>û</b> is the unit vector in the direction of the step and <var>θ</var> is the angle between ∇<var>f</var> and <b>û</b>. The derivative is largest when cos<var>θ</var> = 1, that is, when you walk parallel to ∇<var>f</var>. Its maximum value is |∇<var>f</var>|. It is zero when you walk along a level curve, perpendicular to ∇<var>f</var>.</p>
+
+      <div class="def">
+        <strong>Gradient.</strong> ∇<var>f</var> points in the direction of steepest ascent of <var>f</var>. Its magnitude |∇<var>f</var>| is the slope in that direction, in units of <var>f</var> per metre. It is perpendicular to the level surface <var>f</var> = constant.
+      </div>
+
+      <h3>Reading a contour map</h3>
+      <p>A contour map draws the level curves <var>f</var> = <var>c</var> for several constants <var>c</var>. Three rules let you read the gradient directly from the picture:</p>
+      <ul class="clean check">
+        <li><strong>∇<var>f</var> is perpendicular to the contour.</strong> If you move along a contour, <var>f</var> does not change, so d<var>f</var> = ∇<var>f</var>·d<b>l</b> = 0. A nonzero gradient can only be perpendicular to that displacement.</li>
+        <li><strong>Contours close together mean a steep slope.</strong> The same change Δ<var>f</var> happens over a shorter distance, so |∇<var>f</var>| is larger.</li>
+        <li><strong>The arrow points from lower to higher values.</strong> If the labels increase to your right, the gradient points right, across the contours.</li>
+      </ul>
+      <p>At a local maximum or minimum, the gradient vanishes. At a saddle point it also vanishes, but the contours cross instead of closing. The origin of <var>f</var> = <var>x</var><sup>2</sup><var>y</var> − <var>y</var><sup>3</sup> is exactly this case.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Gradient on a contour map</span><span class="vh">drag the probe; switch hill / saddle</span></div>
+        <div class="viz-body" data-viz="gradient"></div>
+      </div>
+
+      <h3>The gradient in all three coordinate systems</h3>
+      <p>The Cartesian formula is the definition. The curvilinear formulas come from comparing d<var>f</var> with ∇<var>f</var>·d<b>l</b> and using the metric factors in d<b>l</b>.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>System</th><th>∇<var>f</var></th><th>Where the factor comes from</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Cartesian</strong></td><td>(∂<var>f</var>/∂<var>x</var>) x̂ + (∂<var>f</var>/∂<var>y</var>) ŷ + (∂<var>f</var>/∂<var>z</var>) ẑ</td><td>d<b>l</b> = d<var>x</var> x̂ + d<var>y</var> ŷ + d<var>z</var> ẑ; all metric factors are 1.</td></tr>
+            <tr><td><strong>Cylindrical</strong></td><td>(∂<var>f</var>/∂<var>ρ</var>) ρ̂ + (1/<var>ρ</var>)(∂<var>f</var>/∂<var>φ</var>) φ̂ + (∂<var>f</var>/∂<var>z</var>) ẑ</td><td>d<b>l</b> contains <var>ρ</var> d<var>φ</var> φ̂, so the φ derivative is divided by <var>ρ</var>.</td></tr>
+            <tr><td><strong>Spherical</strong></td><td>(∂<var>f</var>/∂<var>r</var>) r̂ + (1/<var>r</var>)(∂<var>f</var>/∂<var>θ</var>) θ̂ + (1/(<var>r</var> sin<var>θ</var>))(∂<var>f</var>/∂<var>φ</var>) φ̂</td><td>d<b>l</b> contains <var>r</var> d<var>θ</var> θ̂ and <var>r</var> sin<var>θ</var> d<var>φ</var> φ̂.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The del operator is the same object with the field left blank:</p>
+      <div class="eqbox">
+        <div class="eq">∇ = x̂ ∂/∂<var>x</var> + ŷ ∂/∂<var>y</var> + ẑ ∂/∂<var>z</var></div>
+        <div class="eq">= ρ̂ ∂/∂<var>ρ</var> + φ̂ (1/<var>ρ</var>) ∂/∂<var>φ</var> + ẑ ∂/∂<var>z</var></div>
+        <div class="eq">= r̂ ∂/∂<var>r</var> + θ̂ (1/<var>r</var>) ∂/∂<var>θ</var> + φ̂ (1/(<var>r</var> sin<var>θ</var>)) ∂/∂<var>φ</var></div>
+      </div>
+      <p>By itself ∇ has no value. It becomes a gradient when it acts on a scalar, a divergence when it dots a vector, and a curl when it crosses a vector.</p>
+
+      <h3>Worked Example 2.3 — three systems, one recipe</h3>
+      <p>The lecture's Example 2.3 asks for the gradient of three functions. The point is not the algebra; it is that the same partial derivatives appear, multiplied by the metric factors of the coordinate system.</p>
+
+      <h4>(a) <var>f</var><sub>1</sub> = <var>a</var><var>x</var><sup>2</sup><var>y</var> + <var>b</var><var>y</var><sup>3</sup><var>z</var></h4>
+      <div class="eqbox">
+        <div class="eq">∂<var>f</var><sub>1</sub>/∂<var>x</var> = 2<var>a</var><var>x</var><var>y</var>, &nbsp; ∂<var>f</var><sub>1</sub>/∂<var>y</var> = <var>a</var><var>x</var><sup>2</sup> + 3<var>b</var><var>y</var><sup>2</sup><var>z</var>, &nbsp; ∂<var>f</var><sub>1</sub>/∂<var>z</var> = <var>b</var><var>y</var><sup>3</sup></div>
+        <div class="eq">∇<var>f</var><sub>1</sub> = 2<var>a</var><var>x</var><var>y</var> x̂ + (<var>a</var><var>x</var><sup>2</sup> + 3<var>b</var><var>y</var><sup>2</sup><var>z</var>) ŷ + <var>b</var><var>y</var><sup>3</sup> ẑ</div>
+      </div>
+
+      <h4>(b) <var>f</var><sub>2</sub> = <var>a</var><var>ρ</var><sup>2</sup> sin<var>φ</var> + <var>b</var><var>ρ</var><var>z</var> cos 2<var>φ</var></h4>
+      <div class="eqbox">
+        <div class="eq">∂<var>f</var><sub>2</sub>/∂<var>ρ</var> = 2<var>a</var><var>ρ</var> sin<var>φ</var> + <var>b</var><var>z</var> cos 2<var>φ</var></div>
+        <div class="eq">(1/<var>ρ</var>) ∂<var>f</var><sub>2</sub>/∂<var>φ</var> = (1/<var>ρ</var>)(<var>a</var><var>ρ</var><sup>2</sup> cos<var>φ</var> − 2<var>b</var><var>ρ</var><var>z</var> sin 2<var>φ</var>) = <var>a</var><var>ρ</var> cos<var>φ</var> − 2<var>b</var><var>z</var> sin 2<var>φ</var></div>
+        <div class="eq">∂<var>f</var><sub>2</sub>/∂<var>z</var> = <var>b</var><var>ρ</var> cos 2<var>φ</var></div>
+        <div class="eq">∇<var>f</var><sub>2</sub> = (2<var>a</var><var>ρ</var> sin<var>φ</var> + <var>b</var><var>z</var> cos 2<var>φ</var>) ρ̂ + (<var>a</var><var>ρ</var> cos<var>φ</var> − 2<var>b</var><var>z</var> sin 2<var>φ</var>) φ̂ + <var>b</var><var>ρ</var> cos 2<var>φ</var> ẑ</div>
+      </div>
+      <p>Watch the factor 1/<var>ρ</var> in the φ̂ component. Without it, the units are wrong: the φ derivative is with respect to an angle, not a length.</p>
+
+      <h4>(c) <var>f</var><sub>3</sub> = <var>a</var>/<var>r</var> + <var>b</var><var>r</var> sin<var>θ</var> cos<var>φ</var></h4>
+      <div class="eqbox">
+        <div class="eq">∂<var>f</var><sub>3</sub>/∂<var>r</var> = −<var>a</var>/<var>r</var><sup>2</sup> + <var>b</var> sin<var>θ</var> cos<var>φ</var></div>
+        <div class="eq">(1/<var>r</var>) ∂<var>f</var><sub>3</sub>/∂<var>θ</var> = <var>b</var> cos<var>θ</var> cos<var>φ</var></div>
+        <div class="eq">(1/(<var>r</var> sin<var>θ</var>)) ∂<var>f</var><sub>3</sub>/∂<var>φ</var> = −<var>b</var> sin<var>φ</var></div>
+        <div class="eq">∇<var>f</var><sub>3</sub> = (−<var>a</var>/<var>r</var><sup>2</sup> + <var>b</var> sin<var>θ</var> cos<var>φ</var>) r̂ + <var>b</var> cos<var>θ</var> cos<var>φ</var> θ̂ − <var>b</var> sin<var>φ</var> φ̂</div>
+      </div>
+
+      <h3>Worked example — <var>f</var> = <var>x</var><sup>2</sup><var>y</var> − <var>y</var><sup>3</sup></h3>
+      <div class="eqbox">
+        <div class="eq">∂<var>f</var>/∂<var>x</var> = 2<var>x</var><var>y</var>, &nbsp; ∂<var>f</var>/∂<var>y</var> = <var>x</var><sup>2</sup> − 3<var>y</var><sup>2</sup></div>
+        <div class="eq">∇<var>f</var> = 2<var>x</var><var>y</var> x̂ + (<var>x</var><sup>2</sup> − 3<var>y</var><sup>2</sup>) ŷ</div>
+      </div>
+      <p>At <var>P</var>(1, 2):</p>
+      <div class="eqbox">
+        <div class="eq">∇<var>f</var>(1, 2) = 4 x̂ + (1 − 12) ŷ = 4 x̂ − 11 ŷ</div>
+        <div class="eq">|∇<var>f</var>| = √(4<sup>2</sup> + 11<sup>2</sup>) = √137 ≈ 11.70</div>
+      </div>
+      <p>The steepest ascent at <var>P</var> is in the direction (4, −11)/√137. The directional derivative toward <var>Q</var>(2, 4) uses the unit vector (1, 2)/√5:</p>
+      <div class="eqbox"><div class="eq">D<sub><b>û</b></sub><var>f</var> = ∇<var>f</var>·<b>û</b> = (4)(1/√5) + (−11)(2/√5) = −18/√5 ≈ −8.05</div></div>
+      <p>The value is negative, so <var>f</var> decreases in that direction. The level curve through <var>P</var> has <var>f</var> = 1<sup>2</sup>·2 − 2<sup>3</sup> = −6. A tangent to it must be perpendicular to ∇<var>f</var>; (11, 4) works because 4·11 + (−11)·4 = 0. The gradient is normal to the contour, not along it.</p>
+      <p>The only critical point is (0, 0), where both partials vanish. It is a saddle: along <var>y</var> = 0 the function is 0, while along <var>x</var> = 0 it is −<var>y</var><sup>3</sup>, which changes sign. The contours cross there, and the gradient arrow has zero length.</p>
+
+      <h3>The identity ∇<var>r</var> = r̂</h3>
+      <p>In spherical coordinates <var>r</var> is the first coordinate, so immediately</p>
+      <div class="eqbox"><div class="eq">∇<var>r</var> = (∂<var>r</var>/∂<var>r</var>) r̂ + (1/<var>r</var>)(∂<var>r</var>/∂<var>θ</var>) θ̂ + (1/(<var>r</var> sin<var>θ</var>))(∂<var>r</var>/∂<var>φ</var>) φ̂ = r̂</div></div>
+      <p>In cylindrical coordinates, the same point is at distance <var>r</var> = √(<var>ρ</var><sup>2</sup> + <var>z</var><sup>2</sup>) from the origin:</p>
+      <div class="eqbox">
+        <div class="eq">∂<var>r</var>/∂<var>ρ</var> = <var>ρ</var>/√(<var>ρ</var><sup>2</sup> + <var>z</var><sup>2</sup>), &nbsp; ∂<var>r</var>/∂<var>φ</var> = 0, &nbsp; ∂<var>r</var>/∂<var>z</var> = <var>z</var>/√(<var>ρ</var><sup>2</sup> + <var>z</var><sup>2</sup>)</div>
+        <div class="eq">∇<var>r</var> = (<var>ρ</var> ρ̂ + <var>z</var> ẑ)/√(<var>ρ</var><sup>2</sup> + <var>z</var><sup>2</sup>) = r̂</div>
+      </div>
+      <p>This identity is used constantly in electrostatics. Two consequences worth memorising:</p>
+      <div class="eqbox">
+        <div class="eq">∇(1/<var>r</var>) = −r̂/<var>r</var><sup>2</sup></div>
+        <div class="eq">∇(1/|<b>r</b> − <b>r</b>′|) = −(<b>r</b> − <b>r</b>′)/|<b>r</b> − <b>r</b>′|<sup>3</sup></div>
+      </div>
+
+      <div class="warn">
+        <strong>Gradient mistakes that cost marks.</strong>
+        <ul>
+          <li><strong>Missing metric factors.</strong> The φ̂ component in cylindrical needs 1/<var>ρ</var>; the θ̂ and φ̂ components in spherical need 1/<var>r</var> and 1/(<var>r</var> sin<var>θ</var>).</li>
+          <li><strong>Mixing the angles.</strong> In this course, cylindrical is (ρ, φ, z) and spherical is (r, θ, φ). Do not write a cylindrical formula with θ as the azimuth.</li>
+          <li><strong>Treating ∇<var>f</var> as tangent to the contour.</strong> It is normal to the contour. The tangent is perpendicular to ∇<var>f</var>.</li>
+          <li><strong>Forgetting the product rule.</strong> In <var>f</var><sub>1</sub>, the <var>y</var> derivative of <var>b</var><var>y</var><sup>3</sup><var>z</var> is 3<var>b</var><var>y</var><sup>2</sup><var>z</var>, not 3<var>b</var><var>y</var><sup>2</sup>.</li>
+        </ul>
+      </div>
+
+      <div class="exam">
+        <strong>Exam link.</strong> Control 2024–25 Question 1 converts <b>F</b> = 10x̂ into cylindrical and spherical coordinates. The same unit-vector table and the same metric factors drive the gradient. If you can write the conversion, you can write ∇ in either system.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="divergence">
+      <h2><span class="kicker">2.3</span>Flux and divergence</h2>
+
+      <p>Flux is a global count: how much field crosses a surface. Divergence is the local version: how much flux is created per unit volume at a point.</p>
+
+      <h3>Flux through a closed surface</h3>
+      <div class="eqbox"><div class="eq">Φ = ∮<sub><var>S</var></sub> <b>A</b> · d<b>S</b></div></div>
+      <p>For a closed surface, d<b>S</b> points outward. Three cases:</p>
+      <ul>
+        <li><strong>No source inside:</strong> every field line that enters also leaves, so Φ = 0.</li>
+        <li><strong>Source inside:</strong> more lines leave than enter, so Φ &gt; 0.</li>
+        <li><strong>Sink inside:</strong> more lines enter than leave, so Φ &lt; 0.</li>
+      </ul>
+      <p>The sign is a statement about the <em>net</em> flow. A region can have plenty of field passing through and still have zero net flux.</p>
+
+      <h3>Definition of divergence</h3>
+      <div class="eqbox"><div class="eq">∇·<b>A</b> = lim<sub>Δ<var>v</var>→0</sub> (1/Δ<var>v</var>) ∮<sub><var>S</var></sub> <b>A</b> · d<b>S</b></div></div>
+      <p>Read it as <strong>flux per unit volume</strong>. It is a scalar. Positive divergence means a source; negative means a sink; zero means incompressible (solenoidal).</p>
+
+      <p>For a small Cartesian box, the flux through the two faces normal to <var>x</var> is [<var>A</var><sub>x</sub>(<var>x</var>+Δ<var>x</var>) − <var>A</var><sub>x</sub>(<var>x</var>)]Δ<var>y</var>Δ<var>z</var>. Dividing by Δ<var>v</var> = Δ<var>x</var>Δ<var>y</var>Δ<var>z</var> and taking the limit gives ∂<var>A</var><sub>x</sub>/∂<var>x</var>. Add the other two pairs:</p>
+      <div class="eqbox"><div class="eq">∇·<b>A</b> = ∂<var>A</var><sub>x</sub>/∂<var>x</var> + ∂<var>A</var><sub>y</sub>/∂<var>y</var> + ∂<var>A</var><sub>z</sub>/∂<var>z</var></div></div>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Divergence: source or sink?</span><span class="vh">move the probe; cross the zero line</span></div>
+        <div class="viz-body" data-viz="divergence"></div>
+      </div>
+
+      <h3>The divergence in all three systems</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>System</th><th>∇·<b>A</b></th><th>Intuition</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Cartesian</strong></td><td>∂<var>A</var><sub>x</sub>/∂<var>x</var> + ∂<var>A</var><sub>y</sub>/∂<var>y</var> + ∂<var>A</var><sub>z</sub>/∂<var>z</var></td><td>Three independent face pairs, each of area Δ<var>y</var>Δ<var>z</var>, etc.</td></tr>
+            <tr><td><strong>Cylindrical</strong></td><td>(1/<var>ρ</var>) ∂(<var>ρ</var><var>A</var><sub>ρ</sub>)/∂<var>ρ</var> + (1/<var>ρ</var>) ∂<var>A</var><sub>φ</sub>/∂<var>φ</var> + ∂<var>A</var><sub>z</sub>/∂<var>z</var></td><td>The curved faces at <var>ρ</var> and <var>ρ</var>+Δ<var>ρ</var> have different areas; that difference produces the 1/<var>ρ</var>.</td></tr>
+            <tr><td><strong>Spherical</strong></td><td>(1/<var>r</var><sup>2</sup>) ∂(<var>r</var><sup>2</sup><var>A</var><sub>r</sub>)/∂<var>r</var> + (1/(<var>r</var> sin<var>θ</var>)) ∂(sin<var>θ</var> <var>A</var><sub>θ</sub>)/∂<var>θ</var> + (1/(<var>r</var> sin<var>θ</var>)) ∂<var>A</var><sub>φ</sub>/∂<var>φ</var></td><td>The <var>r</var><sup>2</sup> is the sphere area; the sin<var>θ</var> is the shrinking of the θ faces near the poles.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>In cylindrical coordinates the radial term is often misremembered as (1/<var>ρ</var>)∂<var>A</var><sub>ρ</sub>/∂<var>ρ</var>. It is not: the product <var>ρ</var><var>A</var><sub>ρ</sub> is differentiated as a product. In spherical coordinates the radial term has the same structure with <var>r</var><sup>2</sup><var>A</var><sub>r</sub>.</p>
+
+      <h3>Preview: ∇·D = ρ<sub>v</sub></h3>
+      <p>In electrostatics the flux density <b>D</b> (units C/m<sup>2</sup>) has divergence equal to the volume charge density (units C/m<sup>3</sup>):</p>
+      <div class="eqbox"><div class="eq">∇·<b>D</b> = <var>ρ</var><sub>v</sub></div></div>
+      <p>This is Gauss's law in differential form. Field lines of <b>D</b> begin on positive charge and end on negative charge. Chapter 3 integrates this equation over volumes to get the integral form of Gauss's law.</p>
+
+      <h3>Worked example — a divergence-free field</h3>
+      <p>Take <b>D</b> = 2(<var>x</var> + <var>y</var>) x̂ + (3<var>x</var> − 2<var>y</var>) ŷ. Then</p>
+      <div class="eqbox">
+        <div class="eq">∂<var>D</var><sub>x</sub>/∂<var>x</var> = 2, &nbsp; ∂<var>D</var><sub>y</sub>/∂<var>y</var> = −2, &nbsp; ∂<var>D</var><sub>z</sub>/∂<var>z</var> = 0</div>
+        <div class="eq">∇·<b>D</b> = 2 − 2 + 0 = 0</div>
+      </div>
+      <p>The field is <strong>divergence-free</strong>, but it is not zero. At (1, 1), <b>D</b> = 4 x̂ + ŷ and the field is very much present. The two terms cancel: the <var>x</var>-component grows with <var>x</var> at rate 2, while the <var>y</var>-component shrinks with <var>y</var> at rate −2.</p>
+
+      <p>A nonzero twin: <b>D</b><sub>2</sub> = 2(<var>x</var> + <var>y</var>) x̂ + (3<var>x</var> + <var>y</var>) ŷ gives ∇·<b>D</b><sub>2</sub> = 2 + 1 = 3 at every point. A field can be divergence-free without being uniform, and it can have constant divergence without being radial.</p>
+
+      <h3>Worked example — the control's field, differentiated</h3>
+      <p>The 2024–25 control gives <b>D</b> = 3<var>r</var><sup>2</sup> r̂ + (12<var>φ</var>/π) φ̂ C/m<sup>2</sup>. Apply the spherical formula term by term:</p>
+      <div class="eqbox">
+        <div class="eq">(1/<var>r</var><sup>2</sup>) ∂(<var>r</var><sup>2</sup>·3<var>r</var><sup>2</sup>)/∂<var>r</var> = (1/<var>r</var><sup>2</sup>)(12<var>r</var><sup>3</sup>) = 12<var>r</var></div>
+        <div class="eq">(1/(<var>r</var> sin<var>θ</var>)) ∂(12<var>φ</var>/π)/∂<var>φ</var> = 12/(π<var>r</var> sin<var>θ</var>)</div>
+        <div class="eq">∇·<b>D</b> = 12<var>r</var> + 12/(π<var>r</var> sin<var>θ</var>)</div>
+      </div>
+      <p>The θ term is zero because <var>D</var><sub>θ</sub> = 0. At the equator (<var>θ</var> = π/2): at <var>r</var> = 1, ∇·<b>D</b> = 12 + 12/π ≈ 15.82; at <var>r</var> = 1.5, ≈ 20.55; at <var>r</var> = 2, 24 + 6/π ≈ 25.91. These values are the integrand of the volume check in §5.</p>
+      <p>Near the poles, sin<var>θ</var> → 0 and the second term blows up. That is not a contradiction: the volume element <var>r</var><sup>2</sup> sin<var>θ</var> supplies a compensating factor, so the volume integral stays finite. This cancellation is exactly what the next section uses.</p>
+
+      <div class="warn">
+        <strong>Divergence mistakes that cost marks.</strong>
+        <ul>
+          <li><strong>Adding unit vectors.</strong> Divergence is a scalar. There is no ρ̂ in the answer.</li>
+          <li><strong>Differentiating <var>A</var><sub>ρ</sub> instead of <var>ρ</var><var>A</var><sub>ρ</sub>.</strong> The product rule is part of the formula.</li>
+          <li><strong>Using the wrong angular factor in spherical.</strong> The θ term is (1/(<var>r</var> sin<var>θ</var>))∂(sin<var>θ</var><var>A</var><sub>θ</sub>)/∂<var>θ</var>, not (1/<var>r</var>)∂<var>A</var><sub>θ</sub>/∂<var>θ</var>.</li>
+          <li><strong>Concluding “zero divergence” means “zero field.”</strong> It means no net source. The field can still circulate.</li>
+        </ul>
+      </div>
+
+      <div class="exam">
+        <strong>Exam link.</strong> Control 2024–25, Exercise 1, part 2: compute ∇·<b>D</b> for the spherical wedge field and integrate it. The differentiation above is the first half of that mark.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="curl">
+      <h2><span class="kicker">2.4</span>Circulation and curl</h2>
+
+      <p>Divergence measures net outflow. Curl measures <em>rotation</em>: how much a field circulates around a point.</p>
+
+      <h3>Circulation</h3>
+      <div class="eqbox"><div class="eq"><var>C</var> = ∮<sub><var>C</var></sub> <b>A</b> · d<b>l</b></div></div>
+      <p>Circulation is a scalar. It depends on the direction of travel around the loop: reverse the loop and <var>C</var> changes sign.</p>
+
+      <h3>Definition of curl</h3>
+      <p>Place a tiny planar patch of area Δ<var>S</var> at a point, with unit normal <b>n̂</b>. The circulation per unit area in the limit is the component of the curl along <b>n̂</b>:</p>
+      <div class="eqbox"><div class="eq">(∇×<b>A</b>) · <b>n̂</b> = lim<sub>Δ<var>S</var>→0</sub> (1/Δ<var>S</var>) ∮<sub><var>C</var></sub> <b>A</b> · d<b>l</b></div></div>
+      <p>The direction of ∇×<b>A</b> is the normal for which this circulation is greatest. The sign follows the right-hand rule: curl the fingers of your right hand in the direction of the loop; your thumb points along <b>n̂</b>.</p>
+
+      <div class="tip">
+        <strong>Paddle-wheel picture.</strong> Imagine a tiny paddle wheel in a fluid. The wheel spins fastest when its axle is parallel to ∇×<b>A</b>. Positive curl means counter-clockwise rotation when you look along the axle; negative means clockwise. A radial field <b>A</b> = <var>x</var> x̂ + <var>y</var> ŷ has no rotation, even though the arrows spread outward.
+      </div>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Curl and the paddle wheel</span><span class="vh">drag the wheel; switch the field</span></div>
+        <div class="viz-body" data-viz="curl"></div>
+      </div>
+
+      <h3>Why the <var>z</var>-component has that form</h3>
+      <p>Take a small rectangle in the <var>xy</var>-plane with corners (<var>x</var>, <var>y</var>), (<var>x</var>+Δ<var>x</var>, <var>y</var>), (<var>x</var>+Δ<var>x</var>, <var>y</var>+Δ<var>y</var>), (<var>x</var>, <var>y</var>+Δ<var>y</var>), traversed counter-clockwise. The four edge integrals are</p>
+      <div class="eqbox">
+        <div class="eq"><var>C</var> ≈ <var>A</var><sub>x</sub>(<var>x</var>,<var>y</var>)Δ<var>x</var> + <var>A</var><sub>y</sub>(<var>x</var>+Δ<var>x</var>,<var>y</var>)Δ<var>y</var> − <var>A</var><sub>x</sub>(<var>x</var>,<var>y</var>+Δ<var>y</var>)Δ<var>x</var> − <var>A</var><sub>y</sub>(<var>x</var>,<var>y</var>)Δ<var>y</var></div>
+        <div class="eq">= [<var>A</var><sub>y</sub>(<var>x</var>+Δ<var>x</var>,<var>y</var>) − <var>A</var><sub>y</sub>(<var>x</var>,<var>y</var>)]Δ<var>y</var> − [<var>A</var><sub>x</sub>(<var>x</var>,<var>y</var>+Δ<var>y</var>) − <var>A</var><sub>x</sub>(<var>x</var>,<var>y</var>)]Δ<var>x</var></div>
+      </div>
+      <p>Divide by Δ<var>S</var><sub>z</sub> = Δ<var>x</var>Δ<var>y</var> and take the limit:</p>
+      <div class="eqbox"><div class="eq">(∇×<b>A</b>)<sub>z</sub> = ∂<var>A</var><sub>y</sub>/∂<var>x</var> − ∂<var>A</var><sub>x</sub>/∂<var>y</var></div></div>
+      <p>The other two components come from rectangles in the <var>yz</var>- and <var>zx</var>-planes.</p>
+
+      <h3>The curl in all three systems</h3>
+      <p><strong>Cartesian.</strong> The determinant is a bookkeeping device for the three partial-derivative combinations:</p>
+      <div class="eqbox">
+        <div class="eq">∇×<b>A</b> = <span class="mat" style="grid-template-columns:repeat(3,auto)"><span>x̂</span><span>ŷ</span><span>ẑ</span><span>∂/∂<var>x</var></span><span>∂/∂<var>y</var></span><span>∂/∂<var>z</var></span><span><var>A</var><sub>x</sub></span><span><var>A</var><sub>y</sub></span><span><var>A</var><sub>z</sub></span></span></div>
+        <div class="eq">= (∂<var>A</var><sub>z</sub>/∂<var>y</var> − ∂<var>A</var><sub>y</sub>/∂<var>z</var>) x̂ + (∂<var>A</var><sub>x</sub>/∂<var>z</var> − ∂<var>A</var><sub>z</sub>/∂<var>x</var>) ŷ + (∂<var>A</var><sub>y</sub>/∂<var>x</var> − ∂<var>A</var><sub>x</sub>/∂<var>y</var>) ẑ</div>
+      </div>
+      <p>The ŷ term carries a minus sign relative to the naive pattern. That sign is the most common source of a wrong curl.</p>
+
+      <p><strong>Cylindrical.</strong> The determinant's second column is <var>ρ</var>φ̂ and its third row entry is <var>ρ</var><var>A</var><sub>φ</sub>. Those factors produce the 1/<var>ρ</var> in front and the 1/<var>ρ</var> inside the ρ̂ term:</p>
+      <div class="eqbox">
+        <div class="eq">∇×<b>A</b> = (1/<var>ρ</var>) <span class="mat" style="grid-template-columns:repeat(3,auto)"><span>ρ̂</span><span><var>ρ</var>φ̂</span><span>ẑ</span><span>∂/∂<var>ρ</var></span><span>∂/∂<var>φ</var></span><span>∂/∂<var>z</var></span><span><var>A</var><sub>ρ</sub></span><span><var>ρ</var><var>A</var><sub>φ</sub></span><span><var>A</var><sub>z</sub></span></span></div>
+        <div class="eq">= [(1/<var>ρ</var>)∂<var>A</var><sub>z</sub>/∂<var>φ</var> − ∂<var>A</var><sub>φ</sub>/∂<var>z</var>] ρ̂ + [∂<var>A</var><sub>ρ</sub>/∂<var>z</var> − ∂<var>A</var><sub>z</sub>/∂<var>ρ</var>] φ̂ + (1/<var>ρ</var>)[∂(<var>ρ</var><var>A</var><sub>φ</sub>)/∂<var>ρ</var> − ∂<var>A</var><sub>ρ</sub>/∂<var>φ</var>] ẑ</div>
+      </div>
+      <p>If a printed formula omits the <var>ρ</var> in the first term or the 1/<var>ρ</var> in front, trust the determinant and the metric factors, not the print.</p>
+
+      <p><strong>Spherical.</strong> The determinant's second column is <var>r</var>θ̂, the third is <var>r</var> sin<var>θ</var> φ̂, and the prefactor is 1/(<var>r</var><sup>2</sup> sin<var>θ</var>):</p>
+      <div class="eqbox">
+        <div class="eq">∇×<b>A</b> = (1/(<var>r</var><sup>2</sup> sin<var>θ</var>)) <span class="mat" style="grid-template-columns:repeat(3,auto)"><span>r̂</span><span><var>r</var>θ̂</span><span><var>r</var> sin<var>θ</var> φ̂</span><span>∂/∂<var>r</var></span><span>∂/∂<var>θ</var></span><span>∂/∂<var>φ</var></span><span><var>A</var><sub>r</sub></span><span><var>r</var><var>A</var><sub>θ</sub></span><span><var>r</var> sin<var>θ</var> <var>A</var><sub>φ</sub></span></span></div>
+        <div class="eq">= (1/(<var>r</var> sin<var>θ</var>))[∂(sin<var>θ</var><var>A</var><sub>φ</sub>)/∂<var>θ</var> − ∂<var>A</var><sub>θ</sub>/∂<var>φ</var>] r̂</div>
+        <div class="eq">+ (1/<var>r</var>)[(1/sin<var>θ</var>)∂<var>A</var><sub>r</sub>/∂<var>φ</var> − ∂(<var>r</var><var>A</var><sub>φ</sub>)/∂<var>r</var>] θ̂</div>
+        <div class="eq">+ (1/<var>r</var>)[∂(<var>r</var><var>A</var><sub>θ</sub>)/∂<var>r</var> − ∂<var>A</var><sub>r</sub>/∂<var>θ</var>] φ̂</div>
+      </div>
+
+      <h3>Two identities worth memorising</h3>
+      <div class="eqbox">
+        <div class="eq">∇·(∇×<b>A</b>) = 0 &nbsp;&nbsp; (a curl field has no net source)</div>
+        <div class="eq">∇×(∇<var>f</var>) = 0 &nbsp;&nbsp; (a gradient field has no rotation)</div>
+      </div>
+      <p>For static fields, <b>E</b> = −∇<var>V</var>, so ∇×<b>E</b> = 0. Electrostatic field lines never close on themselves. In a time-varying field, Faraday's law replaces this with ∇×<b>E</b> = −∂<b>B</b>/∂<var>t</var>, so the curl is not zero in general.</p>
+
+      <h3>Worked example — nonzero curl</h3>
+      <p>Take <b>A</b> = −<var>y</var> x̂ + <var>x</var> ŷ. Then</p>
+      <div class="eqbox">
+        <div class="eq">∂<var>A</var><sub>y</sub>/∂<var>x</var> = 1, &nbsp; ∂<var>A</var><sub>x</sub>/∂<var>y</var> = −1</div>
+        <div class="eq">∇×<b>A</b> = (1 − (−1)) ẑ = 2 ẑ</div>
+      </div>
+      <p>The field rotates counter-clockwise about the +<var>z</var> axis. Around the unit square in the <var>xy</var>-plane, the circulation is 2; around a 2 × 1 rectangle it is 4. The curl is constant, so the circulation is curl × area.</p>
+
+      <h3>Worked example — zero curl</h3>
+      <p>Take <b>A</b> = <var>y</var> x̂ + <var>x</var> ŷ, the field of Example 2.1. Then</p>
+      <div class="eqbox">
+        <div class="eq">∂<var>A</var><sub>y</sub>/∂<var>x</var> = 1, &nbsp; ∂<var>A</var><sub>x</sub>/∂<var>y</var> = 1, &nbsp; ∇×<b>A</b> = 0</div>
+      </div>
+      <p>This field is a gradient: <b>A</b> = ∇(<var>xy</var>). Its circulation around every closed loop is zero, and its line integral is path-independent. Zero curl is the local signature of a conservative field.</p>
+
+      <p>A third check: <b>A</b> = <var>x</var><sup>2</sup> ŷ has ∇×<b>A</b> = 2<var>x</var> ẑ. The curl changes sign across the <var>y</var>-axis; the field rotates one way for <var>x</var> &gt; 0 and the other way for <var>x</var> &lt; 0.</p>
+
+      <div class="warn">
+        <strong>Curl mistakes that cost marks.</strong>
+        <ul>
+          <li><strong>Determinant signs.</strong> The ŷ component is ∂<var>A</var><sub>x</sub>/∂<var>z</var> − ∂<var>A</var><sub>z</sub>/∂<var>x</var>, not the reverse. Expand the determinant slowly.</li>
+          <li><strong>Dropping metric factors.</strong> Cylindrical needs the <var>ρ</var> in <var>ρ</var><var>A</var><sub>φ</sub>; spherical needs the <var>r</var> and sin<var>θ</var> factors.</li>
+          <li><strong>“Zero curl means zero field.”</strong> False. <b>A</b> = <var>y</var> x̂ + <var>x</var> ŷ has zero curl and is nonzero everywhere.</li>
+          <li><strong>“Zero divergence means zero curl.”</strong> Also false. The two operators measure different things.</li>
+        </ul>
+      </div>
+
+      <div class="exam">
+        <strong>Exam link.</strong> Static <b>E</b> is curl-free, which is why a potential exists. Ampère's law in Chapter 4 uses Stokes to turn ∮<b>B</b>·d<b>l</b> into a surface integral of ∇×<b>B</b>. The determinant skills here are reused there.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="div-theorem">
+      <h2><span class="kicker">2.5</span>The divergence theorem — the 27π example</h2>
+
+      <p>This is the single most important worked example on the page. Control 2024–25, Exercise 1 is worth 6 points, and it is exactly this calculation.</p>
+
+      <h3>The theorem</h3>
+      <div class="eqbox"><div class="eq">∮<sub><var>S</var></sub> <b>A</b> · d<b>S</b> = ∫<sub><var>V</var></sub> ∇·<b>A</b> d<var>v</var></div></div>
+      <p><var>S</var> is the closed surface bounding the volume <var>V</var>, and d<b>S</b> points outward. The theorem says: <strong>the total flux out of a closed surface equals the sum of all sources inside</strong>. It converts a surface integral into a volume integral, or the reverse.</p>
+
+      <h3>Why it is true, in one paragraph</h3>
+      <p>Cut <var>V</var> into many small cells. For one cell, the flux out of its six faces is ∇·<b>A</b> Δ<var>v</var> plus smaller terms. Sum over all cells. Every internal face is shared by two cells, and the two outward normals are opposite, so the internal fluxes cancel in pairs. What survives is the flux through the outer boundary. Taking the limit gives the theorem. The same telescoping argument is behind Stokes.</p>
+
+      <h3>Orientation: outward, always</h3>
+      <p>On a closed surface, d<b>S</b> = <b>n̂</b> d<var>S</var> with <b>n̂</b> pointing out of the volume. On an inner surface — a cavity, or the <var>r</var> = 1 face of a shell — “outward” means <em>toward the cavity</em>, which is the direction of decreasing <var>r</var>. This single convention decides the sign of half the terms.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Divergence theorem: the 27π check</span><span class="vh">slide the radius probe; compare both sides</span></div>
+        <div class="viz-body" data-viz="div-theorem"></div>
+      </div>
+
+      <h3>The control problem, restated</h3>
+      <p>A vector field is given by</p>
+      <div class="eqbox"><div class="eq"><b>D</b> = 3<var>r</var><sup>2</sup> r̂ + (12<var>φ</var>/π) φ̂ &nbsp; C/m<sup>2</sup></div></div>
+      <p>and the closed surface is the spherical wedge</p>
+      <div class="eqbox"><div class="eq">1 ≤ <var>r</var> ≤ 2, &nbsp; 0 ≤ <var>θ</var> ≤ π, &nbsp; π/4 ≤ <var>φ</var> ≤ π/2</div></div>
+      <p>You are asked for (1) the flux out of the closed surface and (2) a verification by the divergence theorem.</p>
+
+      <p>Although a closed surface has six faces in spherical coordinates, only four have nonzero area here. The faces <var>θ</var> = 0 and <var>θ</var> = π are the two halves of the polar axis: their area element contains sin<var>θ</var>, which vanishes there. The four surviving faces are:</p>
+      <ul>
+        <li><var>S</var><sub>1</sub>: the inner sphere <var>r</var> = 1, normal −r̂.</li>
+        <li><var>S</var><sub>2</sub>: the outer sphere <var>r</var> = 2, normal +r̂.</li>
+        <li><var>S</var><sub>3</sub>: the half-plane <var>φ</var> = π/4, normal −φ̂.</li>
+        <li><var>S</var><sub>4</sub>: the half-plane <var>φ</var> = π/2, normal +φ̂.</li>
+      </ul>
+
+      <h3>Face 1: <var>r</var> = 1</h3>
+      <p>On <var>r</var> = 1 the outward normal is −r̂, so</p>
+      <div class="eqbox">
+        <div class="eq">d<b>S</b><sub>1</sub> = −(1)<sup>2</sup> sin<var>θ</var> d<var>θ</var> d<var>φ</var> r̂ = −sin<var>θ</var> d<var>θ</var> d<var>φ</var> r̂</div>
+        <div class="eq"><b>D</b>|<sub><var>r</var>=1</sub> = 3 r̂ + (12<var>φ</var>/π) φ̂</div>
+        <div class="eq"><b>D</b> · d<b>S</b><sub>1</sub> = −3 sin<var>θ</var> d<var>θ</var> d<var>φ</var></div>
+        <div class="eq">Φ<sub>1</sub> = −3 ∫<sub>0</sub><sup>π</sup> sin<var>θ</var> d<var>θ</var> ∫<sub>π/4</sub><sup>π/2</sup> d<var>φ</var> = −3(2)(π/4) = −3π/2</div>
+      </div>
+      <p>The negative sign is correct: the outward normal points into the cavity, while <b>D</b><sub>r</sub> points away from the origin. The flux is inward.</p>
+
+      <h3>Face 2: <var>r</var> = 2</h3>
+      <div class="eqbox">
+        <div class="eq">d<b>S</b><sub>2</sub> = +(2)<sup>2</sup> sin<var>θ</var> d<var>θ</var> d<var>φ</var> r̂ = 4 sin<var>θ</var> d<var>θ</var> d<var>φ</var> r̂</div>
+        <div class="eq"><b>D</b>|<sub><var>r</var>=2</sub> = 12 r̂ + (12<var>φ</var>/π) φ̂</div>
+        <div class="eq"><b>D</b> · d<b>S</b><sub>2</sub> = 48 sin<var>θ</var> d<var>θ</var> d<var>φ</var></div>
+        <div class="eq">Φ<sub>2</sub> = 48(2)(π/4) = 24π</div>
+      </div>
+
+      <h3>Face 3: <var>φ</var> = π/4</h3>
+      <p>The surface element on a constant-φ face is <var>r</var> d<var>r</var> d<var>θ</var>. The outward normal points toward decreasing φ, so it is −φ̂:</p>
+      <div class="eqbox">
+        <div class="eq">d<b>S</b><sub>3</sub> = −<var>r</var> d<var>r</var> d<var>θ</var> φ̂</div>
+        <div class="eq"><b>D</b>|<sub><var>φ</var>=π/4</sub> = 3<var>r</var><sup>2</sup> r̂ + 3 φ̂</div>
+        <div class="eq"><b>D</b> · d<b>S</b><sub>3</sub> = −3<var>r</var> d<var>r</var> d<var>θ</var></div>
+        <div class="eq">Φ<sub>3</sub> = −3 ∫<sub>1</sub><sup>2</sup> <var>r</var> d<var>r</var> ∫<sub>0</sub><sup>π</sup> d<var>θ</var> = −3(3/2)(π) = −9π/2</div>
+      </div>
+      <p>Check the value of <b>D</b><sub>φ</sub>: at <var>φ</var> = π/4, (12/π)(π/4) = 3. The negative normal makes the flux negative.</p>
+
+      <h3>Face 4: <var>φ</var> = π/2</h3>
+      <div class="eqbox">
+        <div class="eq">d<b>S</b><sub>4</sub> = +<var>r</var> d<var>r</var> d<var>θ</var> φ̂</div>
+        <div class="eq"><b>D</b>|<sub><var>φ</var>=π/2</sub> = 3<var>r</var><sup>2</sup> r̂ + 6 φ̂</div>
+        <div class="eq"><b>D</b> · d<b>S</b><sub>4</sub> = 6<var>r</var> d<var>r</var> d<var>θ</var></div>
+        <div class="eq">Φ<sub>4</sub> = 6(3/2)(π) = 9π</div>
+      </div>
+
+      <h3>Sum of the four faces</h3>
+      <div class="eqbox"><div class="eq">Φ = Φ<sub>1</sub> + Φ<sub>2</sub> + Φ<sub>3</sub> + Φ<sub>4</sub> = −3π/2 + 24π − 9π/2 + 9π = 27π</div>
+      <div class="eq">27π ≈ 84.82 C</div></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Face</th><th>Outward normal</th><th><b>D</b>·d<b>S</b></th><th>Flux</th></tr></thead>
+          <tbody>
+            <tr><td><var>S</var><sub>1</sub>: <var>r</var> = 1</td><td>−r̂</td><td>−3 sin<var>θ</var> d<var>θ</var> d<var>φ</var></td><td>−3π/2</td></tr>
+            <tr><td><var>S</var><sub>2</sub>: <var>r</var> = 2</td><td>+r̂</td><td>48 sin<var>θ</var> d<var>θ</var> d<var>φ</var></td><td>24π</td></tr>
+            <tr><td><var>S</var><sub>3</sub>: <var>φ</var> = π/4</td><td>−φ̂</td><td>−3<var>r</var> d<var>r</var> d<var>θ</var></td><td>−9π/2</td></tr>
+            <tr><td><var>S</var><sub>4</sub>: <var>φ</var> = π/2</td><td>+φ̂</td><td>6<var>r</var> d<var>r</var> d<var>θ</var></td><td>9π</td></tr>
+            <tr><td><strong>Total</strong></td><td></td><td></td><td><strong>27π</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tip">
+        <strong>Area check.</strong> The four faces have areas π/2, 2π, 3π/2 and 3π/2. Multiply by the normal components 3, 12, 3 and 6 to get the magnitudes 3π/2, 24π, 9π/2 and 9π. The signs come from the normals. This is the fastest way to catch a missing <var>r</var><sup>2</sup> or a wrong φ width.
+      </div>
+
+      <h3>Verification: the divergence</h3>
+      <p>Now compute ∇·<b>D</b> in spherical coordinates. The field has only <var>D</var><sub>r</sub> and <var>D</var><sub>φ</sub>:</p>
+      <div class="eqbox">
+        <div class="eq">(1/<var>r</var><sup>2</sup>) ∂(<var>r</var><sup>2</sup>·3<var>r</var><sup>2</sup>)/∂<var>r</var> = (1/<var>r</var><sup>2</sup>)(12<var>r</var><sup>3</sup>) = 12<var>r</var></div>
+        <div class="eq">(1/(<var>r</var> sin<var>θ</var>)) ∂(12<var>φ</var>/π)/∂<var>φ</var> = 12/(π<var>r</var> sin<var>θ</var>)</div>
+        <div class="eq">∇·<b>D</b> = 12<var>r</var> + 12/(π<var>r</var> sin<var>θ</var>)</div>
+      </div>
+
+      <h3>Verification: the volume integral</h3>
+      <p>The volume element is d<var>v</var> = <var>r</var><sup>2</sup> sin<var>θ</var> d<var>r</var> d<var>θ</var> d<var>φ</var>. Split the integral into the two terms of the divergence:</p>
+      <div class="eqbox">
+        <div class="eq">∫<sub><var>V</var></sub> 12<var>r</var> d<var>v</var> = 12 ∫<sub>1</sub><sup>2</sup> <var>r</var><sup>3</sup> d<var>r</var> ∫<sub>0</sub><sup>π</sup> sin<var>θ</var> d<var>θ</var> ∫<sub>π/4</sub><sup>π/2</sup> d<var>φ</var></div>
+        <div class="eq">= 12 (15/4)(2)(π/4) = 45π/2</div>
+        <div class="eq">∫<sub><var>V</var></sub> 12/(π<var>r</var> sin<var>θ</var>) d<var>v</var> = (12/π) ∫<sub>1</sub><sup>2</sup> <var>r</var> d<var>r</var> ∫<sub>0</sub><sup>π</sup> d<var>θ</var> ∫<sub>π/4</sub><sup>π/2</sup> d<var>φ</var></div>
+        <div class="eq">= (12/π)(3/2)(π)(π/4) = 9π/2</div>
+        <div class="eq">∫<sub><var>V</var></sub> ∇·<b>D</b> d<var>v</var> = 45π/2 + 9π/2 = 27π</div>
+      </div>
+      <p>Both sides give 27π. The divergence theorem is verified.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Volume term</th><th>After multiplying by d<var>v</var></th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>12<var>r</var></td><td>12<var>r</var><sup>3</sup> sin<var>θ</var> d<var>r</var> d<var>θ</var> d<var>φ</var></td><td>45π/2</td></tr>
+            <tr><td>12/(π<var>r</var> sin<var>θ</var>)</td><td>(12/π)<var>r</var> d<var>r</var> d<var>θ</var> d<var>φ</var></td><td>9π/2</td></tr>
+            <tr><td><strong>Total</strong></td><td></td><td><strong>27π</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warn">
+        <strong>The five mistakes that turn 27π into a wrong answer.</strong>
+        <ul>
+          <li><strong>Normal direction on <var>r</var> = 1.</strong> It is −r̂, not +r̂. The inner surface's outward direction points into the cavity.</li>
+          <li><strong>Normal direction on <var>φ</var> = π/4.</strong> It is −φ̂, because the volume lies at <var>φ</var> &gt; π/4. The <var>φ</var> = π/2 face is +φ̂.</li>
+          <li><strong>Wrong φ limits.</strong> The width is π/2 − π/4 = π/4. Using 0 to π/2 doubles every φ integral and gives 54π, not 27π.</li>
+          <li><strong>Missing <var>r</var><sup>2</sup> sin<var>θ</var>.</strong> The volume element is <var>r</var><sup>2</sup> sin<var>θ</var> d<var>r</var> d<var>θ</var> d<var>φ</var>. Drop it and the whole volume integral collapses to 9π instead of 27π. It is also what cancels the 1/(<var>r</var> sin<var>θ</var>) in the divergence.</li>
+          <li><strong>Differentiating 3<var>r</var><sup>2</sup> as 6<var>r</var>.</strong> The spherical radial term is (1/<var>r</var><sup>2</sup>)∂(<var>r</var><sup>2</sup><var>D</var><sub>r</sub>)/∂<var>r</var>. With <var>D</var><sub>r</sub> = 3<var>r</var><sup>2</sup>, the derivative is of 3<var>r</var><sup>4</sup>, giving 12<var>r</var>.</li>
+        </ul>
+      </div>
+
+      <div class="exam">
+        <strong>Exam link — this is the 6-point question.</strong> Control 2024–25, Exercise 1. The handwritten solution awards credit for each face separately, then for ∇·<b>D</b>, then for the volume integral and the final equality. Write the four surface integrals as separate lines even if you can combine them mentally. <a href="practice.html#control24">Redo it on the practice page →</a>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="stokes">
+      <h2><span class="kicker">2.6</span>Stokes' theorem</h2>
+
+      <p>The divergence theorem turns a closed-surface flux into a volume integral. Stokes turns a closed-loop circulation into a surface integral of the curl.</p>
+
+      <h3>The theorem</h3>
+      <div class="eqbox"><div class="eq">∮<sub><var>C</var></sub> <b>A</b> · d<b>l</b> = ∫<sub><var>S</var></sub> (∇×<b>A</b>) · d<b>S</b></div></div>
+      <p><var>S</var> is any orientable surface whose boundary is the closed curve <var>C</var>. The orientation is fixed by the right-hand rule: curl the fingers of your right hand along <var>C</var>; the thumb points along d<b>S</b>. Reverse <var>C</var> and both sides change sign.</p>
+
+      <h3>Why it is true, in one paragraph</h3>
+      <p>Tile <var>S</var> into small cells. The circulation around one cell is (∇×<b>A</b>)·<b>n̂</b> Δ<var>S</var> plus smaller terms. Sum over all cells. Every internal edge is traversed twice in opposite directions, so those contributions cancel. What survives is the circulation around the outer boundary. Taking the limit gives Stokes.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Stokes: circulation = curl flux</span><span class="vh">flip the normal; watch both signs</span></div>
+        <div class="viz-body" data-viz="stokes"></div>
+      </div>
+
+      <h3>When to use it</h3>
+      <ul>
+        <li><strong>The loop is hard, the curl is easy.</strong> If ∇×<b>A</b> is constant or simple, integrate it over any convenient surface with the same boundary.</li>
+        <li><strong>The surface is hard, the boundary is easy.</strong> Run the theorem backward: compute the loop integral and avoid a messy surface integral.</li>
+        <li><strong>The surface is not flat.</strong> Any surface with the same boundary gives the same answer, because the difference of two such surfaces is a closed surface and ∇·(∇×<b>A</b>) = 0.</li>
+        <li><strong>Ampère's law.</strong> In magnetostatics, ∮<b>B</b>·d<b>l</b> = μ<sub>0</sub><var>I</var><sub>enc</sub> is Stokes applied to ∇×<b>B</b> = μ<sub>0</sub><b>J</b>.</li>
+      </ul>
+
+      <h3>Worked example — a 2 × 1 rectangle</h3>
+      <p>Take <b>A</b> = −<var>y</var> x̂ + <var>x</var> ŷ and the rectangle 0 ≤ <var>x</var> ≤ 2, 0 ≤ <var>y</var> ≤ 1 in the plane <var>z</var> = 0. Traverse the boundary counter-clockwise as seen from +<var>z</var>, so <b>n̂</b> = +ẑ.</p>
+
+      <p><strong>Line integral, edge by edge.</strong></p>
+      <div class="eqbox">
+        <div class="eq"><var>C</var><sub>1</sub>: (0,0) → (2,0), &nbsp; <var>y</var> = 0, &nbsp; d<b>l</b> = d<var>x</var> x̂, &nbsp; <b>A</b> = <var>x</var> ŷ &nbsp; ⟹ &nbsp; <b>A</b>·d<b>l</b> = 0</div>
+        <div class="eq"><var>C</var><sub>2</sub>: (2,0) → (2,1), &nbsp; <var>x</var> = 2, &nbsp; d<b>l</b> = d<var>y</var> ŷ, &nbsp; <b>A</b> = −<var>y</var> x̂ + 2 ŷ &nbsp; ⟹ &nbsp; <b>A</b>·d<b>l</b> = 2 d<var>y</var></div>
+        <div class="eq"><var>C</var><sub>3</sub>: (2,1) → (0,1), &nbsp; <var>y</var> = 1, &nbsp; d<b>l</b> = d<var>x</var> x̂, &nbsp; <b>A</b> = −x̂ + <var>x</var> ŷ &nbsp; ⟹ &nbsp; <b>A</b>·d<b>l</b> = −d<var>x</var></div>
+        <div class="eq"><var>C</var><sub>4</sub>: (0,1) → (0,0), &nbsp; <var>x</var> = 0, &nbsp; d<b>l</b> = d<var>y</var> ŷ, &nbsp; <b>A</b> = −<var>y</var> x̂ &nbsp; ⟹ &nbsp; <b>A</b>·d<b>l</b> = 0</div>
+      </div>
+      <p>Now integrate each edge with its own limits:</p>
+      <div class="eqbox">
+        <div class="eq">∮ <b>A</b>·d<b>l</b> = 0 + ∫<sub>0</sub><sup>1</sup> 2 d<var>y</var> + ∫<sub>2</sub><sup>0</sup> (−1) d<var>x</var> + 0 = 2 + 2 = 4</div>
+      </div>
+      <p>The third edge contributes +2 because the traversal runs from <var>x</var> = 2 to <var>x</var> = 0, and the integrand is −1: the two minus signs cancel.</p>
+
+      <p><strong>Curl flux.</strong> From the previous section, ∇×<b>A</b> = 2ẑ, so</p>
+      <div class="eqbox">
+        <div class="eq">∫<sub><var>S</var></sub> (∇×<b>A</b>)·d<b>S</b> = ∫<sub>0</sub><sup>2</sup>∫<sub>0</sub><sup>1</sup> (2ẑ)·(ẑ d<var>x</var> d<var>y</var>) = 2(2)(1) = 4</div>
+      </div>
+      <p>Both sides are 4. If you flip the normal to −ẑ, the boundary traversal reverses and both sides become −4. The magnitude is unchanged; the sign tracks the orientation.</p>
+
+      <p><strong>A zero-curl control.</strong> For <b>A</b> = <var>y</var> x̂ + <var>x</var> ŷ, ∇×<b>A</b> = 0. The same rectangle gives ∮<b>A</b>·d<b>l</b> = 0. Indeed <b>A</b> = ∇(<var>xy</var>), so the loop integral of a gradient is zero.</p>
+
+      <div class="warn">
+        <strong>Stokes mistakes that cost marks.</strong>
+        <ul>
+          <li><strong>Inconsistent orientation.</strong> Pick the normal first, then traverse the boundary according to the right-hand rule. Do not mix the two.</li>
+          <li><strong>Using a surface whose boundary is not <var>C</var>.</strong> The theorem needs the loop to be exactly the boundary of the surface.</li>
+          <li><strong>Forgetting the normal component.</strong> Only (∇×<b>A</b>)·<b>n̂</b> contributes. A curl parallel to the surface integrates to zero.</li>
+          <li><strong>Determinant signs.</strong> The same ŷ sign trap as in the curl formula.</li>
+        </ul>
+      </div>
+
+      <div class="exam">
+        <strong>Exam link.</strong> Control 2024–25 Question 4 asks for the magnetic flux density of an infinite wire. That is Ampère's law, which is Stokes with a circular loop. The orientation and sign discipline here is the same discipline Chapter 4 uses.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="check">
+      <h2><span class="kicker">2.7</span>Check yourself</h2>
+
+      <p>Three questions, one per core skill: a line integral, the divergence-theorem flux, and a curl. Answer before opening the solution.</p>
+
+      <div class="quiz" data-quiz="ch2-q1" data-answer="b">
+        <div class="tag">Check 1 · line integral</div>
+        <p class="q"><b>F</b> = <var>y</var> x̂ + <var>x</var> ŷ. The line integral from (0, 0, 0) to (1, 0, 0) to (1, 1, 0) equals:</p>
+        <div class="opts">
+          <button type="button" data-opt="a">0</button>
+          <button type="button" data-opt="b">1</button>
+          <button type="button" data-opt="c">2</button>
+          <button type="button" data-opt="d">−1</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol">
+          <p><strong>1.</strong> On the first leg <var>y</var> = 0, so <b>F</b> = <var>x</var> ŷ and d<b>l</b> = d<var>x</var> x̂; the dot product is zero. On the second leg <var>x</var> = 1, so <b>F</b>·d<b>l</b> = d<var>y</var>; the integral is 1. Total 0 + 1 = 1. The straight path also gives ∫<sub>0</sub><sup>1</sup> 2<var>t</var> d<var>t</var> = 1, and ∇×<b>F</b> = 0, so the field is conservative.</p>
+        </div></details>
+      </div>
+
+      <div class="quiz" data-quiz="ch2-q2" data-answer="c">
+        <div class="tag">Check 2 · divergence theorem</div>
+        <p class="q"><b>D</b> = 3<var>r</var><sup>2</sup> r̂ + (12<var>φ</var>/π) φ̂. The outward flux through the closed surface 1 ≤ <var>r</var> ≤ 2, 0 ≤ <var>θ</var> ≤ π, π/4 ≤ <var>φ</var> ≤ π/2 is:</p>
+        <div class="opts">
+          <button type="button" data-opt="a">9π</button>
+          <button type="button" data-opt="b">18π</button>
+          <button type="button" data-opt="c">27π</button>
+          <button type="button" data-opt="d">36π</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol">
+          <p><strong>27π.</strong> The four faces give −3π/2 (r = 1), 24π (r = 2), −9π/2 (φ = π/4) and 9π (φ = π/2). Sum: 27π. The divergence is 12<var>r</var> + 12/(π<var>r</var> sin<var>θ</var>); integrating it over the volume gives 45π/2 + 9π/2 = 27π. The θ = 0 and θ = π faces have zero area.</p>
+        </div></details>
+      </div>
+
+      <div class="quiz" data-quiz="ch2-q3" data-answer="b">
+        <div class="tag">Check 3 · curl</div>
+        <p class="q"><b>A</b> = −<var>y</var> x̂ + <var>x</var> ŷ. ∇×<b>A</b> is:</p>
+        <div class="opts">
+          <button type="button" data-opt="a">0</button>
+          <button type="button" data-opt="b">2 ẑ</button>
+          <button type="button" data-opt="c">−2 ẑ</button>
+          <button type="button" data-opt="d">2 x̂</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol">
+          <p><strong>2ẑ.</strong> The only nonzero partials are ∂<var>A</var><sub>y</sub>/∂<var>x</var> = 1 and ∂<var>A</var><sub>x</sub>/∂<var>y</var> = −1. Their difference is 2. The field rotates counter-clockwise about +<var>z</var>; a paddle wheel at the origin spins counter-clockwise when viewed from +<var>z</var>.</p>
+        </div></details>
+      </div>
+
+      <div class="done-row">
+        <input type="checkbox" id="p-ch2-core" data-progress="ch2-core">
+        <label for="p-ch2-core">I can compute a closed-surface flux, verify it with the divergence theorem, and set up the orientation for Stokes.
+          <span class="done-meta">Chapter 2 · core skill</span></label>
+      </div>
+
+      <div class="exam" style="margin-top:22px">
+        <strong>Next.</strong> Chapter 3 turns ∇·<b>D</b> = <var>ρ</var><sub>v</sub> into Gauss's law and uses ∇×<b>E</b> = 0 to define the potential. The control's Exercise 2 (volume charge) and Exercise 3 (two point charges) live there.
+      </div>
+
+      <p style="margin-top:22px">
+        <a class="btn btn-primary" href="ch3.html">Chapter 3 — Electrostatics →</a>
+        <a class="btn btn-outline" href="practice.html#control24">Redo the control flux question</a>
+      </p>
+    </section>
+
+    <footer class="foot">EE361 EMF Companion · Chapter 2 written from K. Djafri's lecture chapter and the 2024–25 control with solutions. All numbers recomputed independently; the 27π check was verified both face by face and through the volume integral. Original prose and diagrams.</footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+<script src="js/viz-common.js"></script>
+<script src="js/viz-ch2.js"></script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 0 — How the Pieces Fit | EE361 EMF</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/emf.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Ch. 0 — How it fits</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EMF Companion<small>EE361 · Electromagnetics</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch0.html" class="active"><span class="num">00</span>How it fits</a>
+      <a href="ch1.html"><span class="num">01</span>Vectors &amp; coordinates</a>
+      <a href="ch2.html"><span class="num">02</span>Vector calculus</a>
+      <a href="ch3.html"><span class="num">03</span>Electrostatics</a>
+      <a href="ch4.html"><span class="num">04</span>Magnetostatics</a>
+      <a href="ch5.html"><span class="num">05</span>Maxwell</a>
+      <a href="ch6.html"><span class="num">06</span>Plane waves</a>
+      <div class="nav-label">Exam prep</div>
+      <a href="formulas.html"><span class="num">Σ</span>Formula sheet</a>
+      <a href="practice.html"><span class="num">✎</span>Practice</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Chapter 0 · Overview</span>
+      <h1>How the Pieces Fit</h1>
+      <p class="lede">EMF looks like a wall of formulas. It is actually one pipeline: choose coordinates → build the differential element → integrate or apply a theorem → read the field. This page is the map, the ten rules, and the diagnostic that tells you where to start.</p>
+    </header>
+
+    <div class="done-row" style="margin-bottom:18px">
+      <input type="checkbox" id="p0-read" data-progress="ch0-core">
+      <label for="p0-read">I can name the control's four question types and the ten rules without notes.
+        <span class="done-meta">Chapter 0 · map</span></label>
+    </div>
+
+    <div class="toc">
+      <strong>On this page</strong>
+      <ol>
+        <li><a href="#bigpicture">The big picture</a></li>
+        <li><a href="#stack">The course as a pipeline</a></li>
+        <li><a href="#anatomy">Control anatomy</a></li>
+        <li><a href="#rules">The ten rules</a></li>
+        <li><a href="#solver">The six-step solver</a></li>
+        <li><a href="#diagnostic">Diagnostic</a></li>
+        <li><a href="#route">Where to go next</a></li>
+      </ol>
+    </div>
+
+    <!-- ================= BIG PICTURE ================= -->
+    <section class="topic" id="bigpicture">
+      <h2><span class="kicker">1</span>The big picture in one paragraph</h2>
+
+      <p>Charges create fields. The field at a point is a vector, so every problem starts with geometry: where is the source, where is the observation point, and what is the vector between them. Coulomb and Biot–Savart give the field of a tiny source. To add up a whole line, surface, or volume of sources, you integrate. If the source distribution has symmetry, Gauss's law replaces the integral with one multiplication. If the field is the gradient of a potential, the vector problem collapses to a scalar one. Maxwell's four equations tie the electric and magnetic fields together and predict waves.</p>
+
+      <p>That is the whole course. Chapters 1–2 build the language, Chapter 3 applies it to stationary charges, Chapter 4 to steady currents, and Chapters 5–6 to time-varying fields and waves.</p>
+
+      <div class="card" style="margin:20px 0; background:linear-gradient(135deg,#f7f9ff,#eef3ff); border-color:#c9d7f6">
+        <h3 style="margin-bottom:6px">The one sentence to remember</h3>
+        <p style="font-size:1.08rem; margin:0"><strong>A field problem is a source element, a vector from the source to the observation point, and the right metric factor inside the integral.</strong></p>
+      </div>
+
+      <div class="note">
+        <strong>What the control actually asks.</strong> The 2024–25 paper has four parts: (1) three short questions on conversion, Gauss's law, magnetic force, and the field of a wire; (2) a six-point flux + divergence-theorem exercise in spherical coordinates; (3) a two-point volume-charge integral; (4) a four-point electric field of two point charges. Total 15 points, 1 h 30. The 2021–22 paper has the same spine: flux + divergence theorem (10), field of three charges (2), and Stokes (3).
+      </div>
+    </section>
+
+    <!-- ================= STACK ================= -->
+    <section class="topic" id="stack">
+      <h2><span class="kicker">2</span>The course as a pipeline</h2>
+
+      <div class="viz" style="margin:22px 0">
+        <div class="viz-head"><span class="vt">From geometry to a number</span><span class="vh">the order you solve in</span></div>
+        <div class="viz-body">
+          <svg class="viz-svg" viewBox="0 0 820 250" role="img" aria-label="The EMF problem-solving pipeline">
+            <defs>
+              <marker id="p-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b97ad"/>
+              </marker>
+            </defs>
+            <rect x="16" y="46" width="140" height="86" rx="10" fill="#e7edfb" stroke="#b9caf7"/>
+            <text x="86" y="72" text-anchor="middle" font-size="12" font-weight="800" fill="#2c4b9b">1 · GEOMETRY</text>
+            <text x="86" y="92" text-anchor="middle" font-size="10" fill="#46536b">source point Q</text>
+            <text x="86" y="106" text-anchor="middle" font-size="10" fill="#46536b">observation P</text>
+            <text x="86" y="120" text-anchor="middle" font-size="10" fill="#46536b">R = r − r′</text>
+
+            <rect x="184" y="46" width="140" height="86" rx="10" fill="#e5f5ec" stroke="#bfe3cf"/>
+            <text x="254" y="72" text-anchor="middle" font-size="12" font-weight="800" fill="#1f7a4d">2 · COORDINATES</text>
+            <text x="254" y="92" text-anchor="middle" font-size="10" fill="#46536b">symmetry picks</text>
+            <text x="254" y="106" text-anchor="middle" font-size="10" fill="#46536b">Cartesian / cyl. / sph.</text>
+            <text x="254" y="120" text-anchor="middle" font-size="10" fill="#46536b">metric factors</text>
+
+            <rect x="352" y="46" width="140" height="86" rx="10" fill="#fdf3e0" stroke="#ecd3a6"/>
+            <text x="422" y="72" text-anchor="middle" font-size="12" font-weight="800" fill="#c47a12">3 · SOURCE</text>
+            <text x="422" y="92" text-anchor="middle" font-size="10" fill="#46536b">dq = ρ_l dl</text>
+            <text x="422" y="106" text-anchor="middle" font-size="10" fill="#46536b">= ρ_s dS = ρ_v dv</text>
+            <text x="422" y="120" text-anchor="middle" font-size="10" fill="#46536b">or I dl</text>
+
+            <rect x="520" y="46" width="140" height="86" rx="10" fill="#f1f4f9" stroke="#c9d2e2"/>
+            <text x="590" y="72" text-anchor="middle" font-size="12" font-weight="800" fill="#46536b">4 · LAW</text>
+            <text x="590" y="92" text-anchor="middle" font-size="10" fill="#46536b">integrate</text>
+            <text x="590" y="106" text-anchor="middle" font-size="10" fill="#46536b">Gauss / Ampère</text>
+            <text x="590" y="120" text-anchor="middle" font-size="10" fill="#46536b">divergence / Stokes</text>
+
+            <rect x="688" y="46" width="116" height="86" rx="10" fill="#e7edfb" stroke="#b9caf7"/>
+            <text x="746" y="72" text-anchor="middle" font-size="12" font-weight="800" fill="#2c4b9b">5 · CHECK</text>
+            <text x="746" y="92" text-anchor="middle" font-size="10" fill="#46536b">units</text>
+            <text x="746" y="106" text-anchor="middle" font-size="10" fill="#46536b">sign / direction</text>
+            <text x="746" y="120" text-anchor="middle" font-size="10" fill="#46536b">limits</text>
+
+            <line x1="156" y1="89" x2="180" y2="89" stroke="#8b97ad" stroke-width="2" marker-end="url(#p-arr)"/>
+            <line x1="324" y1="89" x2="348" y2="89" stroke="#8b97ad" stroke-width="2" marker-end="url(#p-arr)"/>
+            <line x1="492" y1="89" x2="516" y2="89" stroke="#8b97ad" stroke-width="2" marker-end="url(#p-arr)"/>
+            <line x1="660" y1="89" x2="684" y2="89" stroke="#8b97ad" stroke-width="2" marker-end="url(#p-arr)"/>
+
+            <text x="410" y="178" text-anchor="middle" font-size="11" fill="#6b7891">Most lost marks are in step 2 (wrong metric factor) and step 5 (wrong normal or sign), not in the calculus.</text>
+            <text x="410" y="202" text-anchor="middle" font-size="11" font-weight="700" fill="#2c4b9b">Draw the picture before you write a single integral.</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="card">
+          <span class="pill good">Chapters 1–2</span>
+          <h3>The language</h3>
+          <p>Vectors, dot/cross, the three coordinate systems, differential elements, gradient, divergence, curl, and the two integral theorems. This is 60% of the control's mechanics.</p>
+          <p class="small muted">Output: you can convert a field, compute an operator, and set up a flux integral.</p>
+        </div>
+        <div class="card">
+          <span class="pill warm">Chapter 3</span>
+          <h3>Electrostatics</h3>
+          <p>Coulomb, E, D, charge distributions, Gauss, and potential. The control's exercises 1–3 all live here, with Chapter 2 supplying the integrals.</p>
+          <p class="small muted">Output: you can go from a charge density to Q, D, E, and V.</p>
+        </div>
+        <div class="card">
+          <span class="pill">Chapters 4–6</span>
+          <h3>Fields that move</h3>
+          <p>Biot–Savart, Ampère, magnetic force, Maxwell's equations, and plane waves. The control has one or two short magnetostatics questions; the final is here.</p>
+          <p class="small muted">Output: you can read a wave's β, η, λ, and δ from its parameters.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ANATOMY ================= -->
+    <section class="topic" id="anatomy">
+      <h2><span class="kicker">3</span>Control anatomy</h2>
+
+      <p>Two controls are available in full with solutions. Their structure is stable enough to plan around.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>2024–25 part</th><th>Points</th><th>Skill</th><th>Where it is taught</th></tr></thead>
+          <tbody>
+            <tr><td>Questions 1–4</td><td>3</td><td>Convert <span class="mono">F=10x̂</span>; state Gauss; <span class="mono">qv×B</span>; B of an infinite wire</td><td><a href="ch1.html#transform">Ch. 1</a>, <a href="ch3.html#gauss">Ch. 3</a>, <a href="ch4.html#force">Ch. 4</a></td></tr>
+            <tr><td>Exercise 1</td><td>6</td><td>Flux of <span class="mono">D=3r²r̂+(12φ/π)φ̂</span> over a closed spherical shell; verify with divergence theorem</td><td><a href="ch2.html#div-theorem">Ch. 2</a></td></tr>
+            <tr><td>Exercise 2</td><td>2</td><td>Total charge from <span class="mono">ρ_v=(ρ0/a)r cosθ</span> in a sphere and a cone</td><td><a href="ch3.html#gauss">Ch. 3</a></td></tr>
+            <tr><td>Exercise 3</td><td>4</td><td>E of two point charges at a point; points on the y-axis where <span class="mono">E_z=0</span></td><td><a href="ch3.html#efield">Ch. 3</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="viz" style="margin:22px 0">
+        <div class="viz-head"><span class="vt">Skill frequency across the two controls</span><span class="vh">how many papers test each skill</span></div>
+        <div class="viz-body">
+          <svg class="viz-svg" viewBox="0 0 760 300" role="img" aria-label="Bar chart of skill frequency">
+            <g font-size="11" fill="#46536b">
+              <text x="0" y="24">Coordinate / vector conversion</text>
+              <rect x="270" y="12" width="300" height="16" rx="4" fill="#3f6ad1"/><text x="580" y="24" fill="#2c4b9b" font-weight="700">2 / 2</text>
+              <text x="0" y="58">Flux + divergence theorem</text>
+              <rect x="270" y="46" width="300" height="16" rx="4" fill="#3f6ad1"/><text x="580" y="58" fill="#2c4b9b" font-weight="700">2 / 2</text>
+              <text x="0" y="92">E of point charges</text>
+              <rect x="270" y="80" width="300" height="16" rx="4" fill="#3f6ad1"/><text x="580" y="92" fill="#2c4b9b" font-weight="700">2 / 2</text>
+              <text x="0" y="126">Gradient / Stokes / curl</text>
+              <rect x="270" y="114" width="150" height="16" rx="4" fill="#c47a12"/><text x="430" y="126" fill="#c47a12" font-weight="700">1 / 2</text>
+              <text x="0" y="160">Volume charge integration</text>
+              <rect x="270" y="148" width="150" height="16" rx="4" fill="#c47a12"/><text x="430" y="160" fill="#c47a12" font-weight="700">1 / 2</text>
+              <text x="0" y="194">Magnetic force qv×B</text>
+              <rect x="270" y="182" width="150" height="16" rx="4" fill="#c47a12"/><text x="430" y="194" fill="#c47a12" font-weight="700">1 / 2</text>
+              <text x="0" y="228">B of an infinite wire</text>
+              <rect x="270" y="216" width="150" height="16" rx="4" fill="#c47a12"/><text x="430" y="228" fill="#c47a12" font-weight="700">1 / 2</text>
+              <text x="0" y="262">Gauss's law statement</text>
+              <rect x="270" y="250" width="150" height="16" rx="4" fill="#c47a12"/><text x="430" y="262" fill="#c47a12" font-weight="700">1 / 2</text>
+            </g>
+            <line x1="270" y1="8" x2="270" y2="276" stroke="#dde3ed"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="exam">
+        <strong>Read the point values correctly.</strong> Exercise 1 alone is 6 of 15 — 40% of the paper — and it is one skill: set up six surface integrals, then verify with one volume integral. If you can do that cold, you already have a strong pass. If you cannot, do not spend the night on Chapter 6.
+      </div>
+    </section>
+
+    <!-- ================= RULES ================= -->
+    <section class="topic" id="rules">
+      <h2><span class="kicker">4</span>The ten rules</h2>
+
+      <p>These are the recurring moves in the professor's solutions. They are not a substitute for the derivation; they are the checklist you run while solving.</p>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <span class="pill">Rule 1</span>
+          <h3>Draw the point before the vector</h3>
+          <p>Mark the origin, the source point <span class="mono">Q(x′,y′,z′)</span>, the observation point <span class="mono">P(x,y,z)</span>, and the vector <span class="mono">R = r − r′</span>. The direction of every field comes from this picture.</p>
+          <p class="small muted">If you cannot point to R, you cannot get the sign right.</p>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 2</span>
+          <h3>Convert the point first, then the vector</h3>
+          <p>A vector's components depend on where it sits. Compute ρ, φ, r, θ at the point, then multiply by the transformation matrix evaluated at that point. Never use the origin's unit vectors at P.</p>
+          <pre style="margin:8px 0"><code>F = 10x̂ at P(ρ=2, φ=30°)
+→ F = 10(cos30° ρ̂ − sin30° φ̂)</code></pre>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 3</span>
+          <h3>Dot is projection, cross is area</h3>
+          <p><span class="mono">A·B = AB cosθ</span> gives the component of B along A. <span class="mono">|A×B| = AB sinθ</span> gives the area of the parallelogram and a vector normal to both. Use the determinant for components; use the geometry for a sanity check.</p>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 4</span>
+          <h3>Every dl carries its metric factor</h3>
+          <p>Cartesian: <span class="mono">(dx, dy, dz)</span>. Cylindrical: <span class="mono">(dρ, ρdφ, dz)</span>. Spherical: <span class="mono">(dr, rdθ, r sinθ dφ)</span>. The factor is not optional: it is the physical length of the coordinate step.</p>
+          <p class="small muted">Wrong factor → wrong integral → wrong units.</p>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 5</span>
+          <h3>Every dS carries the Jacobian</h3>
+          <p>Cylindrical: <span class="mono">ρ dρ dφ</span> on the z-face, <span class="mono">ρ dφ dz</span> on the ρ-face. Spherical: <span class="mono">r² sinθ dθ dφ</span> on the r-face. On a closed surface, the normal points <em>outward</em>.</p>
+          <pre style="margin:8px 0"><code>dS_r = r² sinθ dθ dφ r̂</code></pre>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 6</span>
+          <h3>Divergence is flux per volume</h3>
+          <p><span class="mono">∇·D = ρ_v</span> is Gauss's law at a point. Positive divergence means a source; negative means a sink; zero means incompressible. The integral form sums the flux over a closed surface.</p>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 7</span>
+          <h3>Curl is circulation per area</h3>
+          <p><span class="mono">∇×E = 0</span> for static fields: the line integral between two points is path-independent. A nonzero curl means the field rotates; the paddle-wheel test gives the direction.</p>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 8</span>
+          <h3>Two theorems, two pairings</h3>
+          <p><strong>Divergence:</strong> closed surface ↔ enclosed volume. <strong>Stokes:</strong> closed loop ↔ any open surface bounded by it. Orientation follows the right-hand rule; reversing the normal reverses the sign.</p>
+          <pre style="margin:8px 0"><code>∮D·dS = ∫∇·D dv
+∮E·dl = ∫(∇×E)·dS</code></pre>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 9</span>
+          <h3>Gauss only helps with symmetry</h3>
+          <p>Use a Gaussian surface on which <span class="mono">D</span> is constant and normal: a sphere for a point/sphere, a cylinder for a line, a pillbox for a plane. Otherwise, integrate Coulomb directly.</p>
+        </div>
+
+        <div class="card">
+          <span class="pill">Rule 10</span>
+          <h3>Potential is the scalar shortcut</h3>
+          <p><span class="mono">E = −∇V</span> and <span class="mono">V = −∫E·dl</span>. Potentials add as scalars, so find V first when many charges are present, then take one gradient. Set <span class="mono">V=0</span> at infinity for finite distributions.</p>
+        </div>
+      </div>
+
+      <div class="warn">
+        <strong>The two most expensive mistakes in the archive.</strong> (1) Forgetting the <span class="mono">r² sinθ</span> in a spherical volume integral. (2) Using the wrong sign for the outward normal on the inner surface of a shell. Both turn a correct method into a wrong number, and both are visible in the 2024–25 solution.
+      </div>
+    </section>
+
+    <!-- ================= SOLVER ================= -->
+    <section class="topic" id="solver">
+      <h2><span class="kicker">5</span>The six-step solver</h2>
+
+      <p>Every control question can be attacked in the same order. Write the steps on the back of your mind, not on the paper.</p>
+
+      <div class="grid grid-2">
+        <div class="card"><h3>1 · Name the target</h3><p>Is the answer a scalar (Q, flux, V) or a vector (E, D, B, F)? A vector answer needs a direction check at the end; a scalar answer needs a sign check.</p></div>
+        <div class="card"><h3>2 · Choose coordinates</h3><p>Spherical for a point or sphere, cylindrical for a wire or cylinder, Cartesian for a box or a general point. The symmetry of the <em>source</em> decides, not the symmetry of the question text.</p></div>
+        <div class="card"><h3>3 · Write the source element</h3><p>Point: <span class="mono">dq</span>. Line: <span class="mono">ρ_l dl</span>. Surface: <span class="mono">ρ_s dS</span>. Volume: <span class="mono">ρ_v dv</span>. Current: <span class="mono">I dl</span>. Write the metric factors immediately.</p></div>
+        <div class="card"><h3>4 · Build R and the field</h3><p><span class="mono">R = r − r′</span>, <span class="mono">R = |R|</span>. Then <span class="mono">dE = dq R/(4πε0 R³)</span> or <span class="mono">dB = μ0 I dl×R/(4πR³)</span>. Keep the vector signs until the last step.</p></div>
+        <div class="card"><h3>5 · Integrate or apply the theorem</h3><p>Set the limits from the geometry. If the surface is closed, split it into faces and compute each flux. If the field is symmetric, use Gauss or Ampère and skip the integral.</p></div>
+        <div class="card"><h3>6 · Check units, sign, direction</h3><p>E in V/m, D in C/m², B in T, flux in C or Wb, potential in V. A positive charge has E pointing away; a negative charge has E pointing toward it. If the direction is wrong, the magnitude does not save you.</p></div>
+      </div>
+
+      <div class="tip">
+        <strong>Use this on every worked example.</strong> When you read a solution, cover it and run the six steps aloud. If you cannot name the step where the solution made a choice, you have not learned the method yet.
+      </div>
+    </section>
+
+    <!-- ================= DIAGNOSTIC ================= -->
+    <section class="topic" id="diagnostic">
+      <h2><span class="kicker">6</span>Diagnostic — five questions before you start</h2>
+
+      <p>Answer without notes. If you miss more than two, start at Chapter 1. If you miss two, skim Chapter 1 and start Chapter 2. If you miss none, go straight to the <a href="practice.html#control24">timed control</a>.</p>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <div class="q"><span class="tag">1 · Chapter 1</span><br>At the point <span class="mono">P(x=1, y=1, z=0)</span>, what is the unit vector <span class="mono">φ̂</span> in Cartesian components?</div>
+        <div class="opts">
+          <button data-opt="a">(1, 1, 0)/√2</button>
+          <button data-opt="b">(−1, 1, 0)/√2</button>
+          <button data-opt="c">(1, −1, 0)/√2</button>
+          <button data-opt="d">(0, 0, 1)</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol"><span class="mono">φ̂ = −sinφ x̂ + cosφ ŷ</span>. At (1,1), <span class="mono">φ=45°</span>, so <span class="mono">φ̂ = (−1/√2, 1/√2, 0)</span>. Answer b.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="c">
+        <div class="q"><span class="tag">2 · Chapter 2</span><br>For <span class="mono">D = 3r² r̂</span>, what is <span class="mono">∇·D</span>?</div>
+        <div class="opts">
+          <button data-opt="a">3r</button>
+          <button data-opt="b">6r</button>
+          <button data-opt="c">12r</button>
+          <button data-opt="d">0</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol"><span class="mono">∇·D = (1/r²) ∂(r²·3r²)/∂r = (1/r²) ∂(3r⁴)/∂r = (1/r²)(12r³) = 12r</span>. Answer c.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="a">
+        <div class="q"><span class="tag">3 · Chapter 2</span><br>A closed surface encloses a volume in which <span class="mono">∇·D = 12(r + 1/(4πr sinθ))</span>. The surface flux equals…</div>
+        <div class="opts">
+          <button data-opt="a">the volume integral of ∇·D</button>
+          <button data-opt="b">the line integral of D</button>
+          <button data-opt="c">the curl of D over the surface</button>
+          <button data-opt="d">zero, always</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol">Divergence theorem: <span class="mono">∮D·dS = ∫∇·D dv</span>. Answer a.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="d">
+        <div class="q"><span class="tag">4 · Chapter 3</span><br>A volume charge density <span class="mono">ρ_v = k r cosθ</span> fills a sphere of radius <span class="mono">a</span>. What is the total charge?</div>
+        <div class="opts">
+          <button data-opt="a">4πka⁴/3</button>
+          <button data-opt="b">2πka³</button>
+          <button data-opt="c">πka⁴</button>
+          <button data-opt="d">0</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol">The <span class="mono">cosθ</span> factor makes the positive and negative hemispheres cancel: <span class="mono">∫₀^π cosθ sinθ dθ = 0</span>. Answer d.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz data-answer="b">
+        <div class="q"><span class="tag">5 · Chapter 4</span><br>A charge <span class="mono">q</span> moves with velocity <span class="mono">v</span> parallel to a uniform magnetic field <span class="mono">B</span>. The magnetic force is…</div>
+        <div class="opts">
+          <button data-opt="a">qvB, along v</button>
+          <button data-opt="b">zero</button>
+          <button data-opt="c">qvB, opposite v</button>
+          <button data-opt="d">qvB, along B</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol"><span class="mono">F = qv×B</span>. If v ∥ B, the cross product is zero. Answer b.</div></details>
+      </div>
+    </section>
+
+    <!-- ================= ROUTE ================= -->
+    <section class="topic" id="route">
+      <h2><span class="kicker">7</span>Where to go next</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>If you…</th><th>Start with</th><th>Then</th></tr></thead>
+          <tbody>
+            <tr><td>cannot convert a vector between coordinate systems</td><td><a href="ch1.html#transform">Ch. 1 — transformation matrices</a></td><td><a href="ch1.html#diff-elements">differential elements</a></td></tr>
+            <tr><td>can convert but freeze on flux integrals</td><td><a href="ch2.html#div-theorem">Ch. 2 — the 27π example</a></td><td><a href="practice.html#control24">control Exercise 1</a></td></tr>
+            <tr><td>know Gauss but cannot integrate a charge density</td><td><a href="ch3.html#gauss">Ch. 3 — spherical volume integrals</a></td><td><a href="ch3.html#potential">potential</a></td></tr>
+            <tr><td>lose marks on point-charge fields</td><td><a href="ch3.html#efield">Ch. 3 — E of n charges</a></td><td><a href="practice.html#control24">control Exercise 3</a></td></tr>
+            <tr><td>need the final, not the control</td><td><a href="ch5.html">Ch. 5 — Maxwell</a></td><td><a href="ch6.html">Ch. 6 — plane waves</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>Study order for the control:</strong> Chapter 1 → 2 → 3 → timed control → repair. Do not start with Chapter 4 unless you have already secured the flux and point-charge marks. Magnetostatics is 3 points of short questions; the electrostatics block is 12.
+      </div>
+
+      <p style="margin-top:26px"><a class="btn btn-primary" href="ch1.html">Start Chapter 1 →</a> <a class="btn btn-outline" href="formulas.html">Open the formula sheet</a></p>
+    </section>
+
+    <footer class="foot">Chapter 0 · Overview · Synthesized from K. Djafri's EE361 chapters, the 2024–25 and 2021–22 controls with solutions, and the recitation archive. Original prose and diagrams.</footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>

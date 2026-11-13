@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EE361 EMF — 2-Day Exam Companion</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/emf.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">EE361 EMF — Companion</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EMF Companion<small>EE361 · Electromagnetics</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch0.html"><span class="num">00</span>How it fits</a>
+      <a href="ch1.html"><span class="num">01</span>Vectors &amp; coordinates</a>
+      <a href="ch2.html"><span class="num">02</span>Vector calculus</a>
+      <a href="ch3.html"><span class="num">03</span>Electrostatics</a>
+      <a href="ch4.html"><span class="num">04</span>Magnetostatics</a>
+      <a href="ch5.html"><span class="num">05</span>Maxwell</a>
+      <a href="ch6.html"><span class="num">06</span>Plane waves</a>
+      <div class="nav-label">Exam prep</div>
+      <a href="formulas.html"><span class="num">Σ</span>Formula sheet</a>
+      <a href="practice.html"><span class="num">✎</span>Practice</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="hero">
+      <span class="eyebrow" style="background:rgba(255,255,255,.12);color:#cfe0ff">EE361 · Electromagnetic Field Theory</span>
+      <h1>Two days. Three exam blocks. Every visual.</h1>
+      <p class="lede">Built from the full EE361 archive: the 2024–25 and 2021–22 controls with solutions, the 2013–2025 recitations, and K. Djafri's five lecture chapters. The control is a vector-calculus and electrostatics paper. This site trains exactly that.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="ch0.html">Open the map →</a>
+        <a class="btn btn-ghost" href="practice.html">Start the control set</a>
+      </div>
+    </header>
+
+    <div class="stats" style="margin-top:26px">
+      <div class="stat"><span class="k">Control length</span><span class="v">1 h 30</span><span class="s">2024–25 paper</span></div>
+      <div class="stat"><span class="k">Control split</span><span class="v">3 · 6 · 2 · 4</span><span class="s">questions · flux · charge · E-field</span></div>
+      <div class="stat"><span class="k">Archive</span><span class="v">2000–25</span><span class="s">controls, finals, replacements</span></div>
+      <div class="stat"><span class="k">Recitations</span><span class="v">2013–25</span><span class="s">with professor solutions</span></div>
+    </div>
+
+    <div class="note">
+      <strong>The exam is a control, not the final.</strong> The 2024–25 control covers Chapters 1–3 only: coordinate conversion, flux + divergence theorem, charge integration, and the electric field of point charges. Chapters 4–6 are here for the final and for the magnetostatics questions that still appear in the “Questions” block.
+    </div>
+
+    <h2 id="plan">The 2-day plan</h2>
+    <p class="lede">Do not read five chapters in order. Do the highest-yield loop first, then take a timed paper.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>When</th><th>Work</th><th>Output you can check</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Day 1 · 08:00–10:00</strong></td><td><a href="ch1.html">Ch. 1</a>: dot/cross, the three coordinate systems, transformation matrices, differential elements</td><td>Convert <span class="mono">F = 10x̂</span> to cylindrical and spherical without notes</td></tr>
+          <tr><td><strong>Day 1 · 10:00–13:00</strong></td><td><a href="ch2.html">Ch. 2</a>: line/surface integrals, gradient, divergence, curl</td><td>Compute ∇·D and ∇×A in all three systems</td></tr>
+          <tr><td><strong>Day 1 · 14:00–17:00</strong></td><td><a href="ch2.html#div-theorem">Divergence theorem + Stokes</a></td><td>Reproduce the 27π flux result for the 2024–25 control shell</td></tr>
+          <tr><td><strong>Day 1 · 18:00–21:00</strong></td><td><a href="ch3.html">Ch. 3</a>: Coulomb, E-field of distributions, Gauss, potential</td><td>Solve the two-charge field and the cone charge integral</td></tr>
+          <tr><td><strong>Day 2 · 08:00–09:00</strong></td><td><a href="formulas.html">Formula sheet</a>: blank-page recall</td><td>Write the three operator sets and the transformation matrices from memory</td></tr>
+          <tr><td><strong>Day 2 · 09:00–11:00</strong></td><td><a href="practice.html#control24">Timed control</a>, no notes, 1 h 30</td><td>Mark every question; log every miss</td></tr>
+          <tr><td><strong>Day 2 · 11:00–14:00</strong></td><td>Repair the two weakest skills only</td><td>Redo the missed questions from a blank page</td></tr>
+          <tr><td><strong>Day 2 · 14:00–16:00</strong></td><td>Second set: <a href="practice.html#control21">2021–22 control</a> + recitation transfer</td><td>Final one-page sheet; stop and sleep</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tip">
+      <strong>If you have only 3 hours.</strong> Read <a href="ch1.html#transform">the transformation matrices</a>, <a href="ch2.html#div-theorem">the divergence-theorem worked example</a>, and <a href="ch3.html#gauss">Gauss with spherical symmetry</a>. Then do the first four questions on the <a href="practice.html#control24">control page</a>. That is most of the paper.
+    </div>
+
+    <h2 id="chapters">The six chapters</h2>
+    <div class="grid grid-3" style="margin:22px 0 34px">
+      <a class="card card-link chapter-card" href="ch0.html">
+        <span class="badge">00</span>
+        <h3>How the pieces fit</h3>
+        <p>The map, the exam anatomy, the ten rules, and a five-question diagnostic. Start here if you have 20 minutes.</p>
+        <ul><li>Control vs final scope</li><li>Ten recurring rules</li><li>Routing by weakness</li></ul>
+        <span class="go">Open the map →</span>
+      </a>
+      <a class="card card-link chapter-card" href="ch1.html">
+        <span class="badge">01</span>
+        <h3>Vectors &amp; coordinates</h3>
+        <p>Dot, cross, triple products; Cartesian, cylindrical, spherical; the transformation matrices.</p>
+        <ul><li>F = 10x̂ conversion</li><li>Differential elements</li><li>Unit-vector matrices</li></ul>
+        <span class="go">Open Chapter 1 →</span>
+      </a>
+      <a class="card card-link chapter-card" href="ch2.html">
+        <span class="badge">02</span>
+        <h3>Vector calculus</h3>
+        <p>Line, surface and volume integrals; gradient, divergence, curl; the two big theorems.</p>
+        <ul><li>∇ in three systems</li><li>27π divergence theorem</li><li>Stokes orientation</li></ul>
+        <span class="go">Open Chapter 2 →</span>
+      </a>
+      <a class="card card-link chapter-card" href="ch3.html">
+        <span class="badge">03</span>
+        <h3>Electrostatics</h3>
+        <p>Coulomb, E and D, charge distributions, Gauss, potential.</p>
+        <ul><li>Two-charge field</li><li>Cone charge integral</li><li>Ring and disk fields</li></ul>
+        <span class="go">Open Chapter 3 →</span>
+      </a>
+      <a class="card card-link chapter-card" href="ch4.html">
+        <span class="badge">04</span>
+        <h3>Magnetostatics</h3>
+        <p>Biot–Savart, Ampère, magnetic force, and Gauss's law for B.</p>
+        <ul><li>Infinite wire</li><li>qv×B</li><li>Parallel wires</li></ul>
+        <span class="go">Open Chapter 4 →</span>
+      </a>
+      <a class="card card-link chapter-card" href="ch5.html">
+        <span class="badge">05</span>
+        <h3>Maxwell's equations</h3>
+        <p>Faraday, displacement current, the four laws, and charge continuity.</p>
+        <ul><li>Four-equation map</li><li>Capacitor paradox</li><li>Continuity worked</li></ul>
+        <span class="go">Open Chapter 5 →</span>
+      </a>
+      <a class="card card-link chapter-card" href="ch6.html">
+        <span class="badge">06</span>
+        <h3>Plane waves</h3>
+        <p>Free space, dielectrics, conductors, skin depth, polarization.</p>
+        <ul><li>300 MHz example</li><li>η and λ</li><li>Sea-water skin depth</li></ul>
+        <span class="go">Open Chapter 6 →</span>
+      </a>
+      <a class="card card-link chapter-card" href="formulas.html">
+        <span class="badge">Σ</span>
+        <h3>Formula sheet</h3>
+        <p>Every formula on one searchable page, grouped by chapter and operator.</p>
+        <ul><li>Three coordinate systems</li><li>All operators</li><li>Waves and media</li></ul>
+        <span class="go">Open the sheet →</span>
+      </a>
+      <a class="card card-link chapter-card" href="practice.html">
+        <span class="badge">✎</span>
+        <h3>Practice</h3>
+        <p>Control-style questions with hidden full solutions, plus recitation transfers.</p>
+        <ul><li>2024–25 control</li><li>2021–22 control</li><li>Mixed drill</li></ul>
+        <span class="go">Open practice →</span>
+      </a>
+    </div>
+
+    <h2 id="how">How to use a chapter</h2>
+    <div class="grid grid-3">
+      <div class="card"><h3>1 · Read the idea</h3><p>Each section starts with the geometric picture, then the formula. If you cannot say what the operator measures, the formula will not survive the exam.</p></div>
+      <div class="card"><h3>2 · Move the visual</h3><p>Every hard concept has a control. Change the numbers until the readout matches your hand calculation. That is the fastest error check.</p></div>
+      <div class="card"><h3>3 · Solve before revealing</h3><p>The quizzes and practice page hide their solutions. Reading a solution is not mastery; producing it from a blank page is.</p></div>
+    </div>
+
+    <div class="done-row" style="margin-top:24px">
+      <input type="checkbox" id="p-plan" data-progress="plan-2day">
+      <label for="p-plan">I have picked the 2-day plan and booked the two timed blocks.
+        <span class="done-meta">Hub · plan</span></label>
+    </div>
+
+    <div class="exam" style="margin-top:22px">
+      <strong>What the archive actually contains.</strong> Controls and finals from 2000 to 2025 (including 2024–25 and 2021–22 with full solutions), recitations from 2013, 2014, 2016, 2018, 2020, 2024–25 and 2025, the professor's formula summary, and five lecture chapters. This site is a synthesis; the original papers stay in your course folder and are not republished here.
+    </div>
+
+    <p style="margin-top:26px">
+      <a class="btn btn-primary" href="ch0.html">Start with the map →</a>
+      <a class="btn btn-outline" href="practice.html">Jump to the control set</a>
+    </p>
+
+    <footer class="foot">EE361 EMF Companion · Built from K. Djafri's 2024–25 lecture chapters, the 2024–25 and 2021–22 controls with solutions, and the 2013–2025 recitation archive. Original prose and diagrams; source PDFs are not redistributed. <a href="../index.html">Computer Architecture companion ↗</a></footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 5 — Maxwell's equations | EE361 EMF</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/emf.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Ch. 5 — Maxwell</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EMF Companion<small>EE361 · Electromagnetics</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch0.html"><span class="num">00</span>How it fits</a>
+      <a href="ch1.html"><span class="num">01</span>Vectors &amp; coordinates</a>
+      <a href="ch2.html"><span class="num">02</span>Vector calculus</a>
+      <a href="ch3.html"><span class="num">03</span>Electrostatics</a>
+      <a href="ch4.html"><span class="num">04</span>Magnetostatics</a>
+      <a href="ch5.html" class="active"><span class="num">05</span>Maxwell</a>
+      <a href="ch6.html"><span class="num">06</span>Plane waves</a>
+      <div class="nav-label">Exam prep</div>
+      <a href="formulas.html"><span class="num">Σ</span>Formula sheet</a>
+      <a href="practice.html"><span class="num">✎</span>Practice</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Chapter 5 · Maxwell's equations</span>
+      <h1>Maxwell's equations</h1>
+      <p class="lede">Four equations turn charges and currents into fields, and fields back into charges and currents. This chapter is the toolkit for the final's short-question block: recognize a law from its integral or differential form, compute the flux or circulation, and get the sign right. Every section ends with the arithmetic the exam expects, not just the formula.</p>
+    </header>
+
+    <div class="toc">
+      <strong>On this page</strong>
+      <ol>
+        <li><a href="#map">The four laws at a glance</a></li>
+        <li><a href="#faraday">Faraday's law</a></li>
+        <li><a href="#ampere-maxwell">Ampère–Maxwell and displacement current</a></li>
+        <li><a href="#gauss-laws">Gauss's laws and magnetic monopoles</a></li>
+        <li><a href="#continuity">Charge continuity</a></li>
+        <li><a href="#constitutive">Constitutive relations and the full set</a></li>
+        <li><a href="#check">Check yourself</a></li>
+      </ol>
+    </div>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="map">
+      <h2><span class="kicker">5.0</span>The four laws at a glance</h2>
+      <p>Click a card. The diagram shows what the law measures; the text gives the plain-language version and the form you should be able to write from memory. The four are not independent facts. They are one system: charge is the source of <span class="v" style="text-decoration:overline">D</span>, there is no magnetic charge, a changing <span class="v" style="text-decoration:overline">B</span> circulates <span class="v" style="text-decoration:overline">E</span>, and current plus a changing <span class="v" style="text-decoration:overline">D</span> circulates <span class="v" style="text-decoration:overline">H</span>.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">The four-law map</span><span class="vh">click a law card to switch the diagram</span></div>
+        <div class="viz-body" data-viz="maxwell-map"></div>
+      </div>
+
+      <div class="exam">
+        <strong>Where this lands on the paper.</strong> The final is sixteen short questions plus two exercises. Q1 asks for the differential form of continuity; Q4 computes a curl in cylindrical coordinates to get <span class="v" style="text-decoration:overline">J</span><sub>d</sub>; Exercise 2 reverses Ampère–Maxwell to recover <span class="v" style="text-decoration:overline">E</span> from <span class="v" style="text-decoration:overline">H</span>. If you can read the four rows of the table at the end of this page, those are quick marks. The 2024–25 <em>control</em> stops at Chapter 3, so the final is the right target for this chapter; the control's divergence-theorem question is still useful practice for Gauss.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="faraday">
+      <h2><span class="kicker">5.1</span>Faraday's law: a changing flux drives a loop</h2>
+      <p>Faraday found that a loop can be driven without a battery. All that is required is a magnetic flux through the loop that changes with time. The induced emf is the work per unit charge done around the loop. It is not a force, despite the name; the unit is the volt.</p>
+
+      <div class="eqbox">
+        <div class="eq">∮<sub>C</sub> <span class="v" style="text-decoration:overline">E</span> · d<span class="v" style="text-decoration:overline">l</span> = − <span class="v">d</span>/<span class="v">dt</span> ∫<sub>S</sub> <span class="v" style="text-decoration:overline">B</span> · d<span class="v" style="text-decoration:overline">S</span></div>
+      </div>
+      <p>For a loop fixed in space, the derivative moves inside the integral and becomes a partial derivative of <span class="v" style="text-decoration:overline">B</span>:</p>
+      <div class="eqbox">
+        <div class="eq">∮<sub>C</sub> <span class="v" style="text-decoration:overline">E</span> · d<span class="v" style="text-decoration:overline">l</span> = − ∫<sub>S</sub> ∂<span class="v" style="text-decoration:overline">B</span>/∂<span class="v">t</span> · d<span class="v" style="text-decoration:overline">S</span> &nbsp;&nbsp;⇔&nbsp;&nbsp; ∇ × <span class="v" style="text-decoration:overline">E</span> = − ∂<span class="v" style="text-decoration:overline">B</span>/∂<span class="v">t</span></div>
+      </div>
+      <p class="small muted">Stokes' theorem turns the left side into ∫<sub>S</sub>(∇ × <span class="v" style="text-decoration:overline">E</span>) · d<span class="v" style="text-decoration:overline">S</span>. Both sides are now surface integrals over the same arbitrary surface, so the integrands must match. That is the differential form.</p>
+
+      <div class="note">
+        <strong>Orientation is part of the equation.</strong> Curl the fingers of your right hand along the contour <span class="v">C</span>; the thumb points along the positive normal d<span class="v" style="text-decoration:overline">S</span>. Reverse either the contour or the surface normal and both sides change sign, so the law still holds. Pick one orientation at the start and keep it to the end of the problem.
+      </div>
+
+      <h3>Lenz's law in one sentence</h3>
+      <p>The induced current appears in the direction that opposes the <em>change</em> in flux. If the flux is increasing, the induced current creates flux in the opposite direction. If the flux is decreasing, it tries to maintain the original flux. This is the meaning of the minus sign, and it is also the fastest way to get the direction without doing a signed integral.</p>
+      <ol class="clean">
+        <li>Choose <span class="v">C</span> and its normal by the right-hand rule.</li>
+        <li>Compute Φ<sub>B</sub> = ∫<span class="v" style="text-decoration:overline">B</span> · d<span class="v" style="text-decoration:overline">S</span> with that normal, including its sign.</li>
+        <li>Compute emf = −dΦ<sub>B</sub>/dt. A negative result means the current runs opposite to your chosen <span class="v">C</span>.</li>
+      </ol>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Magnet and coil</span><span class="vh">slide the velocity through zero; watch the current reverse</span></div>
+        <div class="viz-body" data-viz="faraday"></div>
+      </div>
+
+      <h3>Example 5.1 — a circular loop in a time-varying field</h3>
+      <div class="card">
+        <p>A circular loop of radius <var>a</var> = 5.0 cm lies in the <var>xy</var>-plane. A uniform field <span class="v" style="text-decoration:overline">B</span> = <var>B</var><sub>0</sub> cos(ω<var>t</var>) ẑ passes through it, with <var>B</var><sub>0</sub> = 0.20 T and <var>f</var> = 50 Hz. Find the flux, the emf at <var>t</var> = 5.0 ms, and the direction of the induced current.</p>
+        <div class="eq" style="text-align:left">
+          A = πa² = π(0.050)² = 7.854 × 10<sup>−3</sup> m²<br>
+          Φ<sub>B</sub> = B<sub>0</sub>A cos ωt = 0.20 × 7.854 × 10<sup>−3</sup> cos ωt = 1.571 × 10<sup>−3</sup> cos ωt Wb<br>
+          ω = 2πf = 2π(50) = 314.2 rad/s<br>
+          emf = −dΦ<sub>B</sub>/dt = ωB<sub>0</sub>A sin ωt = 0.4935 sin ωt V
+        </div>
+        <p>At <var>t</var> = 5.0 ms, ω<var>t</var> = 314.2 × 5.0 × 10<sup>−3</sup> = 1.571 rad = π/2, so sin ω<var>t</var> = 1 and <strong>emf = 0.494 V</strong>. At that instant <span class="v" style="text-decoration:overline">B</span> is positive but falling through zero, so the upward flux is decreasing. The induced current must produce +ẑ, which means <strong>counter-clockwise seen from +z</strong>.</p>
+        <p class="small muted">Check with the differential form: for ρ &lt; a, <var>E</var><sub>φ</sub> = (ρ/2)ωB<sub>0</sub> sin ωt. At ρ = a = 0.050 m, <var>E</var><sub>φ</sub> = 1.57 V/m, and 2πaE<sub>φ</sub> = 0.494 V. At <var>t</var> = 0 the field is maximum but the emf is zero, because the flux is momentarily not changing.</p>
+      </div>
+
+      <h3>Example 5.2 — the moving rod</h3>
+      <div class="card">
+        <p>A rod of length <var>l</var> = 0.40 m slides at <var>v</var> = 2.0 m/s along two frictionless rails in a uniform field <var>B</var> = 0.50 T pointing out of the page (+ẑ). The rails are joined by <var>R</var> = 2.0 Ω. Find the emf, the current, the magnetic force on the rod, and check the power balance.</p>
+        <div class="eq" style="text-align:left">
+          emf = Blv = 0.50 × 0.40 × 2.0 = 0.40 V<br>
+          I = emf/R = 0.40/2.0 = 0.20 A<br>
+          F = IlB = 0.20 × 0.40 × 0.50 = 0.040 N, opposite to v<br>
+          P<sub>mech</sub> = Fv = 0.040 × 2.0 = 0.080 W<br>
+          P<sub>elec</sub> = I²R = (0.20)² × 2.0 = 0.080 W ✓
+        </div>
+        <p><strong>Direction.</strong> The charge velocity is +x̂ and <span class="v" style="text-decoration:overline">B</span> is +ẑ, so <span class="v" style="text-decoration:overline">v</span> × <span class="v" style="text-decoration:overline">B</span> = x̂ × ẑ = −ŷ. Positive charges are pushed down the rod, so the current runs down the rod. The loop area is growing, so the outward flux is increasing; the induced current must produce inward flux (−ẑ), which is clockwise in the plane. The magnetic force on the rod is then −x̂: it opposes the motion. Lenz's law and the force calculation agree.</p>
+      </div>
+
+      <div class="warn">
+        <strong>Common mistake: dropping the minus sign.</strong> The minus is not decoration. If you compute |emf| = |dΦ/dt| and then guess the direction, you will be wrong half the time. Either keep the signed normal consistently, or compute the magnitude and use Lenz explicitly. Also note that emf is maximum when the flux is <em>zero</em> and changing fastest, not when <span class="v" style="text-decoration:overline">B</span> is maximum. In Example 5.1, <span class="v" style="text-decoration:overline">B</span> is maximum at <var>t</var> = 0 but emf = 0.
+      </div>
+
+      <div class="warn">
+        <strong>Common mistake: partial versus total derivative.</strong> For a loop fixed in space, d/d<var>t</var> and ∂/∂<var>t</var> are interchangeable inside the flux integral. For a moving loop they are not. The universal law is emf = −dΦ<sub>B</sub>/d<var>t</var>, with the <em>total</em> derivative. The differential law ∇ × <span class="v" style="text-decoration:overline">E</span> = −∂<span class="v" style="text-decoration:overline">B</span>/∂<var>t</var> describes the electric field at a fixed point; it does not contain the motional term <span class="v" style="text-decoration:overline">v</span> × <span class="v" style="text-decoration:overline">B</span>. In Example 5.2 the field is static, so ∂<span class="v" style="text-decoration:overline">B</span>/∂<var>t</var> = 0, yet the emf is 0.40 V. Do not “prove” the rod's emf from the partial derivative.
+      </div>
+
+      <div class="tip">
+        <strong>Exam recipe for a Faraday question.</strong> (1) Write the flux through the loop with the given field. (2) Differentiate it; if the loop moves, the area is time-dependent. (3) The magnitude is |dΦ/dt|; the direction comes from Lenz. (4) If the question asks for the induced electric field, use symmetry: a circular path gives <var>E</var><sub>φ</sub> = emf/(2πρ).
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="ampere-maxwell">
+      <h2><span class="kicker">5.2</span>Ampère–Maxwell: the displacement current</h2>
+      <p>Ampère's law works beautifully for steady currents. Put a capacitor in the circuit and it contradicts itself. Take a contour <span class="v">C</span> around the wire feeding one plate. Surface <var>S</var><sub>1</sub> cuts the wire, so the enclosed current is <var>i</var>(<var>t</var>). Surface <var>S</var><sub>2</sub> balloons through the capacitor gap, so the enclosed current is zero. Both surfaces have the same boundary <span class="v">C</span>, but they give different values of ∮<span class="v" style="text-decoration:overline">H</span> · d<span class="v" style="text-decoration:overline">l</span>. Ampère's law is incomplete whenever the current is time-varying.</p>
+
+      <p>Maxwell's fix was to add a current that exists only while the electric field changes. Between the plates there is no charge crossing the gap, but there is a changing electric flux. He called it the <strong>displacement current</strong>:</p>
+      <div class="eqbox">
+        <div class="eq">∮<sub>C</sub> <span class="v" style="text-decoration:overline">H</span> · d<span class="v" style="text-decoration:overline">l</span> = ∫<sub>S</sub> <span class="v" style="text-decoration:overline">J</span><sub>c</sub> · d<span class="v" style="text-decoration:overline">S</span> + ∫<sub>S</sub> ∂<span class="v" style="text-decoration:overline">D</span>/∂<span class="v">t</span> · d<span class="v" style="text-decoration:overline">S</span></div>
+        <div class="eq">∇ × <span class="v" style="text-decoration:overline">H</span> = <span class="v" style="text-decoration:overline">J</span><sub>c</sub> + ∂<span class="v" style="text-decoration:overline">D</span>/∂<span class="v">t</span></div>
+      </div>
+      <p><span class="v" style="text-decoration:overline">J</span><sub>c</sub> = σ<span class="v" style="text-decoration:overline">E</span> is conduction current: charge actually moving. <span class="v" style="text-decoration:overline">J</span><sub>d</sub> = ∂<span class="v" style="text-decoration:overline">D</span>/∂<span class="v">t</span> is displacement current density: a changing electric flux. Both have units of A/m². The displacement term is not a flow of charge; it is the piece of the magnetic source that exists in empty space, and it is what allows electromagnetic waves to propagate.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Charging capacitor</span><span class="vh">slide dV/dt negative; the displacement arrow reverses</span></div>
+        <div class="viz-body" data-viz="displacement-current"></div>
+      </div>
+
+      <h3>Example 5.3 — displacement current in a parallel-plate capacitor</h3>
+      <div class="card">
+        <p>Parallel plates of radius <var>a</var> = 10 cm are separated by <var>d</var> = 2.0 mm. The voltage is <var>V</var>(<var>t</var>) = <var>V</var><sub>0</sub> sin ω<var>t</var>, with <var>V</var><sub>0</sub> = 200 V and <var>f</var> = 100 kHz. (a) Find the amplitude of the displacement current. (b) At the instant <var>V</var> = 120 V and d<var>V</var>/d<var>t</var> = +5.0 × 10<sup>5</sup> V/s, find <var>I</var><sub>d</sub>, <var>J</var><sub>d</sub>, and the magnetic field at the plate rim. (c) Check the result with ε<sub>0</sub> dΦ<sub>E</sub>/d<var>t</var>.</p>
+        <div class="eq" style="text-align:left">
+          A = π(0.10)² = 3.142 × 10<sup>−2</sup> m²<br>
+          C = ε<sub>0</sub>A/d = (8.854 × 10<sup>−12</sup>)(3.142 × 10<sup>−2</sup>)/(2.0 × 10<sup>−3</sup>) = 1.391 × 10<sup>−10</sup> F = 139 pF<br>
+          E = V/d, &nbsp; Φ<sub>E</sub> = EA = VA/d<br>
+          I<sub>d</sub> = ε<sub>0</sub> dΦ<sub>E</sub>/dt = (ε<sub>0</sub>A/d) dV/dt = C dV/dt
+        </div>
+        <p><strong>(a)</strong> ω = 2π(10<sup>5</sup>) = 6.283 × 10<sup>5</sup> rad/s. The derivative d<var>V</var>/d<var>t</var> = <var>V</var><sub>0</sub>ω cos ω<var>t</var> has amplitude <var>V</var><sub>0</sub>ω, so</p>
+        <div class="eq" style="text-align:left">
+          I<sub>d,max</sub> = C V<sub>0</sub>ω = (1.391 × 10<sup>−10</sup>)(200)(6.283 × 10<sup>5</sup>) = 1.748 × 10<sup>−2</sup> A = <strong>17.5 mA</strong>
+        </div>
+        <p><strong>(b)</strong> With d<var>V</var>/d<var>t</var> = 5.0 × 10<sup>5</sup> V/s,</p>
+        <div class="eq" style="text-align:left">
+          I<sub>d</sub> = (1.391 × 10<sup>−10</sup>)(5.0 × 10<sup>5</sup>) = 6.95 × 10<sup>−5</sup> A = <strong>69.5 µA</strong><br>
+          J<sub>d</sub> = I<sub>d</sub>/A = 6.95 × 10<sup>−5</sup> / 3.142 × 10<sup>−2</sup> = 2.21 × 10<sup>−3</sup> A/m²<br>
+          E = 120/(2.0 × 10<sup>−3</sup>) = 6.0 × 10<sup>4</sup> V/m<br>
+          ε<sub>0</sub> ∂E/∂t = (8.854 × 10<sup>−12</sup>)(5.0 × 10<sup>5</sup>/(2.0 × 10<sup>−3</sup>)) = 2.21 × 10<sup>−3</sup> A/m² ✓
+        </div>
+        <p><strong>(c)</strong> Take a circular Amperian loop of radius ρ = <var>a</var> between the plates. By symmetry, <var>H</var> is azimuthal and constant on the loop, so 2πaH = <var>I</var><sub>d</sub>:</p>
+        <div class="eq" style="text-align:left">
+          H = I<sub>d</sub>/(2πa) = 6.95 × 10<sup>−5</sup>/(2π × 0.10) = 1.11 × 10<sup>−4</sup> A/m<br>
+          B = μ<sub>0</sub>H = (4π × 10<sup>−7</sup>)(1.11 × 10<sup>−4</sup>) = 1.39 × 10<sup>−10</sup> T
+        </div>
+        <p>The displacement current points from the positive plate to the negative plate, the same direction as the conduction current in the wire. The plates are charging, so <span class="v" style="text-decoration:overline">E</span> grows from + to −, and <span class="v" style="text-decoration:overline">J</span><sub>d</sub> = ∂<span class="v" style="text-decoration:overline">D</span>/∂<var>t</var> points the same way.</p>
+      </div>
+
+      <div class="warn">
+        <strong>Common mistake: the direction of the displacement current.</strong> <span class="v" style="text-decoration:overline">J</span><sub>d</sub> = ∂<span class="v" style="text-decoration:overline">D</span>/∂<var>t</var> follows the direction in which <span class="v" style="text-decoration:overline">D</span> is <em>increasing</em>, not necessarily the direction of <span class="v" style="text-decoration:overline">D</span> itself. On discharge, <span class="v" style="text-decoration:overline">D</span> still points from the + plate to the − plate, but its magnitude is falling, so <span class="v" style="text-decoration:overline">J</span><sub>d</sub> points the other way and the wire current reverses too. Draw the arrows from the sign of d<var>V</var>/d<var>t</var>, not from the sign of <var>V</var>.
+      </div>
+
+      <div class="note">
+        <strong>Who wins, conduction or displacement?</strong> The ratio |<span class="v" style="text-decoration:overline">J</span><sub>c</sub>|/|<span class="v" style="text-decoration:overline">J</span><sub>d</sub>| = σ/(ωε) is the loss tangent. In a good conductor it is large, so the conduction term dominates and the wave attenuates quickly. In a good dielectric at high frequency it is small, so the displacement term dominates and the wave travels. Chapter 6 turns this competition into skin depth and the loss tangent.
+      </div>
+
+      <div class="exam">
+        <strong>Exam link.</strong> Final 2024–25, Exercise 2 gives <span class="v" style="text-decoration:overline">H</span> and asks for <span class="v" style="text-decoration:overline">E</span>. The move is exactly this section: ∇ × <span class="v" style="text-decoration:overline">H</span> = ∂<span class="v" style="text-decoration:overline">D</span>/∂<var>t</var> in a region with no conduction current, then integrate with respect to time. Q4 of the same paper asks you to compute the curl in cylindrical coordinates; do not expand the determinant in Cartesian coordinates by habit.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="gauss-laws">
+      <h2><span class="kicker">5.3</span>Gauss's laws: where fields begin and end</h2>
+      <p>Gauss's two laws are the statements about sources. The electric law counts charge. The magnetic law says the count is always zero.</p>
+
+      <div class="eqbox">
+        <div class="eq">∮<sub>S</sub> <span class="v" style="text-decoration:overline">D</span> · d<span class="v" style="text-decoration:overline">S</span> = ∫<sub>V</sub> ρ<sub>v</sub> dV = Q<sub>enc</sub> &nbsp;&nbsp;⇔&nbsp;&nbsp; ∇ · <span class="v" style="text-decoration:overline">D</span> = ρ<sub>v</sub></div>
+        <div class="eq">∮<sub>S</sub> <span class="v" style="text-decoration:overline">B</span> · d<span class="v" style="text-decoration:overline">S</span> = 0 &nbsp;&nbsp;⇔&nbsp;&nbsp; ∇ · <span class="v" style="text-decoration:overline">B</span> = 0</div>
+      </div>
+
+      <p><strong>Read the electric law first.</strong> The surface is closed and the normal points outward. <var>Q</var><sub>enc</sub> is the net charge inside that surface, not the total charge in the universe. At a point where ρ<sub>v</sub> is positive, <span class="v" style="text-decoration:overline">D</span> lines start; where ρ<sub>v</sub> is negative, they end; where ρ<sub>v</sub> = 0, they pass through. The differential form is the same statement at a point, and it is the one you use when a problem gives you <span class="v" style="text-decoration:overline">D</span> and asks for the charge density.</p>
+
+      <p><strong>Read the magnetic law second.</strong> There is no magnetic charge. Every <span class="v" style="text-decoration:overline">B</span> line that enters a closed surface must leave it, so the net flux is zero. The lines do not begin or end; they close on themselves. A bar magnet is a dipole, not two monopoles: the lines leave the north face, curve around, and enter the south face. If you draw a closed surface around the whole magnet, the flux out near the north pole is exactly cancelled by the flux in near the south pole.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Symmetry</th><th>Gaussian surface</th><th>Result you can use</th></tr></thead>
+          <tbody>
+            <tr><td>Point charge or spherical shell</td><td>Sphere of radius <var>r</var></td><td><span class="v" style="text-decoration:overline">D</span> = <var>Q</var>/(4π<var>r</var>²) r̂</td></tr>
+            <tr><td>Infinite line charge</td><td>Coaxial cylinder of radius ρ and length <var>L</var></td><td><span class="v" style="text-decoration:overline">D</span> = ρ<sub>l</sub>/(2πρ) ρ̂</td></tr>
+            <tr><td>Infinite sheet of charge</td><td>Pillbox straddling the sheet</td><td>|<span class="v" style="text-decoration:overline">D</span>| = ρ<sub>s</sub>/2 on each side</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small muted">Gauss's law is always true. It is only a calculating tool when the symmetry lets you pull <span class="v" style="text-decoration:overline">D</span> or <span class="v" style="text-decoration:overline">B</span> out of the integral. If the symmetry is absent, use Coulomb or Biot–Savart, or the differential form; do not invent a constant field.</p>
+
+      <h3>Example 5.4 — a point charge and a closed surface</h3>
+      <div class="card">
+        <p>A charge <var>Q</var> = 2.0 nC sits at the origin. Find <span class="v" style="text-decoration:overline">D</span> and <span class="v" style="text-decoration:overline">E</span> at <var>r</var> = 0.30 m, and check the D-flux through a sphere of that radius.</p>
+        <div class="eq" style="text-align:left">
+          D = Q/(4πr²) = 2.0 × 10<sup>−9</sup>/(4π × 0.0900) = 1.77 × 10<sup>−9</sup> C/m²<br>
+          E = D/ε<sub>0</sub> = 1.77 × 10<sup>−9</sup>/8.854 × 10<sup>−12</sup> = 200 V/m<br>
+          ∮D · dS = D(4πr²) = (1.77 × 10<sup>−9</sup>)(1.131) = 2.0 × 10<sup>−9</sup> C = Q ✓
+        </div>
+        <p>The D-flux is in coulombs and equals the enclosed charge. If you instead compute the E-flux, Φ<sub>E</sub> = ∮<span class="v" style="text-decoration:overline">E</span> · d<span class="v" style="text-decoration:overline">S</span> = <var>Q</var>/ε<sub>0</sub> = 226 V·m. Keep the two fluxes separate: <span class="v" style="text-decoration:overline">D</span> is the one that counts free charge directly.</p>
+        <p class="small muted">Magnetic check: enclose an entire bar magnet with a closed surface. If 0.80 mWb leaves near the north face, 0.80 mWb enters near the south face, and the net is zero. That is ∇ · <span class="v" style="text-decoration:overline">B</span> = 0 in one line.</p>
+      </div>
+
+      <h3>Electric versus magnetic sources</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>Electric field <span class="v" style="text-decoration:overline">D</span></th><th>Magnetic field <span class="v" style="text-decoration:overline">B</span></th></tr></thead>
+          <tbody>
+            <tr><td><strong>Source of the divergence</strong></td><td>Free charge ρ<sub>v</sub></td><td>None; there is no magnetic charge</td></tr>
+            <tr><td><strong>Field lines</strong></td><td>Begin on positive charge, end on negative charge</td><td>Close on themselves; no ends</td></tr>
+            <tr><td><strong>Closed-surface law</strong></td><td>∮<span class="v" style="text-decoration:overline">D</span> · d<span class="v" style="text-decoration:overline">S</span> = <var>Q</var><sub>enc</sub></td><td>∮<span class="v" style="text-decoration:overline">B</span> · d<span class="v" style="text-decoration:overline">S</span> = 0</td></tr>
+            <tr><td><strong>Monopole</strong></td><td>Exists (electron, proton)</td><td>Never observed</td></tr>
+            <tr><td><strong>What makes a circulating field</strong></td><td>A changing <span class="v" style="text-decoration:overline">B</span> (Faraday)</td><td>Current and a changing <span class="v" style="text-decoration:overline">D</span> (Ampère–Maxwell)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warn">
+        <strong>Common mistake: ∇ · <span class="v" style="text-decoration:overline">B</span> = 0 does not mean <span class="v" style="text-decoration:overline">B</span> = 0.</strong> It means the net flux through any closed surface is zero. A region can have a strong, uniform <span class="v" style="text-decoration:overline">B</span> and still satisfy the law, because every field line that enters the region leaves it. Also, <var>Q</var><sub>enc</sub> is only the charge <em>inside</em> the surface; a charge just outside contributes zero net flux, since its lines enter and leave the same closed surface.
+      </div>
+
+      <div class="exam">
+        <strong>Exam link.</strong> Control 2024–25, Question 2 asks for the equation form of Gauss's law, and Exercise 1 makes you evaluate a <span class="v" style="text-decoration:overline">D</span>-flux and verify it with the divergence theorem. That is the first row of the table in §5.5 in action.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="continuity">
+      <h2><span class="kicker">5.4</span>Charge continuity: the books must balance</h2>
+      <p>Charge is not created or destroyed. If more current leaves a closed surface than enters, the charge inside must fall. That sentence is the continuity equation, and it is the reason Maxwell's displacement term has to exist.</p>
+
+      <p>Take a fixed volume <var>V</var> bounded by a closed surface <var>S</var>. The outward current is <var>i</var>(<var>t</var>) = ∮<sub>S</sub> <span class="v" style="text-decoration:overline">J</span> · d<span class="v" style="text-decoration:overline">S</span>. The charge inside is <var>Q</var> = ∫<sub>V</sub> ρ<sub>v</sub> dV. If current flows out, the inside charge must decrease:</p>
+      <div class="eqbox">
+        <div class="eq">∮<sub>S</sub> <span class="v" style="text-decoration:overline">J</span> · d<span class="v" style="text-decoration:overline">S</span> = − <span class="v">dQ</span>/<span class="v">dt</span> = − <span class="v">d</span>/<span class="v">dt</span> ∫<sub>V</sub> ρ<sub>v</sub> dV</div>
+      </div>
+      <p>The volume is stationary, so the derivative moves inside as a partial derivative. Apply the divergence theorem to the left side, and use the fact that the volume is arbitrary:</p>
+      <div class="eqbox">
+        <div class="eq">∫<sub>V</sub> ∇ · <span class="v" style="text-decoration:overline">J</span> dV = − ∫<sub>V</sub> ∂ρ<sub>v</sub>/∂<span class="v">t</span> dV &nbsp;&nbsp;⇒&nbsp;&nbsp; ∇ · <span class="v" style="text-decoration:overline">J</span> + ∂ρ<sub>v</sub>/∂<span class="v">t</span> = 0</div>
+      </div>
+
+      <div class="note">
+        <strong>Why the displacement current is forced.</strong> Take the divergence of ∇ × <span class="v" style="text-decoration:overline">H</span> = <span class="v" style="text-decoration:overline">J</span><sub>c</sub> + ∂<span class="v" style="text-decoration:overline">D</span>/∂<span class="v">t</span>. The divergence of a curl is zero, so 0 = ∇ · <span class="v" style="text-decoration:overline">J</span><sub>c</sub> + ∂(∇ · <span class="v" style="text-decoration:overline">D</span>)/∂<span class="v">t</span> = ∇ · <span class="v" style="text-decoration:overline">J</span><sub>c</sub> + ∂ρ<sub>v</sub>/∂<span class="v">t</span>. That is exactly continuity. Without the ∂<span class="v" style="text-decoration:overline">D</span>/∂<span class="v">t</span> term, Ampère's law would contradict charge conservation whenever the charge density changes. Maxwell did not add the term by taste; the books forced it.
+      </div>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Current in, current out</span><span class="vh">balance the two sliders and watch dQ/dt cross zero</span></div>
+        <div class="viz-body" data-viz="continuity"></div>
+      </div>
+
+      <h3>Example 5.5 — recovering ρ<sub>v</sub> from a current density</h3>
+      <div class="card">
+        <p>Given <span class="v" style="text-decoration:overline">J</span> = (<var>x</var>² x̂ − 4<var>y</var>² ŷ + 2<var>xz</var> ẑ) cos(ω<var>t</var>) A/m², find the volume charge density ρ<sub>v</sub> that satisfies continuity.</p>
+        <p><strong>Step 1 — divergence.</strong> Differentiate each component with respect to its own coordinate:</p>
+        <div class="eq" style="text-align:left">
+          ∂J<sub>x</sub>/∂x = ∂(x² cos ωt)/∂x = 2x cos ωt<br>
+          ∂J<sub>y</sub>/∂y = ∂(−4y² cos ωt)/∂y = −8y cos ωt<br>
+          ∂J<sub>z</sub>/∂z = ∂(2xz cos ωt)/∂z = 2x cos ωt
+        </div>
+        <div class="eq" style="text-align:left">
+          ∇ · <span class="v" style="text-decoration:overline">J</span> = (2x − 8y + 2x) cos ωt = <strong>(4x − 8y) cos ωt</strong> A/m³
+        </div>
+        <p><strong>Step 2 — continuity.</strong> Set ∂ρ<sub>v</sub>/∂<var>t</var> = −∇ · <span class="v" style="text-decoration:overline">J</span>:</p>
+        <div class="eq" style="text-align:left">
+          ∂ρ<sub>v</sub>/∂t = −(4x − 8y) cos ωt = (8y − 4x) cos ωt
+        </div>
+        <p><strong>Step 3 — integrate in time.</strong> Hold <var>x</var>, <var>y</var>, <var>z</var> fixed:</p>
+        <div class="eq" style="text-align:left">
+          ρ<sub>v</sub> = ∫(8y − 4x) cos(ωt) dt = <strong>((8y − 4x)/ω) sin(ωt) + C</strong>
+        </div>
+        <p><strong>Check.</strong> Differentiate the answer: ∂ρ<sub>v</sub>/∂t = (8y − 4x) cos ωt = −∇ · <span class="v" style="text-decoration:overline">J</span>. ✓</p>
+        <p><strong>The constant.</strong> At <var>t</var> = 0, sin(ω<var>t</var>) = 0, so <var>C</var> = ρ<sub>v</sub>(0): the charge density present before the time-varying field was switched on. If the medium is neutral at <var>t</var> = 0, <strong>C = 0</strong>. If it carries a static background charge, keep <var>C</var>; it does not affect the alternating part. A numerical snapshot: at <var>x</var> = 1 m, <var>y</var> = 2 m, ω = 1.0 × 10<sup>6</sup> rad/s, ω<var>t</var> = 1.0 rad, and <var>C</var> = 0, ρ<sub>v</sub> = ((16 − 4)/10<sup>6</sup>) sin(1) = 1.01 × 10<sup>−5</sup> C/m³ ≈ 10 µC/m³.</p>
+      </div>
+
+      <div class="warn">
+        <strong>Common mistakes: sign, constant, and units.</strong> (1) With the outward normal, ∮<span class="v" style="text-decoration:overline">J</span> · d<span class="v" style="text-decoration:overline">S</span> = −d<var>Q</var>/d<var>t</var>. If you write +d<var>Q</var>/d<var>t</var>, you have chosen an inward normal and every sign after that is wrong. (2) Do not drop <var>C</var>; it is the initial charge density, and a question that says “initially neutral” is telling you to set it to zero. (3) ∇ · <span class="v" style="text-decoration:overline">J</span> is in A/m³. Integrating cos(ωt) in time brings a factor 1/ω, whose unit is seconds, so ρ<sub>v</sub> comes out in C/m³. If your answer is still in A/m³, you forgot to integrate with respect to time.
+      </div>
+
+      <div class="exam">
+        <strong>Exam link.</strong> Final 2024–25, Q1 asks directly for the differential form of the continuity equation: ∇ · <span class="v" style="text-decoration:overline">J</span> + ∂ρ<sub>v</sub>/∂<var>t</var> = 0. That is a 0.5-mark recall question, but the same identity drives the longer “given <span class="v" style="text-decoration:overline">J</span>, find ρ<sub>v</sub>” problem. Write the three steps — divergence, sign flip, time integral — and the arithmetic is routine.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="constitutive">
+      <h2><span class="kicker">5.5</span>Constitutive relations and the full set</h2>
+      <p>Maxwell's four equations contain five field quantities — <span class="v" style="text-decoration:overline">E</span>, <span class="v" style="text-decoration:overline">D</span>, <span class="v" style="text-decoration:overline">B</span>, <span class="v" style="text-decoration:overline">H</span>, and <span class="v" style="text-decoration:overline">J</span><sub>c</sub> — plus ρ<sub>v</sub>. The constitutive relations are what adapt the equations to the material. They are not new physics; they are the material's response to the fields.</p>
+
+      <div class="eqbox">
+        <div class="eq"><span class="v" style="text-decoration:overline">D</span> = ε<span class="v" style="text-decoration:overline">E</span> &nbsp;&nbsp;·&nbsp;&nbsp; <span class="v" style="text-decoration:overline">B</span> = μ<span class="v" style="text-decoration:overline">H</span> &nbsp;&nbsp;·&nbsp;&nbsp; <span class="v" style="text-decoration:overline">J</span><sub>c</sub> = σ<span class="v" style="text-decoration:overline">E</span></div>
+      </div>
+      <p>ε is the permittivity (F/m), μ is the permeability (H/m), and σ is the conductivity (S/m). Free space is the reference case: ε<sub>0</sub> = 8.854 × 10<sup>−12</sup> F/m, μ<sub>0</sub> = 4π × 10<sup>−7</sup> H/m, σ = 0. The two constants also give the speed of light, <var>c</var> = 1/√(μ<sub>0</sub>ε<sub>0</sub>) ≈ 3 × 10<sup>8</sup> m/s, and the free-space impedance, η<sub>0</sub> = √(μ<sub>0</sub>/ε<sub>0</sub>) = 120π ≈ 377 Ω. Chapter 6 uses both.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Medium</th><th>ε</th><th>μ</th><th>σ</th><th>What it does to the fields</th></tr></thead>
+          <tbody>
+            <tr><td>Free space</td><td>ε<sub>0</sub></td><td>μ<sub>0</sub></td><td>0</td><td>No charge, no current; waves travel at <var>c</var></td></tr>
+            <tr><td>Perfect dielectric</td><td>ε<sub>r</sub>ε<sub>0</sub></td><td>μ<sub>r</sub>μ<sub>0</sub></td><td>0</td><td>Bound charge only; no steady conduction current</td></tr>
+            <tr><td>Conductor</td><td>ε</td><td>μ</td><td>&gt; 0</td><td><span class="v" style="text-decoration:overline">J</span> = σ<span class="v" style="text-decoration:overline">E</span>; free charge moves; waves attenuate</td></tr>
+            <tr><td>Good conductor</td><td>ε</td><td>μ</td><td>σ/(ωε) ≫ 1</td><td>Conduction dominates; skin depth δ = 1/√(πfμσ)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="small muted">The same three parameters also classify a medium: homogeneous if ε, μ, σ do not depend on position; isotropic if <span class="v" style="text-decoration:overline">D</span> is parallel to <span class="v" style="text-decoration:overline">E</span> and <span class="v" style="text-decoration:overline">B</span> parallel to <span class="v" style="text-decoration:overline">H</span>; linear if the relations above hold without field-dependent coefficients; dispersive if ε or μ depends on frequency. A non-linear or anisotropic medium needs tensors, which is beyond this chapter's exam scope.</p>
+
+      <div class="tip">
+        <strong>Two fast checks.</strong> In a dielectric with ε<sub>r</sub> = 4 and <var>E</var> = 10 kV/m, <var>D</var> = ε<sub>0</sub>ε<sub>r</sub><var>E</var> = (8.854 × 10<sup>−12</sup>)(4)(10<sup>4</sup>) = 3.54 × 10<sup>−7</sup> C/m². In copper with σ = 5.8 × 10<sup>7</sup> S/m and <var>E</var> = 0.010 V/m, <var>J</var> = σ<var>E</var> = 5.8 × 10<sup>5</sup> A/m². Both are one-line substitutions, and both expose a unit error immediately if ε<sub>0</sub> or σ is missing.
+      </div>
+
+      <h3>The four Maxwell equations — the page in one table</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Law</th><th>Integral form</th><th>Differential form</th><th>What it says</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Gauss for electricity</strong><br><span class="small muted">source of D</span></td>
+              <td style="white-space:nowrap">∮<sub>S</sub> <span class="v" style="text-decoration:overline">D</span> · d<span class="v" style="text-decoration:overline">S</span> = <var>Q</var><sub>enc</sub></td>
+              <td style="white-space:nowrap">∇ · <span class="v" style="text-decoration:overline">D</span> = ρ<sub>v</sub></td>
+              <td>Charge is the source of <span class="v" style="text-decoration:overline">D</span>. The net flux out of a closed surface equals the charge inside.</td>
+            </tr>
+            <tr>
+              <td><strong>Gauss for magnetism</strong><br><span class="small muted">no monopoles</span></td>
+              <td style="white-space:nowrap">∮<sub>S</sub> <span class="v" style="text-decoration:overline">B</span> · d<span class="v" style="text-decoration:overline">S</span> = 0</td>
+              <td style="white-space:nowrap">∇ · <span class="v" style="text-decoration:overline">B</span> = 0</td>
+              <td>No magnetic charge. <span class="v" style="text-decoration:overline">B</span> lines close on themselves; the net flux through any closed surface is zero.</td>
+            </tr>
+            <tr>
+              <td><strong>Faraday</strong><br><span class="small muted">changing B → E</span></td>
+              <td style="white-space:nowrap">∮<sub>C</sub> <span class="v" style="text-decoration:overline">E</span> · d<span class="v" style="text-decoration:overline">l</span> = −dΦ<sub>B</sub>/d<var>t</var></td>
+              <td style="white-space:nowrap">∇ × <span class="v" style="text-decoration:overline">E</span> = −∂<span class="v" style="text-decoration:overline">B</span>/∂<var>t</var></td>
+              <td>A changing magnetic flux drives a circulating electric field. The minus sign is Lenz's law.</td>
+            </tr>
+            <tr>
+              <td><strong>Ampère–Maxwell</strong><br><span class="small muted">current + changing D → H</span></td>
+              <td style="white-space:nowrap">∮<sub>C</sub> <span class="v" style="text-decoration:overline">H</span> · d<span class="v" style="text-decoration:overline">l</span> = <var>I</var><sub>enc</sub> + dΦ<sub>D</sub>/d<var>t</var></td>
+              <td style="white-space:nowrap">∇ × <span class="v" style="text-decoration:overline">H</span> = <span class="v" style="text-decoration:overline">J</span><sub>c</sub> + ∂<span class="v" style="text-decoration:overline">D</span>/∂<var>t</var></td>
+              <td>Conduction current and changing electric flux drive a circulating magnetic field. The displacement term completes the law.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small muted">Notation: Φ<sub>B</sub> = ∫<span class="v" style="text-decoration:overline">B</span> · d<span class="v" style="text-decoration:overline">S</span>, Φ<sub>D</sub> = ∫<span class="v" style="text-decoration:overline">D</span> · d<span class="v" style="text-decoration:overline">S</span>, <var>I</var><sub>enc</sub> = ∫<span class="v" style="text-decoration:overline">J</span><sub>c</sub> · d<span class="v" style="text-decoration:overline">S</span>. The integral form is for a chosen surface or loop; the differential form is the same law at a point. Divergence and Stokes theorems convert one into the other.</p>
+
+      <div class="note">
+        <strong>Continuity is not a fifth Maxwell equation.</strong> It follows from the four: take the divergence of Ampère–Maxwell and substitute Gauss's law. The full set is four equations plus three constitutive relations, and continuity is the consistency condition that ties them together. If a solution violates ∇ · <span class="v" style="text-decoration:overline">J</span> + ∂ρ<sub>v</sub>/∂<var>t</var> = 0, it is not a physical solution.
+      </div>
+
+      <h3>Units: the cheapest check on the page</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Quantity</th><th>Unit</th><th>Equivalent form</th></tr></thead>
+          <tbody>
+            <tr><td><span class="v" style="text-decoration:overline">E</span></td><td>V/m</td><td>N/C</td></tr>
+            <tr><td><span class="v" style="text-decoration:overline">D</span></td><td>C/m²</td><td>—</td></tr>
+            <tr><td><span class="v" style="text-decoration:overline">B</span></td><td>T</td><td>Wb/m² = V·s/m²</td></tr>
+            <tr><td><span class="v" style="text-decoration:overline">H</span></td><td>A/m</td><td>—</td></tr>
+            <tr><td><span class="v" style="text-decoration:overline">J</span></td><td>A/m²</td><td>—</td></tr>
+            <tr><td>ρ<sub>v</sub></td><td>C/m³</td><td>—</td></tr>
+            <tr><td>ε</td><td>F/m</td><td>C/(V·m)</td></tr>
+            <tr><td>μ</td><td>H/m</td><td>V·s/(A·m)</td></tr>
+            <tr><td>σ</td><td>S/m</td><td>A/(V·m)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warn">
+        <strong>Common mistake: units at the differential level.</strong> Every term in a point equation must have the same units. ∇ · <span class="v" style="text-decoration:overline">D</span> is C/m³, same as ρ<sub>v</sub>. ∇ × <span class="v" style="text-decoration:overline">H</span> is A/m², same as <span class="v" style="text-decoration:overline">J</span><sub>c</sub> and ∂<span class="v" style="text-decoration:overline">D</span>/∂<var>t</var>. ∇ × <span class="v" style="text-decoration:overline">E</span> is V/m², same as ∂<span class="v" style="text-decoration:overline">B</span>/∂<var>t</var> (T/s). In the capacitor problem, ε<sub>0</sub> dΦ<sub>E</sub>/d<var>t</var> has units (F/m)(V·m)/s = (C/V)(V)/s = A. If your displacement current comes out in volts or coulombs, the ε<sub>0</sub> or the time derivative is missing.
+      </div>
+
+      <div class="tip">
+        <strong>How to route a Maxwell question.</strong> A closed surface → Gauss. A closed loop → Faraday if the flux changes, Ampère–Maxwell if there is current or a changing <span class="v" style="text-decoration:overline">D</span>. Given <span class="v" style="text-decoration:overline">J</span> and asked for ρ<sub>v</sub> → continuity. Given a material and asked for <span class="v" style="text-decoration:overline">D</span>, <span class="v" style="text-decoration:overline">B</span>, or <span class="v" style="text-decoration:overline">J</span> → constitutive. Given a wave and asked for <span class="v" style="text-decoration:overline">E</span> from <span class="v" style="text-decoration:overline">H</span> → Ampère–Maxwell in differential form, then integrate in time.
+      </div>
+
+      <div class="exam">
+        <strong>Exam link.</strong> Final 2024–25, Exercise 1 recovers ε<sub>r</sub> and η from a measured propagation constant; Exercise 3 uses σ and the skin depth. Both start from <span class="v" style="text-decoration:overline">D</span> = ε<span class="v" style="text-decoration:overline">E</span>, <span class="v" style="text-decoration:overline">B</span> = μ<span class="v" style="text-decoration:overline">H</span>, and <span class="v" style="text-decoration:overline">J</span> = σ<span class="v" style="text-decoration:overline">E</span>. The control's flux question (2024–25, Exercise 1) is Gauss's law after the divergence theorem; the same bookkeeping appears here in the first row of the table.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section class="topic" id="check">
+      <h2><span class="kicker">5.6</span>Check yourself</h2>
+      <p>Three questions. Answer first, then reveal. If you miss one, the solution names the section to reread.</p>
+
+      <div class="quiz" data-quiz="ch5-lenz" data-answer="a">
+        <span class="tag">Quiz 1 · Faraday and Lenz</span>
+        <p class="q">A circular loop lies in the plane of the page. A uniform magnetic field points into the page and is decreasing. What is the direction of the induced current?</p>
+        <div class="opts">
+          <button type="button" data-opt="a">Clockwise</button>
+          <button type="button" data-opt="b">Counter-clockwise</button>
+          <button type="button" data-opt="c">Zero, because the field is decreasing</button>
+          <button type="button" data-opt="d">Radially outward from the centre</button>
+        </div>
+        <details><summary>Show answer</summary>
+          <div class="sol">The external flux into the page is decreasing. By Lenz's law the induced current must produce flux into the page to oppose the decrease. The right-hand rule then gives a <strong>clockwise</strong> current. If the field were increasing, the answer would be counter-clockwise. See <a href="#faraday">§5.1</a>.</div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz="ch5-id" data-answer="b">
+        <span class="tag">Quiz 2 · displacement current</span>
+        <p class="q">A 100 pF capacitor is charged so that d<var>V</var>/d<var>t</var> = 2.0 × 10<sup>5</sup> V/s. What is the displacement current?</p>
+        <div class="opts">
+          <button type="button" data-opt="a">0, because there is no conduction current in the gap</button>
+          <button type="button" data-opt="b">20 µA</button>
+          <button type="button" data-opt="c">2.0 mA</button>
+          <button type="button" data-opt="d">20 nA</button>
+        </div>
+        <details><summary>Show answer</summary>
+          <div class="sol">I<sub>d</sub> = C dV/dt = (100 × 10<sup>−12</sup>)(2.0 × 10<sup>5</sup>) = 2.0 × 10<sup>−5</sup> A = <strong>20 µA</strong>. The displacement current is not zero just because the gap has no charge crossing it; it is set by the rate of change of the flux. See <a href="#ampere-maxwell">§5.2</a>.</div>
+        </details>
+      </div>
+
+      <div class="quiz" data-quiz="ch5-cont" data-answer="a">
+        <span class="tag">Quiz 3 · continuity</span>
+        <p class="q">For <span class="v" style="text-decoration:overline">J</span> = (<var>x</var>² x̂ − 4<var>y</var>² ŷ + 2<var>xz</var> ẑ) cos(ω<var>t</var>), which ρ<sub>v</sub> satisfies continuity? <var>C</var> is a constant.</p>
+        <div class="opts">
+          <button type="button" data-opt="a">((8y − 4x)/ω) sin(ωt) + C</button>
+          <button type="button" data-opt="b">((4x − 8y)/ω) sin(ωt) + C</button>
+          <button type="button" data-opt="c">(4x − 8y)ω sin(ωt) + C</button>
+          <button type="button" data-opt="d">−(4x − 8y)ω cos(ωt) + C</button>
+        </div>
+        <details><summary>Show answer</summary>
+          <div class="sol">∇ · <span class="v" style="text-decoration:overline">J</span> = (2x − 8y + 2x) cos ωt = (4x − 8y) cos ωt. Continuity gives ∂ρ<sub>v</sub>/∂t = −∇ · <span class="v" style="text-decoration:overline">J</span> = (8y − 4x) cos ωt. Integrating in time gives ρ<sub>v</sub> = ((8y − 4x)/ω) sin ωt + C. The sign flip is the step most people miss. See <a href="#continuity">§5.4</a>.</div>
+        </details>
+      </div>
+
+      <div class="done-row">
+        <input type="checkbox" id="p-ch5-core" data-progress="ch5-core">
+        <label for="p-ch5-core">I can write all four Maxwell equations, use the continuity equation, and explain the displacement current.
+          <span class="done-meta">Chapter 5 · core</span></label>
+      </div>
+
+      <div class="card" style="margin-top:24px">
+        <h3>Next: Chapter 6 — Plane waves</h3>
+        <p>Put the four equations in free space and they turn into a wave equation. Chapter 6 solves it: <span class="v" style="text-decoration:overline">E</span> and <span class="v" style="text-decoration:overline">H</span> perpendicular, in phase, with <var>E</var>/<var>H</var> = η<sub>0</sub> = 377 Ω and speed <var>c</var>. Then it adds dielectrics, conductors, and skin depth.</p>
+        <p><a class="btn btn-primary" href="ch6.html">Open Chapter 6 →</a> <a class="btn btn-outline" href="practice.html">Practice the Chapter 5 patterns</a></p>
+      </div>
+    </section>
+
+    <footer class="foot">EE361 EMF Companion · Chapter 5 built from K. Djafri's Maxwell chapter, the 2024–25 final paper, and the 2024–25 control. Original prose and diagrams; source PDFs are not redistributed. <a href="index.html">Back to the course map ↗</a></footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+<script src="js/viz-common.js"></script>
+<script src="js/viz-ch5.js"></script>
+</body>
+</html>

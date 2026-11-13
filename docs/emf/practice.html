@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Practice — EE361 EMF Control Set</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/emf.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Practice — Control Set</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EMF Companion<small>EE361 · Electromagnetics</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch0.html"><span class="num">00</span>How it fits</a>
+      <a href="ch1.html"><span class="num">01</span>Vectors &amp; coordinates</a>
+      <a href="ch2.html"><span class="num">02</span>Vector calculus</a>
+      <a href="ch3.html"><span class="num">03</span>Electrostatics</a>
+      <a href="ch4.html"><span class="num">04</span>Magnetostatics</a>
+      <a href="ch5.html"><span class="num">05</span>Maxwell</a>
+      <a href="ch6.html"><span class="num">06</span>Plane waves</a>
+      <div class="nav-label">Exam prep</div>
+      <a href="formulas.html"><span class="num">Σ</span>Formula sheet</a>
+      <a href="practice.html" class="active"><span class="num">✎</span>Practice</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Exam prep · Control set</span>
+      <h1>Practice — Control Set</h1>
+      <p class="lede">The real paper structure, rewritten as training problems with full hidden solutions. Do the 2024–25 set first, timed, with no notes. Then mark it and repair only the misses.</p>
+    </header>
+
+    <div class="stats">
+      <div class="stat"><span class="k">Time</span><span class="v">1 h 30</span><span class="s">full control</span></div>
+      <div class="stat"><span class="k">Total</span><span class="v">15</span><span class="s">printed points</span></div>
+      <div class="stat"><span class="k">Heaviest</span><span class="v">6 pts</span><span class="s">flux + divergence</span></div>
+      <div class="stat"><span class="k">Rule</span><span class="v">No notes</span><span class="s">first pass only</span></div>
+    </div>
+
+    <div class="warn">
+      <strong>Do not read the solutions first.</strong> Set a timer, write on paper, and only then open a disclosure. If you open a solution before attempting, you are training recognition, not recall. The exam does not give you a “show answer” button.
+    </div>
+
+    <div class="toc">
+      <strong>Sets</strong>
+      <ol>
+        <li><a href="#control24">2024–25 control</a></li>
+        <li><a href="#control21">2021–22 control</a></li>
+        <li><a href="#recitations">Recitation transfers</a></li>
+        <li><a href="#final">Final-scope drill</a></li>
+        <li><a href="#marking">Marking and error log</a></li>
+      </ol>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 2024-25 CONTROL -->
+    <!-- ============================================================ -->
+    <section class="topic" id="control24">
+      <h2><span class="kicker">Set A</span>2024–25 control · 15 points · 1 h 30</h2>
+
+      <p class="lede">This is the newest control. It is almost entirely Chapters 1–3: conversion, flux, charge integration, and point-charge fields. Four short questions carry 3 points; the three exercises carry 12.</p>
+
+      <h3>Part 1 — Short questions (3 pts)</h3>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">1.1 · 0.5 pt</span><br>Express the uniform vector field <span class="mono">F = 10x̂</span> in (a) cylindrical coordinates and (b) spherical coordinates. State the point dependence.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <p>At a point with azimuth φ, <span class="mono">x̂ = cosφ ρ̂ − sinφ φ̂</span>. Therefore</p>
+          <div class="eq">F = 10(cosφ ρ̂ − sinφ φ̂)</div>
+          <p>For spherical, <span class="mono">x̂ = sinθ cosφ r̂ + cosθ cosφ θ̂ − sinφ φ̂</span>. Therefore</p>
+          <div class="eq">F = 10[sinθ cosφ r̂ + cosθ cosφ θ̂ − sinφ φ̂]</div>
+          <p><strong>Why it matters:</strong> the components depend on φ (and θ), even though the original field is uniform. A vector field is not a list of constants; it is a rule attached to each point.</p>
+        </div></details>
+      </div>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">1.2 · 0.5 pt</span><br>Give the equation form of Gauss's law for the electric field, both integral and differential.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <div class="eq">∮<sub>S</sub> D·dS = Q<sub>enc</sub> = ∫<sub>V</sub> ρ<sub>v</sub> dv &nbsp;&nbsp;and&nbsp;&nbsp; ∇·D = ρ<sub>v</sub></div>
+          <p>The surface is closed and the normal points outward. The differential form is the pointwise version obtained by the divergence theorem. If the medium is linear, <span class="mono">D=εE</span>.</p>
+        </div></details>
+      </div>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">1.3 · 1 pt</span><br>A charge <span class="mono">Q = 30 nC</span> moves at <span class="mono">2 × 10⁶ m/s</span> along <span class="mono">v̂ = 0.60x̂ + 0.75ŷ + 0.30ẑ</span> in <span class="mono">B = 2x̂ − 4ŷ + 3ẑ mT</span>. Find the magnitude of the magnetic force.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <p>First, <span class="mono">v = 2×10⁶(0.60, 0.75, 0.30) = (1.20, 1.50, 0.60)×10⁶ m/s</span>.</p>
+          <p>Compute the cross product (B in mT = 10⁻³ T):</p>
+          <div class="eq">v×B = [(1.50)(3) − (0.60)(−4)]x̂ − [(1.20)(3) − (0.60)(2)]ŷ + [(1.20)(−4) − (1.50)(2)]ẑ ×10⁶×10⁻³</div>
+          <div class="eq">= (6.90x̂ − 2.40ŷ − 7.80ẑ) ×10³</div>
+          <p>Then</p>
+          <div class="eq">F = Q v×B = 30×10⁻⁹ × (6.90, −2.40, −7.80)×10³ = (207, −72, −234) μN</div>
+          <div class="eq">|F| = √(207² + 72² + 234²) ≈ 320.6 μN</div>
+          <p><strong>Check:</strong> F is perpendicular to both v and B. The dot products with v and B are zero (up to rounding).</p>
+        </div></details>
+      </div>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">1.4 · 1 pt</span><br>A filamentary wire of infinite length carries current <span class="mono">I</span> along the z-axis in free space. Give the magnetic flux density at any point in the xy-plane.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <div class="eq">B = (μ₀I/(2πρ)) φ̂ &nbsp;&nbsp;(T)</div>
+          <p>with <span class="mono">μ₀ = 4π×10⁻⁷ H/m</span>. The field forms concentric circles; the direction follows the right-hand rule with the thumb along the current. In components, <span class="mono">φ̂ = (−y x̂ + x ŷ)/ρ</span>.</p>
+        </div></details>
+      </div>
+
+      <h3>Exercise 1 — Flux and divergence theorem (6 pts)</h3>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Exercise 1 · 6 pts</span><br>Given <span class="mono">D = 3r² r̂ + (12φ/π) φ̂ C/m²</span>, evaluate the flux of <span class="mono">D</span> across the closed surface defined by <span class="mono">1 ≤ r ≤ 2</span>, <span class="mono">0 ≤ θ ≤ π</span>, <span class="mono">π/4 ≤ φ ≤ π/2</span>. Then verify the result with the divergence theorem.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <p><strong>Step 1 — identify the four active surfaces.</strong> The region is a spherical wedge. The θ=0 and θ=π faces have zero area because <span class="mono">dS ∝ sinθ = 0</span>. The active faces are <span class="mono">r=1</span> (normal <span class="mono">−r̂</span>), <span class="mono">r=2</span> (normal <span class="mono">+r̂</span>), <span class="mono">φ=π/4</span> (normal <span class="mono">−φ̂</span>), and <span class="mono">φ=π/2</span> (normal <span class="mono">+φ̂</span>).</p>
+
+          <p><strong>Step 2 — r=1 face.</strong> <span class="mono">dS = r² sinθ dθ dφ r̂ = sinθ dθ dφ r̂</span> at r=1. Also <span class="mono">D·r̂ = 3</span>.</p>
+          <div class="eq">Φ₁ = −3 ∫₀^π sinθ dθ ∫_{π/4}^{π/2} dφ = −3(2)(π/4) = −3π/2</div>
+
+          <p><strong>Step 3 — r=2 face.</strong> <span class="mono">D·r̂ = 3(4)=12</span>, <span class="mono">dS = 4 sinθ dθ dφ</span>.</p>
+          <div class="eq">Φ₂ = 12·4 ∫₀^π sinθ dθ ∫_{π/4}^{π/2} dφ = 48(2)(π/4) = 24π</div>
+
+          <p><strong>Step 4 — φ=π/4 face.</strong> <span class="mono">dS = r dr dθ (−φ̂)</span>, and <span class="mono">D·(−φ̂) = −12φ/π = −3</span> at φ=π/4.</p>
+          <div class="eq">Φ₃ = −3 ∫₁² r dr ∫₀^π dθ = −3(3/2)(π) = −9π/2</div>
+
+          <p><strong>Step 5 — φ=π/2 face.</strong> <span class="mono">D·φ̂ = 12φ/π = 6</span>.</p>
+          <div class="eq">Φ₄ = 6 ∫₁² r dr ∫₀^π dθ = 6(3/2)(π) = 9π</div>
+
+          <p><strong>Step 6 — add.</strong></p>
+          <div class="eq">Φ = −3π/2 + 24π − 9π/2 + 9π = 27π ≈ 84.8 C</div>
+
+          <p><strong>Step 7 — divergence theorem.</strong> In spherical coordinates,</p>
+          <div class="eq">∇·D = (1/r²)∂(r²·3r²)/∂r + (1/(r sinθ))∂(12φ/π)/∂φ</div>
+          <div class="eq">= (1/r²)(12r³) + 12/(π r sinθ) = 12r + 12/(π r sinθ)</div>
+          <p>The volume element is <span class="mono">dv = r² sinθ dr dθ dφ</span>. The first term:</p>
+          <div class="eq">∫ 12r dv = 12(∫₁² r³ dr)(∫₀^π sinθ dθ)(∫_{π/4}^{π/2} dφ) = 12(15/4)(2)(π/4) = 45π/2</div>
+          <p>The second term:</p>
+          <div class="eq">∫ 12/(π r sinθ) dv = (12/π)(∫₁² r dr)(∫₀^π dθ)(∫_{π/4}^{π/2} dφ) = (12/π)(3/2)(π)(π/4) = 9π/2</div>
+          <p>Sum = <span class="mono">54π/2 = 27π</span>. The two sides agree.</p>
+
+          <p><strong>Marks live in:</strong> the sign of the inner r face, the normal on each φ face, and the <span class="mono">sinθ</span> factor. Write the normal vector next to every integral before you integrate.</p>
+        </div></details>
+      </div>
+
+      <h3>Exercise 2 — Total charge (2 pts)</h3>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Exercise 2 · 2 pts</span><br>In free space, <span class="mono">ρ_v = (ρ₀/a) r cosθ C/m³</span>. Find the total charge within (a) the sphere <span class="mono">r = a</span>; (b) the cone <span class="mono">r ≤ a</span>, <span class="mono">0.9π ≤ θ ≤ π</span>.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <p><strong>(a) Full sphere.</strong></p>
+          <div class="eq">Q = ∫₀^a∫₀^π∫₀^{2π} (ρ₀/a) r cosθ · r² sinθ dφ dθ dr</div>
+          <div class="eq">= (ρ₀/a)(a⁴/4)(2π) ∫₀^π cosθ sinθ dθ</div>
+          <p>But <span class="mono">∫₀^π cosθ sinθ dθ = [sin²θ/2]₀^π = 0</span>. Hence <span class="mono">Q = 0</span>. The positive and negative hemispheres cancel exactly.</p>
+
+          <p><strong>(b) Cone.</strong> The φ integral is still 2π, and the r integral is still <span class="mono">a⁴/4</span>. Only the θ limits change:</p>
+          <div class="eq">Q = (ρ₀/a)(a⁴/4)(2π) ∫_{0.9π}^{π} cosθ sinθ dθ</div>
+          <div class="eq">= (ρ₀a³π/2)[sin²θ/2]_{0.9π}^{π}</div>
+          <div class="eq">= (ρ₀a³π/2)(0 − sin²(0.9π)/2)</div>
+          <p><span class="mono">sin(0.9π)=sin162°≈0.3090</span>, so <span class="mono">sin²/2≈0.04775</span>.</p>
+          <div class="eq">Q ≈ −0.0750 ρ₀a³ C</div>
+          <p><strong>Check:</strong> the cone is in the lower hemisphere (θ near π), where <span class="mono">cosθ&lt;0</span>, so a negative charge is expected.</p>
+        </div></details>
+      </div>
+
+      <h3>Exercise 3 — Electric field of two charges (4 pts)</h3>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Exercise 3 · 4 pts</span><br>Let <span class="mono">Q₁ = 60 nC</span> at <span class="mono">P₁(4,−2,7)</span> and <span class="mono">Q₂ = 60 nC</span> at <span class="mono">P₂(4,−7,−2)</span>. (a) Find <span class="mono">E</span> at <span class="mono">P₃(1,2,3)</span> in free space. (b) Find the points on the y-axis where <span class="mono">E_z = 0</span>.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <p><strong>(a) Field at P₃.</strong> The vectors from each source to P₃ are</p>
+          <div class="eq">R₁ = P₃ − P₁ = (−3, 4, −4), &nbsp; R₁ = √41</div>
+          <div class="eq">R₂ = P₃ − P₂ = (−3, 9, 5), &nbsp; R₂ = √115</div>
+          <p>With <span class="mono">1/(4πε₀)=9×10⁹</span> and <span class="mono">Q=60×10⁻⁹</span>, the common factor is <span class="mono">540</span>:</p>
+          <div class="eq">E = 540[ R₁/41^{3/2} + R₂/115^{3/2} ]</div>
+          <div class="eq">= 540[ (−3,4,−4)/262.5 + (−3,9,5)/1233.3 ]</div>
+          <div class="eq">≈ 540(−0.01143 + −0.00243, 0.01524 + 0.00730, −0.01524 + 0.00405)</div>
+          <div class="eq">≈ (−7.48 x̂ + 12.17 ŷ − 6.04 ẑ) V/m</div>
+          <p>The handwritten key gives <span class="mono">−7.48x̂ + 12.16ŷ − 6.0ẑ V/m</span>; the difference is rounding.</p>
+
+          <p><strong>(b) Points on the y-axis.</strong> Put <span class="mono">P=(0,y,0)</span>. Then</p>
+          <div class="eq">R₁ = (−4, y+2, −7), &nbsp; R₁² = (y+2)² + 65</div>
+          <div class="eq">R₂ = (−4, y+7, 2), &nbsp; R₂² = (y+7)² + 20</div>
+          <p>The z-component is</p>
+          <div class="eq">E_z = 540[ −7/R₁³ + 2/R₂³ ] = 0</div>
+          <div class="eq">⇒ 7R₂³ = 2R₁³</div>
+          <p>Raise both sides to the 2/3 power:</p>
+          <div class="eq">7^{2/3}[(y+7)²+20] = 2^{2/3}[(y+2)²+65]</div>
+          <p>With <span class="mono">7^{2/3}=3.659</span> and <span class="mono">2^{2/3}=1.587</span>, this becomes</p>
+          <div class="eq">1.305y² + 28.28y + 90.1 = 0</div>
+          <div class="eq">y = [−28.28 ± √(28.28² − 4·1.305·90.1)]/(2·1.305)</div>
+          <div class="eq">y₁ ≈ −3.88, &nbsp; y₂ ≈ −17.84</div>
+          <p><strong>Check:</strong> both points are on the negative y side, between/beyond the two charges. Substituting either back gives <span class="mono">E_z≈0</span> to rounding.</p>
+        </div></details>
+      </div>
+
+      <div class="exam">
+        <strong>Time budget for this paper.</strong> 1.3 minutes per short-question point, 8–10 minutes for the flux setup, 10 for the volume integral, 20 for the two-charge field. If the flux integral is taking longer than 20 minutes, you are probably fighting the limits, not the physics.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 2021-22 CONTROL -->
+    <!-- ============================================================ -->
+    <section class="topic" id="control21">
+      <h2><span class="kicker">Set B</span>2021–22 control · flux, field, Stokes</h2>
+
+      <p class="lede">The older control uses the same spine with different numbers: a long flux + divergence-theorem exercise, a point-charge field, and a Stokes verification. Use it as a transfer test after the 2024–25 set.</p>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Exercise 1 · 10 pts</span><br>Given <span class="mono">A = ρ cosφ ρ̂ + 3 sinφ φ̂ + (z+1) ẑ</span> in the region <span class="mono">1 ≤ ρ ≤ 2</span>, <span class="mono">0 ≤ φ ≤ π/6</span>, <span class="mono">0 ≤ z ≤ 5</span>. The flux through the top surface <span class="mono">z=5</span> is <span class="mono">3π/2</span>. (a) Evaluate the flux over the closed surface. (b) Verify with the divergence theorem. (c) Compute <span class="mono">∇f</span> for <span class="mono">f=(∇·A−1)/cosφ</span>.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <p><strong>(a) Six faces.</strong> The region is a cylindrical wedge. The faces are ρ=1, ρ=2, φ=0, φ=π/6, z=0, z=5.</p>
+          <table class="mini-table">
+            <thead><tr><th>Face</th><th>Normal</th><th>A·n̂</th><th>dS</th><th>Flux</th></tr></thead>
+            <tbody>
+              <tr><td>ρ=1</td><td>−ρ̂</td><td>−cosφ</td><td>dφ dz</td><td>−5 sin(π/6) = −2.5</td></tr>
+              <tr><td>ρ=2</td><td>+ρ̂</td><td>2cosφ</td><td>2 dφ dz</td><td>4·5·0.5 = 10</td></tr>
+              <tr><td>φ=0</td><td>−φ̂</td><td>0</td><td>dρ dz</td><td>0</td></tr>
+              <tr><td>φ=π/6</td><td>+φ̂</td><td>3 sin(π/6)=1.5</td><td>dρ dz</td><td>1.5·1·5 = 7.5</td></tr>
+              <tr><td>z=0</td><td>−ẑ</td><td>−1</td><td>ρ dρ dφ</td><td>−(3/2)(π/6) = −π/4</td></tr>
+              <tr><td>z=5</td><td>+ẑ</td><td>6</td><td>ρ dρ dφ</td><td>3π/2 (given)</td></tr>
+            </tbody>
+          </table>
+          <div class="eq">Φ = −2.5 + 10 + 0 + 7.5 − π/4 + 3π/2 = 15 + 5π/4</div>
+
+          <p><strong>(b) Divergence theorem.</strong></p>
+          <div class="eq">∇·A = (1/ρ)∂(ρ·ρcosφ)/∂ρ + (1/ρ)∂(3sinφ)/∂φ + ∂(z+1)/∂z</div>
+          <div class="eq">= 2cosφ + (3cosφ)/ρ + 1 = cosφ(2 + 3/ρ) + 1</div>
+          <p>The volume integral is</p>
+          <div class="eq">∫ [cosφ(2+3/ρ)+1] ρ dρ dφ dz</div>
+          <div class="eq">= 15 + 5π/4</div>
+          <p>which matches the surface sum.</p>
+
+          <p><strong>(c) Gradient.</strong> First, <span class="mono">∇·A − 1 = cosφ(2+3/ρ)</span>, so <span class="mono">f = 2 + 3/ρ</span>. Then</p>
+          <div class="eq">∇f = (∂f/∂ρ)ρ̂ = −(3/ρ²)ρ̂</div>
+        </div></details>
+      </div>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Exercise 2 · 3 pts</span><br>For <span class="mono">B = −y x̂ + x ŷ − 2.5 ẑ</span>, evaluate <span class="mono">∮B·dl</span> around the circle <span class="mono">x=a₀+r₀cos t</span>, <span class="mono">y=b₀+r₀sin t</span>, then verify with Stokes's theorem.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <p><strong>Line integral.</strong> <span class="mono">dx=−r₀sin t dt</span>, <span class="mono">dy=r₀cos t dt</span>. On the circle,</p>
+          <div class="eq">B·dl = (−y)(−r₀sin t)dt + x(r₀cos t)dt</div>
+          <div class="eq">= r₀[(b₀+r₀sin t)sin t + (a₀+r₀cos t)cos t]dt</div>
+          <div class="eq">= r₀[b₀sin t + a₀cos t + r₀]dt</div>
+          <p>Integrating 0 to 2π kills the sine and cosine terms:</p>
+          <div class="eq">∮B·dl = 2πr₀²</div>
+
+          <p><strong>Stokes.</strong> The curl is</p>
+          <div class="eq">∇×B = (∂B_y/∂x − ∂B_x/∂y)ẑ = (1 − (−1))ẑ = 2ẑ</div>
+          <p>The disk area is <span class="mono">πr₀²</span> and <span class="mono">dS=ds ẑ</span>:</p>
+          <div class="eq">∫(∇×B)·dS = 2πr₀²</div>
+          <p>Both sides agree. The <span class="mono">−2.5ẑ</span> term does not contribute because it is perpendicular to the path.</p>
+        </div></details>
+      </div>
+
+      <div class="note"><strong>The 2-point field question on this paper is the same skill as 2024–25 Exercise 3.</strong> Do that one twice instead of memorizing a second geometry.</div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- RECITATION TRANSFERS -->
+    <!-- ============================================================ -->
+    <section class="topic" id="recitations">
+      <h2><span class="kicker">Set C</span>Recitation transfers</h2>
+
+      <p class="lede">These are the professor's recitation problem types, rewritten with clean numbers. If the control throws a different geometry, this is where the transfer comes from.</p>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Vectors · dot and projection</span><br>Given <span class="mono">M(5,2,1)</span>, <span class="mono">N(−7,0,2)</span>, <span class="mono">P(2,−8,3)</span>. Find <span class="mono">MN</span>, <span class="mono">MP</span>, their dot product, the scalar projection of <span class="mono">MN</span> on <span class="mono">MP</span>, the angle between them, and the vector projection.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <div class="eq">MN = (−12, −2, 1), &nbsp; MP = (−3, −10, 2)</div>
+          <div class="eq">MN·MP = 36 + 20 + 2 = 58</div>
+          <div class="eq">|MN| = √149 ≈ 12.21, &nbsp; |MP| = √113 ≈ 10.63</div>
+          <div class="eq">cosθ = 58/(12.21×10.63) ≈ 0.4469 ⇒ θ ≈ 63.4°</div>
+          <div class="eq">scalar projection = 58/10.63 ≈ 5.46</div>
+          <div class="eq">vector projection = (58/113)(−3,−10,2) ≈ (−1.54, −5.13, 1.03)</div>
+        </div></details>
+      </div>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Coordinates · cylindrical → Cartesian</span><br>Express <span class="mono">F = (cosφ ρ̂ + sinφ φ̂)/ρ²</span> in Cartesian coordinates. Evaluate it at <span class="mono">A(1,0,0)</span> and <span class="mono">B(1,−1,−3)</span>.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <p>Use <span class="mono">F_x = cosφ F_ρ − sinφ F_φ</span> and <span class="mono">F_y = sinφ F_ρ + cosφ F_φ</span>:</p>
+          <div class="eq">F_x = (cos²φ − sin²φ)/ρ² = cos2φ/ρ²</div>
+          <div class="eq">F_y = (2sinφcosφ)/ρ² = sin2φ/ρ²</div>
+          <p>With <span class="mono">cos2φ=(x²−y²)/ρ²</span>, <span class="mono">sin2φ=2xy/ρ²</span>, and <span class="mono">ρ²=x²+y²</span>:</p>
+          <div class="eq">F = [(x²−y²)x̂ + 2xyŷ]/(x²+y²)²</div>
+          <p>At A(1,0): <span class="mono">F = x̂</span>. At B(1,−1): <span class="mono">ρ²=2</span>, <span class="mono">x²−y²=0</span>, <span class="mono">2xy=−2</span> ⇒ <span class="mono">F = (0, −0.5, 0)</span>.</p>
+        </div></details>
+      </div>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Gradient · three systems</span><br>Find <span class="mono">∇f</span> for (a) <span class="mono">f=x²y−y³</span>; (b) <span class="mono">g=2sinφ−ρz+4</span>; (c) <span class="mono">h=2r cosθ−5φ+2</span>.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <p>(a) Cartesian:</p>
+          <div class="eq">∇f = 2xy x̂ + (x² − 3y²)ŷ</div>
+          <p>(b) Cylindrical:</p>
+          <div class="eq">∇g = (−z)ρ̂ + (2cosφ/ρ)φ̂ + (−ρ)ẑ</div>
+          <p>(c) Spherical:</p>
+          <div class="eq">∇h = 2cosθ r̂ − 2sinθ θ̂ − (5/(r sinθ))φ̂</div>
+        </div></details>
+      </div>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Divergence theorem · box</span><br>Evaluate both sides of the divergence theorem for <span class="mono">D = 2xy x̂ + x² ŷ</span> over the box <span class="mono">0≤x≤1</span>, <span class="mono">0≤y≤2</span>, <span class="mono">0≤z≤3</span>.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <p><span class="mono">∇·D = 2y</span>.</p>
+          <div class="eq">∫∇·D dv = ∫₀¹∫₀²∫₀³ 2y dz dy dx = 3·4 = 12</div>
+          <p>Surface: x=0 gives 0; x=1 gives <span class="mono">∫2y dy dz = 12</span>; y=0 gives <span class="mono">−∫x² dx dz = −1</span>; y=2 gives <span class="mono">+1</span>; the z faces give 0 because <span class="mono">D_z=0</span>.</p>
+          <div class="eq">∮D·dS = 12</div>
+        </div></details>
+      </div>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Divergence theorem · shell</span><br>For <span class="mono">D = 3r² r̂</span>, evaluate both sides of the divergence theorem in the region between the spherical shells <span class="mono">r=1</span> and <span class="mono">r=2</span>.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <p>Surface: at r=2, <span class="mono">D=12</span>, area <span class="mono">16π</span> ⇒ <span class="mono">192π</span>. At r=1, the outward normal is inward, <span class="mono">D=3</span>, area <span class="mono">4π</span> ⇒ <span class="mono">−12π</span>. Total <span class="mono">180π</span>.</p>
+          <p>Volume: <span class="mono">∇·D=12r</span>, <span class="mono">dv=4πr²dr</span>:</p>
+          <div class="eq">∫₁² 12r·4πr² dr = 48π[r⁴/4]₁² = 48π(15/4) = 180π</div>
+        </div></details>
+      </div>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Gauss · cube with zero divergence</span><br>Given <span class="mono">D = 2(x+y)x̂ + (3x−2y)ŷ C/m²</span>, find <span class="mono">ρ_v</span>, the charge in the cube <span class="mono">0≤x,y,z≤2</span>, and verify with the surface integral.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <div class="eq">ρ_v = ∇·D = ∂[2(x+y)]/∂x + ∂(3x−2y)/∂y = 2 − 2 = 0</div>
+          <p>So <span class="mono">Q=0</span>. The surface integral also cancels: the x faces give <span class="mono">+∫2(2+y)dydz = 24</span> at x=2 and <span class="mono">−∫2y dydz = −8</span> at x=0; the y faces give <span class="mono">+∫(3x−4)dxdz = −4</span> at y=2 and <span class="mono">−∫3x dxdz = −12</span> at y=0. Sum <span class="mono">24−8−4−12=0</span>.</p>
+        </div></details>
+      </div>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Ring and disk · on axis</span><br>(a) A ring of radius <span class="mono">b</span> carries total charge <span class="mono">Q</span>. Find <span class="mono">E</span> on its axis. (b) An annular disk with inner radius <span class="mono">a</span>, outer radius <span class="mono">b</span>, and surface density <span class="mono">ρ_s</span> lies in the xy-plane. Find <span class="mono">E_z</span> on the axis.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <p><strong>(a) Ring.</strong> Every element is at the same distance <span class="mono">√(b²+z²)</span> from P. The perpendicular components cancel; the axial component is multiplied by <span class="mono">z/√(b²+z²)</span>:</p>
+          <div class="eq">E_z = Q z/(4πε₀(b²+z²)^{3/2})</div>
+          <p><strong>(b) Annular disk.</strong> Integrate rings of radius <span class="mono">r</span> with charge <span class="mono">dq=ρ_s 2πr dr</span>:</p>
+          <div class="eq">dE_z = (ρ_s 2πr dr) z/(4πε₀(r²+z²)^{3/2})</div>
+          <div class="eq">E_z = (ρ_s z/(2ε₀)) ∫_a^b r/(r²+z²)^{3/2} dr</div>
+          <div class="eq">= (ρ_s/(2ε₀))[ z/√(a²+z²) − z/√(b²+z²) ]</div>
+          <p>For a full disk, set <span class="mono">a=0</span>: <span class="mono">E_z=(ρ_s/(2ε₀))(1 − z/√(b²+z²))</span>.</p>
+        </div></details>
+      </div>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Biot–Savart · infinite wire</span><br>An infinite filament carries <span class="mono">15 A</span> along the z-axis. Find <span class="mono">H</span> and <span class="mono">B</span> at (a) <span class="mono">A(20,0,4)</span> and (b) <span class="mono">B(−2,−4,12)</span>.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <p>For a z-directed wire, <span class="mono">H = I/(2πρ) φ̂</span> with <span class="mono">φ̂ = (−y x̂ + x ŷ)/ρ</span>.</p>
+          <p>(a) At A: <span class="mono">ρ=20</span>, <span class="mono">φ̂=ŷ</span>.</p>
+          <div class="eq">H = 15/(40π) ŷ ≈ 0.119 ŷ A/m, &nbsp; B = μ₀H ≈ 0.150 ŷ μT</div>
+          <p>(b) At B: <span class="mono">ρ=√20≈4.472</span>, <span class="mono">φ̂=(4x̂−2ŷ)/4.472=(0.894x̂−0.447ŷ)</span>.</p>
+          <div class="eq">H ≈ 0.534(0.894x̂ − 0.447ŷ) = (0.477x̂ − 0.239ŷ) A/m</div>
+          <div class="eq">B = μ₀H ≈ (0.600x̂ − 0.300ŷ) μT</div>
+        </div></details>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- FINAL SCOPE -->
+    <!-- ============================================================ -->
+    <section class="topic" id="final">
+      <h2><span class="kicker">Set D</span>Final-scope drill</h2>
+
+      <p class="lede">If your exam is the final rather than the control, these four cover the Chapter 4–6 patterns: continuity, Faraday, wave parameters, and skin depth.</p>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Continuity</span><br>Given <span class="mono">J = (x²x̂ − 4y²ŷ + 2xzẑ)cosωt A/m²</span>, find the volume charge density <span class="mono">ρ_v</span>.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <div class="eq">∇·J = (2x − 8y + 2x)cosωt = (4x − 8y)cosωt</div>
+          <p>Continuity: <span class="mono">∂ρ_v/∂t = −∇·J</span>.</p>
+          <div class="eq">ρ_v = −∫(4x−8y)cosωt dt = ((8y−4x)/ω) sinωt + C</div>
+          <p>The constant is set by the initial charge distribution; for a neutral initial state, <span class="mono">C=0</span>.</p>
+        </div></details>
+      </div>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Faraday</span><br>A circular loop of radius <span class="mono">a</span> lies in the xy-plane in <span class="mono">B=B₀cosωt ẑ</span>. Find the induced emf and the azimuthal electric field.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <div class="eq">Φ_B = B₀πa²cosωt</div>
+          <div class="eq">emf = −dΦ_B/dt = πa²B₀ω sinωt</div>
+          <p>By symmetry, <span class="mono">E</span> is azimuthal and constant on the loop:</p>
+          <div class="eq">∮E·dl = E_φ(2πa) = πa²B₀ω sinωt</div>
+          <div class="eq">E_φ = (aB₀ω/2) sinωt</div>
+          <p>Lenz: the induced current opposes the change in flux, so its direction reverses every half-cycle.</p>
+        </div></details>
+      </div>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Plane wave</span><br>A uniform plane wave travels in a material with <span class="mono">μ_r=3</span> and <span class="mono">β=36π rad/m</span>. The scanned paper header says 300 MHz, but the official solution uses <span class="mono">ω=2π×900 MHz</span>. Use <span class="mono">f=900 MHz</span> (the set that matches the key) and find <span class="mono">ε_r</span>, <span class="mono">η</span>, and <span class="mono">λ</span>.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <p><span class="mono">β=ω√(με)= (ω/c)√(μ_rε_r)</span>, so the refractive index is</p>
+          <div class="eq">n = √(μ_rε_r) = βc/ω = (36π·3×10⁸)/(2π·9×10⁸) = 6</div>
+          <div class="eq">ε_r = n²/μ_r = 36/3 = 12</div>
+          <div class="eq">η = η₀√(μ_r/ε_r) = 377√(3/12) = 377/2 ≈ 188.5 Ω</div>
+          <div class="eq">λ = 2π/β = 2π/(36π) = 1/18 m ≈ 5.56 cm</div>
+          <p><strong>Source warning.</strong> The scan header says 300 MHz, but the official arithmetic divides by <span class="mono">9×10⁸</span>, i.e. 900 MHz; the next page writes <span class="mono">ω=2π×900 MHz</span>. At 300 MHz the same <span class="mono">β</span> would give <span class="mono">ε_r=108</span> and <span class="mono">η≈62.8 Ω</span>, while <span class="mono">λ</span> stays 5.56 cm because <span class="mono">β</span> is given. In the exam, state the frequency you substitute and keep one consistent set.</p>
+        </div></details>
+      </div>
+
+      <div class="quiz problem">
+        <div class="q"><span class="tag">Skin depth</span><br>Find the skin depth of copper at 1 MHz. Take <span class="mono">σ=5.8×10⁷ S/m</span>, <span class="mono">μ_r=1</span>.</div>
+        <details><summary>Show solution</summary><div class="sol">
+          <div class="eq">δ = 1/√(πfμσ) = 1/√(π·10⁶·4π×10⁻⁷·5.8×10⁷)</div>
+          <div class="eq">= 1/√(2.289×10⁸) ≈ 6.61×10⁻⁵ m ≈ 0.066 mm</div>
+          <p>At 10 MHz, <span class="mono">δ</span> shrinks by <span class="mono">√10</span> to about 0.021 mm. This is why high-frequency current stays near the surface.</p>
+        </div></details>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- MARKING -->
+    <!-- ============================================================ -->
+    <section class="topic" id="marking">
+      <h2><span class="kicker">5</span>Marking and error log</h2>
+
+      <p>Mark in points, not in feelings. For each question, record the points lost and the <em>reason</em>. Then schedule the retry.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Question</th><th>Points</th><th>My score</th><th>What went wrong</th><th>Rule to apply next time</th></tr></thead>
+          <tbody>
+            <tr><td>1.1 conversion</td><td>0.5</td><td>—</td><td>—</td><td>Evaluate angles at the point first</td></tr>
+            <tr><td>1.2 Gauss statement</td><td>0.5</td><td>—</td><td>—</td><td>Write both forms and the outward normal</td></tr>
+            <tr><td>1.3 qv×B</td><td>1</td><td>—</td><td>—</td><td>Cross product, then magnitude</td></tr>
+            <tr><td>1.4 wire field</td><td>1</td><td>—</td><td>—</td><td>B=μ₀I/2πρ φ̂</td></tr>
+            <tr><td>Ex 1 flux</td><td>6</td><td>—</td><td>—</td><td>Four active faces, outward normals</td></tr>
+            <tr><td>Ex 2 charge</td><td>2</td><td>—</td><td>—</td><td>r² sinθ and the θ limits</td></tr>
+            <tr><td>Ex 3 field</td><td>4</td><td>—</td><td>—</td><td>R=r−r′, then divide by R³</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tip">
+        <strong>Retry schedule.</strong> Redo every missed question after 24 hours, then again after 3 days. If you get it right twice from a blank page, it is learned. If you only recognize the solution, it is not.
+      </div>
+
+      <div class="done-row" style="margin-top:20px">
+        <input type="checkbox" id="p-control24" data-progress="practice-control24">
+        <label for="p-control24">I have done the 2024–25 control timed, marked it, and logged every miss.
+          <span class="done-meta">Practice · timed control</span></label>
+      </div>
+    </section>
+
+    <footer class="foot">Practice · EE361 EMF · Problems are rewritten from the 2024–25 and 2021–22 controls and the 2013–2025 recitation archive. Every numeric solution was recomputed; known inconsistencies in the handwritten keys are flagged inline.</footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>

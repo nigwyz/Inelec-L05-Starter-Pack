@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 3 — Electrostatics | EE361 EMF</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/emf.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Ch. 3 — Electrostatics</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EMF Companion<small>EE361 · Electromagnetics</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch0.html"><span class="num">00</span>How it fits</a>
+      <a href="ch1.html"><span class="num">01</span>Vectors &amp; coordinates</a>
+      <a href="ch2.html"><span class="num">02</span>Vector calculus</a>
+      <a href="ch3.html" class="active"><span class="num">03</span>Electrostatics</a>
+      <a href="ch4.html"><span class="num">04</span>Magnetostatics</a>
+      <a href="ch5.html"><span class="num">05</span>Maxwell</a>
+      <a href="ch6.html"><span class="num">06</span>Plane waves</a>
+      <div class="nav-label">Exam prep</div>
+      <a href="formulas.html"><span class="num">Σ</span>Formula sheet</a>
+      <a href="practice.html"><span class="num">✎</span>Practice</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Chapter 3 · Electrostatics</span>
+      <h1>Electrostatics: from one charge to a whole distribution</h1>
+      <p class="lede">Almost every electrostatics question is one move repeated: take the source point, subtract it from the observation point, divide by the cube of that distance, and add. This chapter drills the move until the signs are automatic, then adds Gauss's law and potential as the two shortcuts that replace the integral when symmetry lets you.</p>
+    </header>
+
+    <p class="small muted" style="margin-top:-10px"><strong>Notation.</strong> Vectors are bold (<b>E</b>, <b>F</b>, <b>r</b>); unit vectors carry a hat (x̂, ŷ, ẑ, ρ̂, â<sub>R</sub>). <span class="v">ε</span><sub>0</sub> is free-space permittivity; <span class="v">ε</span> = <span class="v">ε</span><sub>r</sub><span class="v">ε</span><sub>0</sub> is the medium.</p>
+
+    <div class="toc">
+      <strong>On this page</strong>
+      <ol>
+        <li><a href="#coulomb">Coulomb's law</a></li>
+        <li><a href="#efield">Electric field intensity</a></li>
+        <li><a href="#distributions">Line, surface and volume charge</a></li>
+        <li><a href="#gauss">Flux and Gauss's law</a></li>
+        <li><a href="#potential">Electric scalar potential</a></li>
+        <li><a href="#check">Check yourself</a></li>
+      </ol>
+    </div>
+
+    <!-- ===================== COULOMB ===================== -->
+    <section class="topic" id="coulomb">
+      <h2><span class="kicker">3.1</span>Coulomb's law: the force between two charges</h2>
+
+      <p>Electrostatics starts with one measured fact: two small charges push or pull each other along the line joining them. The force grows with both charges and falls with the square of the separation. Written for the force that charge 1 exerts on charge 2,</p>
+
+      <div class="eqbox">
+        <div class="eq"><b>F</b><sub>12</sub> = (1/4π<span class="v">ε</span><sub>0</sub>) · <span class="v">Q</span><sub>1</sub><span class="v">Q</span><sub>2</sub> / <span class="v">R</span><sub>12</sub><sup>2</sup> · â<sub>12</sub> &nbsp;&nbsp;or&nbsp;&nbsp; <b>F</b><sub>12</sub> = (1/4π<span class="v">ε</span><sub>0</sub>) · <span class="v">Q</span><sub>1</sub><span class="v">Q</span><sub>2</sub> (<b>r</b><sub>2</sub> − <b>r</b><sub>1</sub>) / |<b>r</b><sub>2</sub> − <b>r</b><sub>1</sub>|<sup>3</sup></div>
+      </div>
+
+      <p>The vector form is the one to memorise. Here <b>r</b><sub>1</sub> locates the source charge, <b>r</b><sub>2</sub> locates the charge that feels the force, and</p>
+
+      <div class="eqbox">
+        <div class="eq"><b>R</b><sub>12</sub> = <b>r</b><sub>2</sub> − <b>r</b><sub>1</sub> &nbsp;&nbsp;points <em>from the source to the observation point</em>.</div>
+      </div>
+
+      <p>If <span class="v">Q</span><sub>1</sub><span class="v">Q</span><sub>2</sub> &gt; 0 the force is along <b>R</b><sub>12</sub> and the charges repel. If the product is negative the force reverses and they attract. Newton's third law then gives <b>F</b><sub>12</sub> = −<b>F</b><sub>21</sub>, so the pair never accelerates itself.</p>
+
+      <p>For many charges, add the pairwise forces as vectors: <b>F</b> = Σ<sub><span class="v">i</span></sub> <b>F</b><sub><span class="v">i</span></sub>. This is superposition, and it is the reason the electric field is worth defining in the next section.</p>
+
+      <div class="def">
+        <strong>Permittivity of free space.</strong> The constant in front is not a nuisance, it is the medium:
+        <span class="v">ε</span><sub>0</sub> = 10<sup>−9</sup>/(36π) F/m = 8.842×10<sup>−12</sup> F/m ≈ 8.854×10<sup>−12</sup> F/m,
+        and 1/(4π<span class="v">ε</span><sub>0</sub>) ≈ 9×10<sup>9</sup> m/F (8.988×10<sup>9</sup> from the full SI definition).
+        In a material replace <span class="v">ε</span><sub>0</sub> by <span class="v">ε</span> = <span class="v">ε</span><sub>r</sub><span class="v">ε</span><sub>0</sub>; in free space <span class="v">ε</span><sub>r</sub> = 1.
+      </div>
+
+      <p>The exam uses the rounded 9×10<sup>9</sup> because the numbers were built for it: 36π cancels 1/(4π×10<sup>−9</sup>), which is why 100 nC/m at 2 m later gives exactly 450 V/m. Use 9×10<sup>9</sup> by hand and say so.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Two charges: force magnitude and direction</span><span class="vh">Move the charges and the separation; watch the arrows flip</span></div>
+        <div class="viz-body" data-viz="coulomb"></div>
+      </div>
+
+      <h3>Worked example — the force on the negative charge</h3>
+      <p>Two point charges sit in free space: <span class="v">Q</span><sub>1</sub> = +20 nC at (1, 0, 0) and <span class="v">Q</span><sub>2</sub> = −20 nC at (0, 1, 0), with distances in metres. Find the force on <span class="v">Q</span><sub>2</sub>.</p>
+
+      <p><strong>1. Source vector.</strong> <b>R</b><sub>12</sub> = (0−1, 1−0, 0−0) = (−1, 1, 0) m, so <span class="v">R</span><sub>12</sub> = √2 = 1.414 m and <span class="v">R</span><sub>12</sub><sup>3</sup> = 2√2 = 2.828 m<sup>3</sup>.</p>
+
+      <p><strong>2. Charge product.</strong> <span class="v">Q</span><sub>1</sub><span class="v">Q</span><sub>2</sub> = (20×10<sup>−9</sup>)(−20×10<sup>−9</sup>) = −4×10<sup>−16</sup> C<sup>2</sup>. Multiply by 9×10<sup>9</sup>: the numerator is −3.6×10<sup>−6</sup> N·m<sup>2</sup>.</p>
+
+      <p><strong>3. Divide by the cube.</strong></p>
+      <div class="eqbox">
+        <div class="eq"><b>F</b><sub>12</sub> = (−3.6×10<sup>−6</sup>) · (−1, 1, 0) / 2.828 = (1.273, −1.273, 0)×10<sup>−6</sup> N = 1.27(x̂ − ŷ) µN</div>
+      </div>
+
+      <p><strong>4. Read the answer.</strong> The magnitude is √2 × 1.273 = 1.80 µN. The direction is (1, −1, 0)/√2, which points from (0, 1, 0) straight at (1, 0, 0): attraction, as expected for opposite signs. The force on <span class="v">Q</span><sub>1</sub> is the same vector negated, so the two forces are equal and opposite.</p>
+
+      <div class="exam">
+        <strong>Exam link.</strong> Control 2024–25, Exercise 3 uses exactly this subtraction with two 60 nC charges. The arithmetic is in <a href="#efield">the field section</a>; the only new step there is that both charges push on the observation point, so you add two vectors.
+      </div>
+
+      <div class="warn">
+        <strong>Four sign traps.</strong>
+        <ul>
+          <li><strong>R direction.</strong> <b>R</b> = <b>r</b><sub>observation</sub> − <b>r</b><sub>source</sub>. Reversing it flips every direction. Sketch the arrow before you calculate.</li>
+          <li><strong>Cube, not square.</strong> The unit vector already contains one factor of <span class="v">R</span>; dividing by <span class="v">R</span><sup>3</sup> is what leaves the 1/<span class="v">R</span><sup>2</sup> law.</li>
+          <li><strong>Charge sign is separate.</strong> Do not "fix" the direction twice: put the sign inside <span class="v">Q</span><sub>1</sub><span class="v">Q</span><sub>2</sub> and let the vector <b>R</b> stay source-to-point.</li>
+          <li><strong>Prefixes.</strong> nC = 10<sup>−9</sup> C, µC = 10<sup>−6</sup> C. Mixing them changes the answer by 1000.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== EFIELD ===================== -->
+    <section class="topic" id="efield">
+      <h2><span class="kicker">3.2</span>Electric field intensity</h2>
+
+      <p>A single charge alone feels nothing. Bring a small test charge <span class="v">q</span><sub>t</sub> near it and the test charge feels a force that depends on where you put it. Divide the force by the test charge and the dependence on the test charge disappears: what remains is a property of the source, the electric field.</p>
+
+      <div class="eqbox">
+        <div class="eq"><b>E</b> = lim<sub><span class="v">q</span><sub>t</sub>→0</sub> <b>F</b>/<span class="v">q</span><sub>t</sub> &nbsp;&nbsp;(V/m) &nbsp;&nbsp;&nbsp; and conversely &nbsp;&nbsp; <b>F</b> = <span class="v">q</span><b>E</b></div>
+      </div>
+
+      <p>For a point charge <span class="v">q</span> at <b>r</b>′, the field at <b>r</b> is the same Coulomb vector with the test charge removed:</p>
+
+      <div class="eqbox">
+        <div class="eq"><b>E</b>(<b>r</b>) = <span class="v">q</span> (<b>r</b> − <b>r</b>′) / [4π<span class="v">ε</span><sub>0</sub> |<b>r</b> − <b>r</b>′|<sup>3</sup>] &nbsp;&nbsp;=&nbsp;&nbsp; <span class="v">q</span>/(4π<span class="v">ε</span><sub>0</sub><span class="v">R</span><sup>2</sup>) · â<sub>R</sub></div>
+      </div>
+
+      <p>With several charges, superposition applies because forces add linearly. No charge acts on itself, so the sum runs over every source except the charge at the observation point:</p>
+
+      <div class="eqbox">
+        <div class="eq"><b>E</b> = Σ<sub><span class="v">i</span>=1</sub><sup><span class="v">n</span></sup> <span class="v">q</span><sub><span class="v">i</span></sub> (<b>r</b> − <b>r</b><sub><span class="v">i</span></sub>) / [4π<span class="v">ε</span><sub>0</sub> |<b>r</b> − <b>r</b><sub><span class="v">i</span></sub>|<sup>3</sup>]</div>
+      </div>
+
+      <div class="note">
+        <strong>Field lines are a bookkeeping device.</strong> They start on positive charge, end on negative charge or run to infinity, never cross, and their density indicates |<b>E</b>|. The tangent at any point is the field direction. A positive test charge released from rest moves along the tangent, not along a straight line to the nearest negative charge.
+      </div>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Three charges, one movable probe</span><span class="vh">Drag the probe sliders; the pale lines are traced field lines, the dark arrow is the vector sum</span></div>
+        <div class="viz-body" data-viz="efield"></div>
+      </div>
+
+      <h3>Worked example — three charges at the origin</h3>
+      <p>Place +10 nC at (1, 0, 0), +10 nC at (0, 1, 0) and −10 nC at (0, 0, 1). Find <b>E</b> at the origin. This is deliberately simple geometry so the vector bookkeeping is visible.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Source</th><th><span class="v">q</span><sub><span class="v">i</span></sub></th><th><b>r</b><sub><span class="v">i</span></sub></th><th><b>R</b><sub><span class="v">i</span></sub> = −<b>r</b><sub><span class="v">i</span></sub></th><th>|<b>R</b><sub><span class="v">i</span></sub>|<sup>3</sup></th><th><b>E</b><sub><span class="v">i</span></sub> = 9×10<sup>9</sup> <span class="v">q</span><sub><span class="v">i</span></sub><b>R</b><sub><span class="v">i</span></sub>/<span class="v">R</span><sub><span class="v">i</span></sub><sup>3</sup></th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>+10 nC</td><td>(1, 0, 0)</td><td>(−1, 0, 0)</td><td>1</td><td>−90 x̂ V/m</td></tr>
+            <tr><td>2</td><td>+10 nC</td><td>(0, 1, 0)</td><td>(0, −1, 0)</td><td>1</td><td>−90 ŷ V/m</td></tr>
+            <tr><td>3</td><td>−10 nC</td><td>(0, 0, 1)</td><td>(0, 0, −1)</td><td>1</td><td>+90 ẑ V/m</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Add the three columns:</p>
+      <div class="eqbox">
+        <div class="eq"><b>E</b> = −90x̂ − 90ŷ + 90ẑ V/m &nbsp;&nbsp;→&nbsp;&nbsp; |<b>E</b>| = 90√3 = 155.9 V/m &nbsp;&nbsp;and&nbsp;&nbsp; â<sub>E</sub> = (−x̂ − ŷ + ẑ)/√3</div>
+      </div>
+
+      <p>Notice the third row: the charge is negative, so <span class="v">q</span><sub>3</sub><b>R</b><sub>3</sub> = (−10 nC)(−ẑ) = +10 nC ẑ. A negative source at +ẑ pulls the field toward +ẑ at the origin. Two sign changes, one physical answer. A 1 nC test charge placed at the origin would feel <b>F</b> = <span class="v">q</span><b>E</b> = (−90, −90, 90) nN.</p>
+
+      <h3>Exam pattern — Control 2024–25, Exercise 3</h3>
+      <p>Two 60 nC charges sit at <span class="v">P</span><sub>1</sub>(4, −2, 7) and <span class="v">P</span><sub>2</sub>(4, −7, −2). Find the field at <span class="v">P</span><sub>3</sub>(1, 2, 3), then find the points on the <span class="v">y</span>-axis where <span class="v">E</span><sub><span class="v">z</span></sub> = 0.</p>
+
+      <p><strong>Part (a).</strong> Subtract source from observation:</p>
+      <div class="eqbox">
+        <div class="eq"><b>R</b><sub>1</sub> = (1−4, 2+2, 3−7) = (−3, 4, −4), &nbsp; <span class="v">R</span><sub>1</sub> = √41 = 6.403, &nbsp; <span class="v">R</span><sub>1</sub><sup>3</sup> = 41√41 = 262.5</div>
+        <div class="eq"><b>R</b><sub>2</sub> = (1−4, 2+7, 3+2) = (−3, 9, 5), &nbsp; <span class="v">R</span><sub>2</sub> = √115 = 10.724, &nbsp; <span class="v">R</span><sub>2</sub><sup>3</sup> = 115√115 = 1233.2</div>
+      </div>
+
+      <p>With 1/(4π<span class="v">ε</span><sub>0</sub>) = 9×10<sup>9</sup>, the common factor is 9×10<sup>9</sup> × 60×10<sup>−9</sup> = 540 V·m:</p>
+      <div class="eqbox">
+        <div class="eq"><b>E</b> = 540 [ (−3, 4, −4)/262.5 + (−3, 9, 5)/1233.2 ]</div>
+        <div class="eq">= 540 [ (−0.01143, 0.01524, −0.01524) + (−0.00243, 0.00730, 0.00405) ]</div>
+        <div class="eq">= 540 (−0.01386, 0.02254, −0.01119) = (−7.48x̂ + 12.17ŷ − 6.04ẑ) V/m</div>
+      </div>
+      <p>The magnitude is |<b>E</b>| = √(7.48<sup>2</sup> + 12.17<sup>2</sup> + 6.04<sup>2</sup>) = 15.5 V/m. The handwritten key prints 12.16 and −6.03 because it rounds intermediate values; the exact components are 12.17 and −6.04.</p>
+
+      <p><strong>Part (b).</strong> A general point on the <span class="v">y</span>-axis is (0, <span class="v">y</span>, 0). Then</p>
+      <div class="eqbox">
+        <div class="eq"><b>R</b><sub>1</sub> = (−4, <span class="v">y</span>+2, −7), &nbsp; <span class="v">R</span><sub>1</sub><sup>2</sup> = 65 + (<span class="v">y</span>+2)<sup>2</sup>; &nbsp;&nbsp; <b>R</b><sub>2</sub> = (−4, <span class="v">y</span>+7, 2), &nbsp; <span class="v">R</span><sub>2</sub><sup>2</sup> = 20 + (<span class="v">y</span>+7)<sup>2</sup></div>
+      </div>
+      <p>Set the <span class="v">z</span>-component of the sum to zero. Since both charges are equal, their common factor cancels:</p>
+      <div class="eqbox">
+        <div class="eq">−7/<span class="v">R</span><sub>1</sub><sup>3</sup> + 2/<span class="v">R</span><sub>2</sub><sup>3</sup> = 0 &nbsp;⟹&nbsp; 2<span class="v">R</span><sub>1</sub><sup>3</sup> = 7<span class="v">R</span><sub>2</sub><sup>3</sup> &nbsp;⟹&nbsp; <span class="v">R</span><sub>1</sub><sup>2</sup> = (7/2)<sup>2/3</sup> <span class="v">R</span><sub>2</sub><sup>2</sup> = 2.305 <span class="v">R</span><sub>2</sub><sup>2</sup></div>
+      </div>
+      <p>Substituting the two squared distances gives 65 + (<span class="v">y</span>+2)<sup>2</sup> = 2.305[20 + (<span class="v">y</span>+7)<sup>2</sup>], which expands to</p>
+      <div class="eqbox">
+        <div class="eq">1.305<span class="v">y</span><sup>2</sup> + 28.27<span class="v">y</span> + 90.06 = 0 &nbsp;⟹&nbsp; <span class="v">y</span> = −3.88 m &nbsp;or&nbsp; <span class="v">y</span> = −17.78 m</div>
+      </div>
+      <p>The key prints −17.87 for the second root; that comes from rounding the discriminant to 330.9 before taking the square root. Carrying the coefficients above gives −17.78. Both points make <span class="v">E</span><sub><span class="v">z</span></sub> zero, but neither makes the whole field zero — the <span class="v">x</span> and <span class="v">y</span> components survive.</p>
+
+      <div class="tip">
+        <strong>Three-minute check.</strong> Reproduce the lecture's two-charge Example 3.1: +20 nC at (1,0,0), −20 nC at (0,1,0), observation point (0,0,1). Each distance is √2, the two ẑ contributions cancel, and the surviving terms give 63.64(−x̂ + ŷ) V/m. If the cancellation surprises you, draw the two arrows.
+      </div>
+
+      <div class="warn">
+        <strong>What loses marks.</strong> Adding magnitudes instead of components; forgetting the 4π<span class="v">ε</span><sub>0</sub>; writing <b>r</b><sub>i</sub> − <b>r</b> for one charge and <b>r</b> − <b>r</b><sub>i</sub> for the other; and answering "<span class="v">E</span> = 0" when the question only set one component to zero.
+      </div>
+    </section>
+
+    <!-- ===================== DISTRIBUTIONS ===================== -->
+    <section class="topic" id="distributions">
+      <h2><span class="kicker">3.3</span>Line, surface and volume distributions</h2>
+
+      <p>Real charge is never concentrated at a mathematical point. When the size of the charged body is comparable to the distance you care about, replace the sum over point charges by an integral over the body. The source coordinates get primes; the observation point stays unprimed. That single convention prevents most confusion.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Distribution</th><th>Density</th><th>Unit</th><th>Element</th><th>Total charge</th></tr></thead>
+          <tbody>
+            <tr><td>Line</td><td><span class="v">ρ</span><sub><span class="v">l</span></sub></td><td>C/m</td><td>d<span class="v">q</span> = <span class="v">ρ</span><sub><span class="v">l</span></sub> d<span class="v">l</span>′</td><td>∫<sub><span class="v">L</span></sub> <span class="v">ρ</span><sub><span class="v">l</span></sub> d<span class="v">l</span>′</td></tr>
+            <tr><td>Surface</td><td><span class="v">ρ</span><sub><span class="v">s</span></sub></td><td>C/m<sup>2</sup></td><td>d<span class="v">q</span> = <span class="v">ρ</span><sub><span class="v">s</span></sub> d<span class="v">S</span>′</td><td>∫<sub><span class="v">S</span></sub> <span class="v">ρ</span><sub><span class="v">s</span></sub> d<span class="v">S</span>′</td></tr>
+            <tr><td>Volume</td><td><span class="v">ρ</span><sub><span class="v">v</span></sub></td><td>C/m<sup>3</sup></td><td>d<span class="v">q</span> = <span class="v">ρ</span><sub><span class="v">v</span></sub> d<span class="v">v</span>′</td><td>∫<sub><span class="v">V</span></sub> <span class="v">ρ</span><sub><span class="v">v</span></sub> d<span class="v">v</span>′</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Each element contributes the point-charge field with d<span class="v">q</span> in place of <span class="v">Q</span>. The only new difficulty is that both the distance and the direction change from element to element, so they must stay inside the integral:</p>
+
+      <div class="eqbox">
+        <div class="eq"><b>E</b> = (1/4π<span class="v">ε</span><sub>0</sub>) ∫ (<b>r</b> − <b>r</b>′) d<span class="v">q</span> / |<b>r</b> − <b>r</b>′|<sup>3</sup></div>
+        <div class="eq" style="font-size:.94rem">d<span class="v">q</span> = <span class="v">ρ</span><sub><span class="v">l</span></sub>d<span class="v">l</span>′ (line) &nbsp;·&nbsp; <span class="v">ρ</span><sub><span class="v">s</span></sub>d<span class="v">S</span>′ (surface) &nbsp;·&nbsp; <span class="v">ρ</span><sub><span class="v">v</span></sub>d<span class="v">v</span>′ (volume)</div>
+        <div class="eq"><span class="v">V</span> = (1/4π<span class="v">ε</span><sub>0</sub>) ∫ d<span class="v">q</span> / |<b>r</b> − <b>r</b>′|</div>
+      </div>
+
+      <p>The potential integral is a scalar, so it is often the faster route: compute <span class="v">V</span> first, then take <b>E</b> = −∇<span class="v">V</span> if the field is also wanted.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">One density, three geometries</span><span class="vh">Switch line/surface/volume and compare the element and the units</span></div>
+        <div class="viz-body" data-viz="density"></div>
+      </div>
+
+      <h3>A ring of charge, on its axis</h3>
+      <p>Take a ring of radius <span class="v">a</span> in the <span class="v">z</span> = 0 plane, centre at the origin, uniform line density <span class="v">ρ</span><sub><span class="v">l</span></sub>. The observation point is (0, 0, <span class="v">z</span>). A source element sits at <b>r</b>′ = <span class="v">a</span>(cos<span class="v">φ</span>′ x̂ + sin<span class="v">φ</span>′ ŷ) = <span class="v">a</span>ρ̂′, with d<span class="v">l</span>′ = <span class="v">a</span> d<span class="v">φ</span>′.</p>
+
+      <div class="eqbox">
+        <div class="eq"><b>R</b> = <span class="v">z</span>ẑ − <span class="v">a</span>ρ̂′, &nbsp;&nbsp; |<b>R</b>| = √(<span class="v">a</span><sup>2</sup> + <span class="v">z</span><sup>2</sup>) &nbsp;&nbsp;(the same for every element)</div>
+      </div>
+
+      <p>The ρ̂′ components cancel in opposite pairs around the ring; only ẑ survives. Since d<span class="v">q</span> = <span class="v">ρ</span><sub><span class="v">l</span></sub><span class="v">a</span> d<span class="v">φ</span>′ and ∫<sub>0</sub><sup>2π</sup> d<span class="v">φ</span>′ = 2π, the total charge is <span class="v">Q</span> = 2π<span class="v">a</span><span class="v">ρ</span><sub><span class="v">l</span></sub>:</p>
+
+      <div class="eqbox">
+        <div class="eq"><b>E</b> = <span class="v">Q</span><span class="v">z</span> ẑ / [4π<span class="v">ε</span><sub>0</sub> (<span class="v">a</span><sup>2</sup> + <span class="v">z</span><sup>2</sup>)<sup>3/2</sup>] &nbsp;&nbsp;&nbsp;&nbsp; <span class="v">V</span> = <span class="v">Q</span> / [4π<span class="v">ε</span><sub>0</sub> √(<span class="v">a</span><sup>2</sup> + <span class="v">z</span><sup>2</sup>)]</div>
+      </div>
+
+      <p>Numbers: <span class="v">Q</span> = 10 nC, <span class="v">a</span> = 0.5 m, <span class="v">z</span> = 1.2 m. Then √(<span class="v">a</span><sup>2</sup>+<span class="v">z</span><sup>2</sup>) = 1.3 m and</p>
+      <div class="eqbox">
+        <div class="eq"><span class="v">V</span> = 9×10<sup>9</sup> × 10×10<sup>−9</sup> / 1.3 = 69.2 V, &nbsp;&nbsp; <span class="v">E</span><sub><span class="v">z</span></sub> = <span class="v">V z</span>/(<span class="v">a</span><sup>2</sup>+<span class="v">z</span><sup>2</sup>) = 69.2 × 1.2/1.69 = 49.2 V/m</div>
+      </div>
+
+      <p>Three limits worth remembering: at <span class="v">z</span> = 0 the field is zero by symmetry while the potential is maximum; at <span class="v">z</span> ≫ <span class="v">a</span> the ring looks like a point charge; and on the axis the field peaks at <span class="v">z</span> = <span class="v">a</span>/√2, not at the centre.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Ring field along the axis</span><span class="vh">Change radius and charge; move the marker to see where the field peaks</span></div>
+        <div class="viz-body" data-viz="ring-field"></div>
+      </div>
+
+      <h3>Semi-infinite line — lecture Example 3.2</h3>
+      <p>A line from −∞ to 0 on the <span class="v">z</span>-axis carries <span class="v">ρ</span><sub><span class="v">l</span></sub> = 100 nC/m. Find <b>E</b> at <span class="v">P</span>(0, 0, 2).</p>
+
+      <p>Source: <b>r</b>′ = <span class="v">z</span>′ẑ, d<span class="v">l</span>′ = d<span class="v">z</span>′. Observation: <b>r</b> = 2ẑ. Therefore <b>R</b> = (2 − <span class="v">z</span>′)ẑ and, because <span class="v">z</span>′ ≤ 0, the distance 2 − <span class="v">z</span>′ is positive and equals its own modulus.</p>
+
+      <div class="eqbox">
+        <div class="eq"><b>E</b> = (<span class="v">ρ</span><sub><span class="v">l</span></sub>/4π<span class="v">ε</span><sub>0</sub>) ∫<sub>−∞</sub><sup>0</sup> (2−<span class="v">z</span>′) d<span class="v">z</span>′/(2−<span class="v">z</span>′)<sup>3</sup> ẑ = (<span class="v">ρ</span><sub><span class="v">l</span></sub>/4π<span class="v">ε</span><sub>0</sub>) ẑ ∫<sub>−∞</sub><sup>0</sup> d<span class="v">z</span>′/(2−<span class="v">z</span>′)<sup>2</sup></div>
+        <div class="eq">= (<span class="v">ρ</span><sub><span class="v">l</span></sub>/4π<span class="v">ε</span><sub>0</sub>) [1/(2−<span class="v">z</span>′)]<sub>−∞</sub><sup>0</sup> ẑ = (<span class="v">ρ</span><sub><span class="v">l</span></sub>/4π<span class="v">ε</span><sub>0</sub>) (1/2) ẑ</div>
+      </div>
+
+      <p>Substitute <span class="v">ρ</span><sub><span class="v">l</span></sub> = 100×10<sup>−9</sup> and use 1/(4π<span class="v">ε</span><sub>0</sub>) = 36π×10<sup>9</sup>/4π = 9×10<sup>9</sup>:</p>
+      <div class="eqbox">
+        <div class="eq"><b>E</b> = (100×10<sup>−9</sup> × 9×10<sup>9</sup>) × (1/2) ẑ = 450 ẑ V/m</div>
+      </div>
+
+      <p>A 1 nC charge at <span class="v">P</span> feels <b>F</b> = <span class="v">q</span><b>E</b> = 10<sup>−9</sup> × 450 = 450 nN in +ẑ. The field points away from the line because the line is positive and lies below the point.</p>
+
+      <div class="warn">
+        <strong>Source discrepancy in the lecture.</strong> The problem statement says a 1 µC charge, but the worked solution substitutes 1 nC. The printed 450 nN belongs to 1 nC. For 1 µC the force would be 450 µN, a thousand times larger. In the control, underline the prefix before you compute.
+      </div>
+
+      <h3>Disk and annular disk, on the axis</h3>
+      <p>A disk of radius <span class="v">a</span> with uniform surface density <span class="v">ρ</span><sub><span class="v">s</span></sub> is a stack of rings. Put <span class="v">r</span>′ for the ring radius, so d<span class="v">q</span> = <span class="v">ρ</span><sub><span class="v">s</span></sub>2π<span class="v">r</span>′d<span class="v">r</span>′, and integrate the ring result:</p>
+
+      <div class="eqbox">
+        <div class="eq"><b>E</b><sub><span class="v">z</span></sub> = (<span class="v">ρ</span><sub><span class="v">s</span></sub><span class="v">z</span>/2<span class="v">ε</span><sub>0</sub>) ∫<sub>0</sub><sup><span class="v">a</span></sup> <span class="v">r</span>′d<span class="v">r</span>′/(<span class="v">r</span>′<sup>2</sup>+<span class="v">z</span><sup>2</sup>)<sup>3/2</sup> = (<span class="v">ρ</span><sub><span class="v">s</span></sub>/2<span class="v">ε</span><sub>0</sub>) [1 − <span class="v">z</span>/√(<span class="v">a</span><sup>2</sup>+<span class="v">z</span><sup>2</sup>)] &nbsp;&nbsp;(<span class="v">z</span> &gt; 0)</div>
+        <div class="eq"><span class="v">V</span> = (<span class="v">ρ</span><sub><span class="v">s</span></sub>/2<span class="v">ε</span><sub>0</sub>) [√(<span class="v">a</span><sup>2</sup>+<span class="v">z</span><sup>2</sup>) − |<span class="v">z</span>|]</div>
+      </div>
+
+      <p>For an annulus with inner radius <span class="v">b</span>, subtract the inner disk: <span class="v">E</span><sub><span class="v">z</span></sub> = (<span class="v">ρ</span><sub><span class="v">s</span></sub>/2<span class="v">ε</span><sub>0</sub>)[<span class="v">z</span>/√(<span class="v">b</span><sup>2</sup>+<span class="v">z</span><sup>2</sup>) − <span class="v">z</span>/√(<span class="v">a</span><sup>2</sup>+<span class="v">z</span><sup>2</sup>)]. Letting <span class="v">b</span> → 0 recovers the disk; letting <span class="v">a</span> → ∞ gives the infinite-sheet field <span class="v">ρ</span><sub><span class="v">s</span></sub>/2<span class="v">ε</span><sub>0</sub>.</p>
+
+      <p>Numbers: <span class="v">ρ</span><sub><span class="v">s</span></sub> = 10 nC/m<sup>2</sup>, <span class="v">a</span> = 0.5 m, <span class="v">z</span> = 1.2 m. The coefficient is <span class="v">ρ</span><sub><span class="v">s</span></sub>/2<span class="v">ε</span><sub>0</sub> = 565.5 V/m, and 1 − 1.2/1.3 = 0.0769, so</p>
+      <div class="eqbox">
+        <div class="eq"><span class="v">E</span><sub><span class="v">z</span></sub> = 565.5 × 0.0769 = 43.5 V/m, &nbsp;&nbsp; <span class="v">V</span> = 565.5 × (1.3 − 1.2) = 56.5 V</div>
+      </div>
+
+      <div class="warn">
+        <strong>Distribution mistakes that cost whole questions.</strong>
+        <ul>
+          <li><strong>Wrong density.</strong> <span class="v">ρ</span><sub><span class="v">l</span></sub> is C/m, <span class="v">ρ</span><sub><span class="v">s</span></sub> is C/m<sup>2</sup>, <span class="v">ρ</span><sub><span class="v">v</span></sub> is C/m<sup>3</sup>. A surface integral with a line density is dimensionally impossible.</li>
+          <li><strong>Missing Jacobian.</strong> d<span class="v">l</span>′ = <span class="v">a</span> d<span class="v">φ</span>′ on a ring, d<span class="v">S</span>′ = <span class="v">ρ</span>′d<span class="v">ρ</span>′d<span class="v">φ</span>′ on a disk, d<span class="v">v</span>′ = <span class="v">r</span>′<sup>2</sup>sin<span class="v">θ</span>′d<span class="v">r</span>′d<span class="v">θ</span>′d<span class="v">φ</span>′ in a sphere.</li>
+          <li><strong>Primed/unprimed mixing.</strong> The integration variable is the source coordinate; the observation point is a constant during the integral.</li>
+          <li><strong>Symmetry ignored.</strong> On the ring axis the transverse components cancel. If you integrate them anyway you will usually get zero after a long fight — say why they cancel instead.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== GAUSS ===================== -->
+    <section class="topic" id="gauss">
+      <h2><span class="kicker">3.4</span>Electric flux and Gauss's law</h2>
+
+      <p>Flux counts field lines crossing a surface. For a small patch, only the component normal to the patch contributes: d<span class="v">ψ</span> = <b>D</b>·d<b>S</b> = <span class="v">D</span><sub><span class="v">n</span></sub>d<span class="v">S</span>. For a closed surface the outward normal is the convention, and the total outward flux is</p>
+
+      <div class="eqbox">
+        <div class="eq"><span class="v">ψ</span> = ∮<sub><span class="v">S</span></sub> <b>D</b>·d<b>S</b> = <span class="v">Q</span><sub>enc</sub> = ∫<sub><span class="v">v</span></sub> <span class="v">ρ</span><sub><span class="v">v</span></sub> d<span class="v">v</span></div>
+      </div>
+
+      <p>This is Gauss's law. It repackages Coulomb's law into a statement about enclosed charge: the flux through <em>any</em> closed surface depends only on the charge inside it, not on the shape of the surface or on where the outside charges sit. Dividing by the volume and shrinking the surface gives the point form,</p>
+
+      <div class="eqbox">
+        <div class="eq">∇·<b>D</b> = <span class="v">ρ</span><sub><span class="v">v</span></sub> &nbsp;&nbsp;&nbsp; with &nbsp;&nbsp; <b>D</b> = <span class="v">ε</span><sub>0</sub><b>E</b> &nbsp;(free space) &nbsp;or&nbsp; <b>D</b> = <span class="v">ε</span><b>E</b> &nbsp;(medium)</div>
+      </div>
+
+      <p><b>D</b> is convenient because it does not change when you change the dielectric: at fixed free charge, doubling <span class="v">ε</span> halves <b>E</b> and leaves <b>D</b> alone. Its units, C/m<sup>2</sup>, are the same as surface charge density.</p>
+
+      <div class="note">
+        <strong>The symmetry recipe.</strong> Choose a surface on which <b>D</b> is either normal or parallel, and on which |<b>D</b>| is constant. Sphere for a point charge or spherical shell; coaxial cylinder for a line; pillbox for a sheet. Then ∮<b>D</b>·d<b>S</b> collapses to <span class="v">D</span> × (area), and <span class="v">D</span> falls out by division.
+      </div>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Flux through a closed surface</span><span class="vh">Switch the surface and move the charge inside or outside; watch Q<sub>enc</sub> and the flux</span></div>
+        <div class="viz-body" data-viz="gauss"></div>
+      </div>
+
+      <h3>Key worked example — Control 2024–25, Exercise 2</h3>
+      <p>In free space the volume density is <span class="v">ρ</span><sub><span class="v">v</span></sub> = (<span class="v">ρ</span><sub>0</sub>/<span class="v">a</span>) <span class="v">r</span> cos<span class="v">θ</span> C/m<sup>3</sup>, with <span class="v">ρ</span><sub>0</sub> and <span class="v">a</span> constants. Find the total charge inside (a) the sphere <span class="v">r</span> ≤ <span class="v">a</span>, and (b) the cone <span class="v">r</span> ≤ <span class="v">a</span>, 0.9π ≤ <span class="v">θ</span> ≤ π.</p>
+
+      <p><strong>Set up the volume integral.</strong> In spherical coordinates d<span class="v">v</span> = <span class="v">r</span><sup>2</sup> sin<span class="v">θ</span> d<span class="v">r</span> d<span class="v">θ</span> d<span class="v">φ</span>. The density brings one more power of <span class="v">r</span>, so the radial integrand is <span class="v">r</span><sup>3</sup>:</p>
+
+      <div class="eqbox">
+        <div class="eq"><span class="v">Q</span> = ∫<sub>0</sub><sup>2π</sup>∫<sub><span class="v">θ</span><sub>1</sub></sub><sup><span class="v">θ</span><sub>2</sub></sup>∫<sub>0</sub><sup><span class="v">a</span></sup> (<span class="v">ρ</span><sub>0</sub>/<span class="v">a</span>) <span class="v">r</span> cos<span class="v">θ</span> · <span class="v">r</span><sup>2</sup> sin<span class="v">θ</span> d<span class="v">r</span> d<span class="v">θ</span> d<span class="v">φ</span></div>
+        <div class="eq">= (<span class="v">ρ</span><sub>0</sub>/<span class="v">a</span>) (∫<sub>0</sub><sup><span class="v">a</span></sup> <span class="v">r</span><sup>3</sup> d<span class="v">r</span>) (∫<sub><span class="v">θ</span><sub>1</sub></sub><sup><span class="v">θ</span><sub>2</sub></sup> sin<span class="v">θ</span> cos<span class="v">θ</span> d<span class="v">θ</span>) (∫<sub>0</sub><sup>2π</sup> d<span class="v">φ</span>)</div>
+      </div>
+
+      <p>The three integrals separate because the limits are independent. The radial one is <span class="v">a</span><sup>4</sup>/4; the azimuthal one is 2π. For the polar one, substitute <span class="v">u</span> = sin<span class="v">θ</span>, d<span class="v">u</span> = cos<span class="v">θ</span> d<span class="v">θ</span>:</p>
+
+      <div class="eqbox">
+        <div class="eq">∫ sin<span class="v">θ</span> cos<span class="v">θ</span> d<span class="v">θ</span> = ∫ <span class="v">u</span> d<span class="v">u</span> = <span class="v">u</span><sup>2</sup>/2 = sin<sup>2</sup><span class="v">θ</span>/2</div>
+      </div>
+
+      <p><strong>(a) Full sphere, <span class="v">θ</span> from 0 to π.</strong></p>
+      <div class="eqbox">
+        <div class="eq"><span class="v">Q</span> = (<span class="v">ρ</span><sub>0</sub>/<span class="v">a</span>)(<span class="v">a</span><sup>4</sup>/4)(2π)[½ sin<sup>2</sup><span class="v">θ</span>]<sub>0</sub><sup>π</sup> = (<span class="v">ρ</span><sub>0</sub><span class="v">a</span><sup>3</sup>/4)(2π)(0 − 0) = 0</div>
+      </div>
+
+      <p>The upper hemisphere carries positive charge (cos<span class="v">θ</span> &gt; 0) and the lower hemisphere carries exactly the opposite amount. The two halves cancel. Note that this is a statement about the total, not about the density: <span class="v">ρ</span><sub><span class="v">v</span></sub> is not zero anywhere except on the equator.</p>
+
+      <p><strong>(b) Cone, <span class="v">θ</span> from 0.9π to π.</strong> Now sin<sup>2</sup>(0.9π) does not vanish. Since sin(0.9π) = sin(0.1π) = 0.3090, its square is 0.09549:</p>
+      <div class="eqbox">
+        <div class="eq"><span class="v">Q</span> = (<span class="v">ρ</span><sub>0</sub><span class="v">a</span><sup>3</sup>/4)(2π)[(0 − 0.09549)/2] = −(<span class="v">ρ</span><sub>0</sub><span class="v">a</span><sup>3</sup>π/4)(0.09549) = −0.0750 <span class="v">ρ</span><sub>0</sub><span class="v">a</span><sup>3</sup> C</div>
+      </div>
+
+      <p>The sign is worth a sentence in the exam: the cone lies below the equator (<span class="v">θ</span> &gt; π/2), where cos<span class="v">θ</span> &lt; 0, so the enclosed charge must be negative. The result 0.075 is exactly (π/4)sin<sup>2</sup>(0.1π): keep the exact form until the last line, then round.</p>
+
+      <div class="exam">
+        <strong>Why this is the control's favourite integral.</strong> It tests four things at once: spherical d<span class="v">v</span>, the <span class="v">r</span><sup>3</sup> from <span class="v">ρ</span><sub><span class="v">v</span></sub> ∝ <span class="v">r</span>, the sin<span class="v">θ</span> substitution, and the geometry of the limits. Change any one and the answer changes completely.
+      </div>
+
+      <div class="warn">
+        <strong>Gauss-law mistakes.</strong>
+        <ul>
+          <li><strong>ε versus ε<sub>0</sub>.</strong> In free space <b>D</b> = <span class="v">ε</span><sub>0</sub><b>E</b>. In a dielectric use <span class="v">ε</span> = <span class="v">ε</span><sub>r</sub><span class="v">ε</span><sub>0</sub>; the flux of <b>D</b> is still <span class="v">Q</span><sub>enc</sub>, but <b>E</b> is reduced by <span class="v">ε</span><sub>r</sub>.</li>
+          <li><strong>Outside charges.</strong> They contribute to <b>D</b> at points on the surface but contribute zero net flux. Only <span class="v">Q</span><sub>enc</sub> counts.</li>
+          <li><strong>Open surfaces.</strong> ∮ over a closed surface equals <span class="v">Q</span><sub>enc</sub>; ∫ over an open surface is just a flux and has no such shortcut.</li>
+          <li><strong>Missing Jacobian.</strong> The <span class="v">r</span><sup>2</sup> sin<span class="v">θ</span> is not optional, and the <span class="v">θ</span> limits for a cone are [0.9π, π], not [0, 0.9π].</li>
+          <li><strong>Sphere is a volume, not a shell.</strong> "Inside the sphere <span class="v">r</span> = <span class="v">a</span>" means <span class="v">r</span> ≤ <span class="v">a</span>; a surface integral would give a different quantity.</li>
+        </ul>
+      </div>
+
+      <div class="tip">
+        <strong>One-line check.</strong> A 10 nC point charge at the centre of a 2 m-radius sphere: <span class="v">D</span> = <span class="v">Q</span>/(4π<span class="v">r</span><sup>2</sup>) = 10×10<sup>−9</sup>/(16π) = 1.99×10<sup>−10</sup> C/m<sup>2</sup>, and <span class="v">E</span> = <span class="v">D</span>/<span class="v">ε</span><sub>0</sub> = 22.5 V/m. The flux is 10 nC regardless of the radius.
+      </div>
+    </section>
+
+    <!-- ===================== POTENTIAL ===================== -->
+    <section class="topic" id="potential">
+      <h2><span class="kicker">3.5</span>Electric scalar potential</h2>
+
+      <p>Voltage is work per unit charge. Move a positive test charge from <span class="v">B</span> to <span class="v">A</span> against the field: you do positive work, the field does negative work, and <span class="v">V</span><sub><span class="v">A</span></sub> − <span class="v">V</span><sub><span class="v">B</span></sub> is your work per unit charge. The definition that survives every problem is the line integral:</p>
+
+      <div class="eqbox">
+        <div class="eq"><span class="v">V</span><sub><span class="v">AB</span></sub> = <span class="v">V</span><sub><span class="v">A</span></sub> − <span class="v">V</span><sub><span class="v">B</span></sub> = −∫<sub><span class="v">B</span></sub><sup><span class="v">A</span></sup> <b>E</b>·d<b>l</b> &nbsp;&nbsp;(V)</div>
+      </div>
+
+      <p>The minus sign is the whole physics: walking along <b>E</b> takes you downhill, so <span class="v">V</span> decreases and the integral of <b>E</b>·d<b>l</b> is positive while <span class="v">V</span><sub><span class="v">A</span></sub> − <span class="v">V</span><sub><span class="v">B</span></sub> is negative. For a closed path, <span class="v">A</span> = <span class="v">B</span> and ∮<b>E</b>·d<b>l</b> = 0: electrostatic fields are conservative.</p>
+
+      <p>In differential form the same statement is</p>
+      <div class="eqbox">
+        <div class="eq"><b>E</b> = −∇<span class="v">V</span> = −(∂<span class="v">V</span>/∂<span class="v">x</span> x̂ + ∂<span class="v">V</span>/∂<span class="v">y</span> ŷ + ∂<span class="v">V</span>/∂<span class="v">z</span> ẑ)</div>
+      </div>
+
+      <p>For a point charge at the origin, integrating from <span class="v">R</span> to infinity gives the absolute potential <span class="v">V</span> = <span class="v">q</span>/(4π<span class="v">ε</span><sub>0</sub><span class="v">R</span>), with the zero at infinity. Surfaces of constant <span class="v">V</span> are equipotentials — spheres around a point charge. <b>E</b> is perpendicular to them and points toward decreasing <span class="v">V</span>.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Potential map of a point charge</span><span class="vh">Move the probe: compare V, |E|, and the value a step downhill</span></div>
+        <div class="viz-body" data-viz="potential"></div>
+      </div>
+
+      <h3>Worked example — potential from a given field</h3>
+      <p>Let <b>E</b> = 6<span class="v">xy</span> x̂ + 3<span class="v">x</span><sup>2</sup> ŷ V/m, with <span class="v">V</span> = 0 at the origin. Find <span class="v">V</span>(2, 1, 0).</p>
+
+      <p><strong>1. Check that the field is conservative.</strong> The only non-zero curl component is the <span class="v">z</span> one: ∂<span class="v">E</span><sub><span class="v">y</span></sub>/∂<span class="v">x</span> − ∂<span class="v">E</span><sub><span class="v">x</span></sub>/∂<span class="v">y</span> = 6<span class="v">x</span> − 6<span class="v">x</span> = 0. So a potential exists and the path does not matter.</p>
+
+      <p><strong>2. Integrate along a convenient path.</strong> Go from (0,0,0) to (<span class="v">x</span>,0,0), where <b>E</b>·d<b>l</b> = 0 because <span class="v">y</span> = 0; then from (<span class="v">x</span>,0,0) to (<span class="v">x</span>,<span class="v">y</span>,0), where d<b>l</b> = d<span class="v">y</span> ŷ and <span class="v">E</span><sub><span class="v">y</span></sub> = 3<span class="v">x</span><sup>2</sup>:</p>
+
+      <div class="eqbox">
+        <div class="eq"><span class="v">V</span>(<span class="v">x</span>,<span class="v">y</span>) = −∫<sub>0</sub><sup><span class="v">y</span></sup> 3<span class="v">x</span><sup>2</sup> d<span class="v">y</span>′ = −3<span class="v">x</span><sup>2</sup><span class="v">y</span></div>
+      </div>
+
+      <p><strong>3. Evaluate and check.</strong> At (2, 1, 0): <span class="v">V</span> = −3(4)(1) = −12 V. Differentiating back gives −∂<span class="v">V</span>/∂<span class="v">x</span> = 6<span class="v">xy</span> and −∂<span class="v">V</span>/∂<span class="v">y</span> = 3<span class="v">x</span><sup>2</sup>, which is the given field. At that point <b>E</b> = (12, 12, 0) V/m, so |<b>E</b>| = 17.0 V/m. A positive charge there is pushed toward increasing <span class="v">x</span> and <span class="v">y</span>, where <span class="v">V</span> is lower.</p>
+
+      <h3>Potential of a ring and a disk</h3>
+      <p>Superposition works for <span class="v">V</span> exactly as for <b>E</b>, except that the sum is scalar. For the ring of the previous section, every element is at the same distance √(<span class="v">a</span><sup>2</sup>+<span class="v">z</span><sup>2</sup>):</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Object</th><th><span class="v">V</span> on the axis</th><th>Same point: radius 0.5 m, height 1.2 m</th></tr></thead>
+          <tbody>
+            <tr><td>Ring, total charge <span class="v">Q</span></td><td><span class="v">Q</span>/[4π<span class="v">ε</span><sub>0</sub>√(<span class="v">a</span><sup>2</sup>+<span class="v">z</span><sup>2</sup>)]</td><td>69.2 V</td></tr>
+            <tr><td>Disk, density <span class="v">ρ</span><sub><span class="v">s</span></sub></td><td>(<span class="v">ρ</span><sub><span class="v">s</span></sub>/2<span class="v">ε</span><sub>0</sub>)[√(<span class="v">a</span><sup>2</sup>+<span class="v">z</span><sup>2</sup>) − |<span class="v">z</span>|]</td><td>56.5 V for <span class="v">ρ</span><sub><span class="v">s</span></sub> = 10 nC/m<sup>2</sup></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The ring result also follows from <span class="v">V</span> = <span class="v">Q</span>/(4π<span class="v">ε</span><sub>0</sub><span class="v">R</span>) with <span class="v">R</span> = √(<span class="v">a</span><sup>2</sup>+<span class="v">z</span><sup>2</sup>), a useful check: every part of the ring is equally far from the axis point. Then <span class="v">E</span><sub><span class="v">z</span></sub> = −d<span class="v">V</span>/d<span class="v">z</span> must return the ring field, and it does: 49.2 V/m at the same point.</p>
+
+      <p>A quick absolute-potential calibration: a 1 nC charge gives 9.0 V at 1 m, 4.5 V at 2 m and 3.0 V at 3 m. The potential difference between 1 m and 3 m is 6.0 V; the field integral −∫<sub>3</sub><sup>1</sup>(9/<span class="v">r</span><sup>2</sup>)d<span class="v">r</span> = 9(1 − 1/3) = 6.0 V agrees.</p>
+
+      <div class="warn">
+        <strong>Potential mistakes.</strong>
+        <ul>
+          <li><strong>Sign of <span class="v">V</span><sub><span class="v">AB</span></sub>.</strong> It is <span class="v">V</span><sub><span class="v">A</span></sub> − <span class="v">V</span><sub><span class="v">B</span></sub>, not <span class="v">V</span><sub><span class="v">B</span></sub> − <span class="v">V</span><sub><span class="v">A</span></sub>. If you instead compute ∫<sub>A</sub><sup>B</sup>, the sign reverses.</li>
+          <li><strong>Dropping the minus in <b>E</b> = −∇<span class="v">V</span>.</strong> Without it the field points uphill, which is impossible for electrostatics.</li>
+          <li><strong>"V = 0 means E = 0".</strong> False. On the midplane of a dipole <span class="v">V</span> = 0 by cancellation, but <b>E</b> points from the positive to the negative charge and is not zero.</li>
+          <li><strong>Reference point.</strong> <span class="v">V</span> = <span class="v">q</span>/(4π<span class="v">ε</span><sub>0</sub><span class="v">R</span>) sets <span class="v">V</span>(∞) = 0. An infinite line or sheet cannot use infinity as its zero; only potential differences are meaningful there.</li>
+          <li><strong>Scalar does not mean unsigned.</strong> Add potentials with the sign of each source charge, then take the gradient once. Do not take |<span class="v">V</span>|.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== CHECK ===================== -->
+    <section class="topic" id="check">
+      <h2><span class="kicker">3.6</span>Check yourself</h2>
+      <p>Three questions, one per core skill. Answer before opening the solution.</p>
+
+      <div class="quiz" data-quiz="ch3-q1" data-answer="a">
+        <span class="tag">Coulomb · force</span>
+        <p class="q">A +2 nC charge sits at the origin and a −2 nC charge at (0, 0, 3) m. What is the force on the negative charge?</p>
+        <div class="opts">
+          <button type="button" data-opt="a">4×10<sup>−9</sup> N in −ẑ, attractive</button>
+          <button type="button" data-opt="b">4×10<sup>−9</sup> N in +ẑ, repulsive</button>
+          <button type="button" data-opt="c">1.8×10<sup>−9</sup> N in −ẑ</button>
+          <button type="button" data-opt="d">12×10<sup>−9</sup> N in −ẑ</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol"><span class="v">F</span> = 9×10<sup>9</sup>(2×10<sup>−9</sup>)(2×10<sup>−9</sup>)/3<sup>2</sup> = 36×10<sup>−9</sup>/9 = 4×10<sup>−9</sup> N. Opposite signs attract, so the force on the charge at <span class="v">z</span> = 3 points toward the origin, i.e. along −ẑ.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz="ch3-q2" data-answer="b">
+        <span class="tag">Volume integral</span>
+        <p class="q">A sphere of radius <span class="v">a</span> carries <span class="v">ρ</span><sub><span class="v">v</span></sub> = <span class="v">ρ</span><sub>0</sub><span class="v">r</span>/<span class="v">a</span> for <span class="v">r</span> ≤ <span class="v">a</span>. What is the total charge?</p>
+        <div class="opts">
+          <button type="button" data-opt="a">4π<span class="v">ρ</span><sub>0</sub><span class="v">a</span><sup>3</sup></button>
+          <button type="button" data-opt="b">π<span class="v">ρ</span><sub>0</sub><span class="v">a</span><sup>3</sup></button>
+          <button type="button" data-opt="c">4π<span class="v">ρ</span><sub>0</sub><span class="v">a</span><sup>3</sup>/3</button>
+          <button type="button" data-opt="d">0</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol"><span class="v">Q</span> = (<span class="v">ρ</span><sub>0</sub>/<span class="v">a</span>)∫<sub>0</sub><sup><span class="v">a</span></sup><span class="v">r</span>·<span class="v">r</span><sup>2</sup>d<span class="v">r</span> × 4π = (<span class="v">ρ</span><sub>0</sub>/<span class="v">a</span>)(<span class="v">a</span><sup>4</sup>/4)(4π) = π<span class="v">ρ</span><sub>0</sub><span class="v">a</span><sup>3</sup>. The angular integrals give 4π; the extra power of <span class="v">r</span> comes from the density.</div></details>
+      </div>
+
+      <div class="quiz" data-quiz="ch3-q3" data-answer="b">
+        <span class="tag">Potential · sign</span>
+        <p class="q"><b>E</b> = 6<span class="v">xy</span> x̂ + 3<span class="v">x</span><sup>2</sup> ŷ V/m and <span class="v">V</span>(0,0,0) = 0. What is <span class="v">V</span> at (2, 1, 0)?</p>
+        <div class="opts">
+          <button type="button" data-opt="a">+12 V</button>
+          <button type="button" data-opt="b">−12 V</button>
+          <button type="button" data-opt="c">+6 V</button>
+          <button type="button" data-opt="d">0 V</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol"><span class="v">V</span> = −∫<b>E</b>·d<b>l</b> = −3<span class="v">x</span><sup>2</sup><span class="v">y</span>. At (2,1,0) this is −3(4)(1) = −12 V. Check: −∂<span class="v">V</span>/∂<span class="v">x</span> = 6<span class="v">xy</span> and −∂<span class="v">V</span>/∂<span class="v">y</span> = 3<span class="v">x</span><sup>2</sup>, which matches <b>E</b>.</div></details>
+      </div>
+
+      <div class="done-row">
+        <input type="checkbox" id="ch3-core" data-progress="ch3-core">
+        <label for="ch3-core">I can do the core of Chapter 3 without notes
+          <span class="done-meta">Coulomb vector form · field of n charges · line/surface/volume integrals · Gauss with spherical d<span class="v">v</span> · potential from E</span>
+        </label>
+      </div>
+
+      <div class="grid grid-2" style="margin-top:26px">
+        <a class="card card-link" href="ch4.html">
+          <span class="pill">Next</span>
+          <h3>Chapter 4 — Magnetostatics</h3>
+          <p>Biot–Savart, Ampère's law, and the magnetic force. The vector machinery is the same; the cross product replaces the radial direction.</p>
+          <span class="go">Open Chapter 4 →</span>
+        </a>
+        <a class="card card-link" href="practice.html#control24">
+          <span class="pill warm">Exam</span>
+          <h3>Practice the 2024–25 control</h3>
+          <p>Exercise 2 (cone charge) and Exercise 3 (two-charge field) are the two questions this chapter just solved. Do them again on a blank page.</p>
+          <span class="go">Open the control set →</span>
+        </a>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <p>Chapter 3 of the EE361 EMF companion. Built from K. Djafri's Chapter 3, the 2024–25 control and its handwritten key. All arithmetic was recomputed; where the key rounds differently, the page says so. Diagrams are original inline SVG.</p>
+    </footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+<script src="js/viz-common.js"></script>
+<script src="js/viz-ch3.js"></script>
+</body>
+</html>

@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 4 — Magnetostatics | EE361 EMF</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/emf.css">
+</head>
+<body>
+<div class="mobile-bar"><span class="t">Ch. 4 — Magnetostatics</span><button type="button">Menu ☰</button></div>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">EMF Companion<small>EE361 · Electromagnetics</small></a>
+    <nav>
+      <div class="nav-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span>Start here</a>
+      <a href="ch0.html"><span class="num">00</span>How it fits</a>
+      <a href="ch1.html"><span class="num">01</span>Vectors &amp; coordinates</a>
+      <a href="ch2.html"><span class="num">02</span>Vector calculus</a>
+      <a href="ch3.html"><span class="num">03</span>Electrostatics</a>
+      <a href="ch4.html" class="active"><span class="num">04</span>Magnetostatics</a>
+      <a href="ch5.html"><span class="num">05</span>Maxwell</a>
+      <a href="ch6.html"><span class="num">06</span>Plane waves</a>
+      <div class="nav-label">Exam prep</div>
+      <a href="formulas.html"><span class="num">Σ</span>Formula sheet</a>
+      <a href="practice.html"><span class="num">✎</span>Practice</a>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Chapter progress</span><span class="js-progress-text">0 / 0</span></div>
+      <div class="bar"><i class="js-progress-bar"></i></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="chapter-head">
+      <span class="eyebrow">Chapter 04 · Magnetostatics</span>
+      <h1>Magnetostatics</h1>
+      <p class="lede">A steady current creates a magnetic field. That field pushes moving charges and other currents. The exam reduces this to three moves: build <b>B</b> from a current element, use symmetry to avoid the integral, and evaluate a cross product without losing the direction.</p>
+    </header>
+
+    <div class="toc"><strong>On this page</strong><ol>
+      <li><a href="#biot">Biot–Savart law</a></li>
+      <li><a href="#ampere">Ampère's circuital law</a></li>
+      <li><a href="#force">Magnetic force</a></li>
+      <li><a href="#gauss-b">Gauss's law for B</a></li>
+      <li><a href="#check">Check yourself</a></li>
+    </ol></div>
+
+    <div class="note">
+      <strong>What this chapter unlocks.</strong> The 2024–25 control uses magnetostatics in its short-questions block: one question asks for the field of an infinite filament, another evaluates <span class="mono">qv×B</span>. Final-style problems add coax, solenoid and flux variants. The patterns are narrow and repeatable, so treat every formula below as an exam recipe, not a museum piece.
+    </div>
+
+    <!-- ============================================================
+         BIOT–SAVART
+         ============================================================ -->
+    <section class="topic" id="biot">
+      <h2><span class="kicker">4.1</span>Biot–Savart: the field of a current element</h2>
+
+      <p>Electrostatics starts from a charge element and Coulomb's inverse-square law. Magnetostatics starts from a <em>current</em> element and the Biot–Savart law. The geometry is the same: a source at a point, a field point at a distance <span class="v">R</span>, and an inverse-square falloff. The new ingredient is a cross product, because the magnetic field has a direction that is perpendicular to both the current and the line joining source to field point.</p>
+
+      <div class="eqbox">
+        <div class="eq">d<span class="hl">B⃗</span> = <span class="hl">μ0 / 4π</span> · (I d<span class="hl">ℓ⃗</span> × <span class="hl">â<sub>R</sub></span>) / R²</div>
+        <div class="eq">= (μ0 / 4π) · (I d<span class="hl">ℓ⃗</span> × <span class="hl">R⃗</span>) / R³</div>
+      </div>
+
+      <p>Read it in three pieces:</p>
+      <ul class="clean">
+        <li><b>Source.</b> <span class="mono">I dℓ⃗</span> points in the direction of the current. The element is small enough that <span class="v">R</span> and <span class="v">â<sub>R</sub></span> are effectively constant across it.</li>
+        <li><b>Geometry.</b> <span class="v">â<sub>R</sub></span> points <em>from the source element to the field point</em>. <span class="v">R</span> is the length of that vector. Do not confuse the unit vector with the position vector: the first has no units, the second has metres.</li>
+        <li><b>Direction.</b> The cross product makes <span class="v">dB⃗</span> perpendicular to the plane containing <span class="mono">dℓ⃗</span> and <span class="v">R⃗</span>. Its magnitude carries a factor <span class="mono">sin θ</span>, where θ is the angle between them. If the element points straight at the field point, the field is zero.</li>
+      </ul>
+      <p style="font-size:.82rem;color:var(--ink-3);margin:8px 0 0">Notation: the line element is written <span class="mono">dℓ⃗</span> here so it cannot be confused with the current <span class="v">I</span>. The lecture's <span class="mono">dl⃗</span> is exactly the same quantity.</p>
+
+      <div class="tip">
+        <strong>Right-hand rule, without hand gymnastics.</strong> Point the fingers of your right hand along <span class="mono">I dℓ⃗</span>, then curl them toward <span class="v">R⃗</span>. Your thumb points along <span class="v">dB⃗</span>. Equivalently, <span class="mono">dℓ⃗ × â<sub>R</sub></span>: index finger along <span class="mono">dℓ⃗</span>, middle finger along <span class="v">â<sub>R</sub></span>, thumb along <span class="v">dB⃗</span>. For a wire along +<span class="v">z</span> and a field point at +<span class="v">x</span>, the field is in the +<span class="v">y</span> direction: <span class="mono">ẑ × x̂ = ŷ</span>.
+      </div>
+
+      <div class="warn">
+        <strong>Four mistakes that cost marks.</strong>
+        <ul class="clean">
+          <li><b>Reversing the cross product.</b> <span class="mono">dℓ⃗ × â<sub>R</sub></span> and <span class="mono">â<sub>R</sub> × dℓ⃗</span> differ by a minus sign. Use <span class="mono">dℓ⃗ × â<sub>R</sub></span>; the arrow on <span class="v">R</span> points <em>toward</em> the field point.</li>
+          <li><b>Using the scalar <span class="v">R</span> in the numerator.</b> The vector form is <span class="mono">dℓ⃗ × R⃗ / R³</span>; the unit-vector form is <span class="mono">dℓ⃗ × â<sub>R</sub> / R²</span>. They are equivalent because <span class="mono">R⃗ = R â<sub>R</sub></span>. Do not mix the two: <span class="mono">dℓ⃗ × R / R²</span> has no direction.</li>
+          <li><b>Forgetting the medium.</b> In free space <span class="mono">μ0 = 4π×10⁻⁷ H/m</span>. In a linear magnetic material replace it by <span class="mono">μ = μ0μ<sub>r</sub></span>. The H in H/m is the henry, not the magnetic field intensity; the same unit is T·m/A.</li>
+          <li><b>Mixing <span class="v">B</span> and <span class="v">H</span>.</b> <span class="v">B</span> is magnetic flux density in tesla; <span class="v">H</span> is magnetic field intensity in A/m. In free space <span class="mono">B = μ0H</span>.</li>
+        </ul>
+      </div>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">One current element, one field point</span><span class="vh">drag θ and R; watch |dB| collapse when dℓ points at P</span></div>
+        <div class="viz-body" data-viz="biot-savart"></div>
+      </div>
+
+      <p>The element alone is not a field. A real wire is a chain of elements, so you integrate over the source:</p>
+      <div class="eqbox">
+        <div class="eq">B⃗ = (μ0 / 4π) ∫<sub>C</sub> (I d<span class="hl">l⃗</span> × <span class="hl">R⃗</span>) / R³</div>
+      </div>
+      <p>For a volume current density <span class="v">J<sub>v</sub></span> (A/m²), replace <span class="mono">I dℓ⃗</span> by <span class="mono">J<sub>v</sub> dv</span>. For a surface current density <span class="v">J<sub>s</sub></span> (A/m), replace it by <span class="mono">J<sub>s</sub> ds</span>. The integral is a vector integral: integrate each component separately, then combine.</p>
+
+      <h3>The finite wire, worked from the integral</h3>
+      <p>Put a filament on the <span class="v">z</span>-axis from <span class="mono">z′ = a</span> to <span class="mono">z′ = b</span>. Evaluate the field at a point in the <span class="v">xy</span>-plane, a perpendicular distance ρ from the wire. The source is <span class="mono">dℓ⃗ = dz′ ẑ</span>; the vector from source to field point is <span class="mono">R⃗ = ρ ρ̂ − z′ ẑ</span>. Then</p>
+      <div class="eqbox">
+        <div class="eq">ẑ × (ρ ρ̂ − z′ ẑ) = ρ φ̂</div>
+        <div class="eq">B⃗ = (μ0 I ρ / 4π) ∫<sub>a</sub><sup>b</sup> dz′ / (ρ² + z′²)<sup>3/2</sup> · φ̂</div>
+        <div class="eq">= (μ0 I / 4πρ) [ b / √(ρ² + b²) − a / √(ρ² + a²) ] φ̂</div>
+      </div>
+      <p>For a segment symmetric about the plane <span class="mono">z′ = 0</span>, from <span class="mono">−L</span> to <span class="mono">+L</span>, the bracket becomes <span class="mono">2L / √(ρ² + L²)</span>. Letting <span class="mono">L → ∞</span> sends both fractions to 1, so the bracket tends to 2 and the infinite-wire result appears:</p>
+      <div class="eqbox">
+        <div class="eq">B⃗ = <span class="hl">μ0 I / (2πρ)</span> φ̂ &nbsp;&nbsp; (infinite straight wire)</div>
+      </div>
+      <p>The direction is the azimuthal unit vector <span class="v">φ̂</span>, not <span class="v">ρ̂</span>. The field circles the wire. Reverse the current and every circle reverses.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Infinite wire: B falls as 1/ρ</span><span class="vh">change the distance, then flip the current</span></div>
+        <div class="viz-body" data-viz="wire-field"></div>
+      </div>
+
+      <h3>Worked example — infinite wire</h3>
+      <p>A long straight wire carries <span class="mono">I = 25 A</span> along +<span class="v">z</span>. Find <span class="v">B</span> and <span class="v">H</span> at <span class="mono">ρ = 4 cm</span> on the +<span class="v">x</span>-axis.</p>
+      <div class="eqbox">
+        <div class="eq">B = μ0I / (2πρ) = (4π×10⁻⁷)(25) / (2π×0.04)</div>
+        <div class="eq">= (2×10⁻⁷ × 25) / 0.04 = 5×10⁻⁶ / 0.04 = <span class="hl">1.25×10⁻⁴ T</span> = 125 µT</div>
+        <div class="eq">H = I / (2πρ) = 25 / (2π×0.04) = <span class="hl">99.5 A/m</span></div>
+      </div>
+      <p>At <span class="mono">(4 cm, 0, 0)</span>, <span class="v">φ̂ = ŷ</span>, so <span class="mono">B⃗ = 125 µT ŷ</span>. Check: <span class="mono">B = μ0H = 4π×10⁻⁷ × 99.5 = 1.25×10⁻⁴ T</span>.</p>
+
+      <h3>Worked example — finite segment</h3>
+      <p>A filament from <span class="mono">z = −4 cm</span> to <span class="mono">z = +4 cm</span> carries <span class="mono">I = 10 A</span>. Find <span class="v">B</span> at <span class="mono">ρ = 3 cm</span> in the mid-plane.</p>
+      <div class="eqbox">
+        <div class="eq">μ0I / (4πρ) = (4π×10⁻⁷)(10) / (4π×0.03) = 1×10⁻⁶ / 0.03 = 3.333×10⁻⁵ T</div>
+        <div class="eq">b / √(ρ² + b²) = 0.04 / √(0.03² + 0.04²) = 0.04 / 0.05 = 0.8</div>
+        <div class="eq">a / √(ρ² + a²) = −0.04 / 0.05 = −0.8</div>
+        <div class="eq">B = 3.333×10⁻⁵ × (0.8 − (−0.8)) = <span class="hl">5.33×10⁻⁵ T</span> = 53.3 µT</div>
+      </div>
+      <p>The infinite wire at the same distance would give <span class="mono">μ0I/(2πρ) = 66.7 µT</span>. The finite segment gives 80% of that. The factor is <span class="mono">2L/√(ρ²+L²) = 2(4)/5 = 1.6</span>, and <span class="mono">1.6/2 = 0.8</span>. As the segment gets longer, the factor approaches 2 and the infinite-wire value is recovered.</p>
+
+      <h3>Loops, solenoids, toroids</h3>
+      <p>For a circular loop of radius <span class="v">a</span> carrying <span class="v">I</span>, the field on the axis at height <span class="v">z</span> is</p>
+      <div class="eqbox">
+        <div class="eq">B<sub>z</sub> = μ0 I a² / [2(a² + z²)<sup>3/2</sup>] &nbsp;&nbsp;→&nbsp;&nbsp; <span class="hl">B<sub>center</sub> = μ0I / (2a)</span></div>
+      </div>
+      <p>A solenoid is a stack of loops. Far from the ends, the contributions add to a nearly uniform field inside and a weak field outside. If the solenoid has <span class="v">N</span> turns over length <span class="v">L</span>, the turn density is <span class="mono">n = N/L</span>:</p>
+      <div class="eqbox">
+        <div class="eq">B = <span class="hl">μ0 n I</span> = μ0 (N/L) I &nbsp;&nbsp; (inside an ideal long solenoid)</div>
+        <div class="eq">B = μ0 N I / (2πρ) &nbsp;&nbsp; (inside a toroid, at radius ρ)</div>
+      </div>
+      <p>The direction inside a solenoid follows the right-hand rule: curl the fingers of your right hand in the direction of the winding current; the thumb points along <span class="v">B</span> inside.</p>
+
+      <div style="max-width:560px;margin:18px auto">
+        <svg viewBox="0 0 560 230" class="viz-svg" role="img" aria-label="Sketch of the magnetic field of a current loop and a solenoid">
+          <ellipse cx="130" cy="140" rx="80" ry="30" fill="none" stroke="#2c4b9b" stroke-width="3"/>
+          <line x1="130" y1="140" x2="130" y2="55" stroke="#1f7a4d" stroke-width="3"/>
+          <polygon points="130,45 123,61 137,61" fill="#1f7a4d"/>
+          <text x="146" y="62" font-size="12" font-weight="700" fill="#1f7a4d">B</text>
+          <text x="130" y="205" font-size="11" text-anchor="middle" fill="#46536b">current loop: B = μ0I/(2a) at the centre</text>
+          <text x="130" y="222" font-size="10" text-anchor="middle" fill="#8794aa">field on the axis, perpendicular to the loop</text>
+
+          <line x1="300" y1="78" x2="500" y2="78" stroke="#c9d7f6" stroke-width="2"/>
+          <line x1="300" y1="162" x2="500" y2="162" stroke="#c9d7f6" stroke-width="2"/>
+          <g stroke="#2c4b9b" stroke-width="2.5" fill="none">
+            <ellipse cx="310" cy="120" rx="12" ry="42"/>
+            <ellipse cx="355" cy="120" rx="12" ry="42"/>
+            <ellipse cx="400" cy="120" rx="12" ry="42"/>
+            <ellipse cx="445" cy="120" rx="12" ry="42"/>
+            <ellipse cx="490" cy="120" rx="12" ry="42"/>
+          </g>
+          <line x1="310" y1="120" x2="515" y2="120" stroke="#1f7a4d" stroke-width="3"/>
+          <polygon points="524,120 508,113 508,127" fill="#1f7a4d"/>
+          <text x="405" y="205" font-size="11" text-anchor="middle" fill="#46536b">long solenoid: B ≈ μ0nI inside, n = N/L</text>
+          <text x="405" y="222" font-size="10" text-anchor="middle" fill="#8794aa">uniform near the centre; weak outside</text>
+        </svg>
+      </div>
+
+      <div class="exam">
+        <strong>Exam pattern · Control 2024–25, Question 4.</strong> An infinite filament along the <span class="v">z</span>-axis carries <span class="v">I</span>. At any point in the <span class="v">xy</span>-plane the answer is <span class="mono">B⃗ = μ0I/(2πρ) φ̂</span>. The mark is for the direction as much as the magnitude. Practise the same question in <a href="practice.html#control24">the control set</a>.
+      </div>
+    </section>
+
+    <!-- ============================================================
+         AMPÈRE
+         ============================================================ -->
+    <section class="topic" id="ampere">
+      <h2><span class="kicker">4.2</span>Ampère's circuital law: the symmetry shortcut</h2>
+
+      <p>Biot–Savart always works, but the integral can be ugly. Ampère's law trades the integral over the source for an integral around a closed path. When the path follows the field, the line integral collapses to a product and the field falls out algebraically.</p>
+
+      <div class="eqbox">
+        <div class="eq">∮<sub>C</sub> <span class="hl">H⃗ · dℓ⃗</span> = <span class="hl">I<sub>enc</sub></span></div>
+        <div class="eq">B⃗ = μ<span class="hl">H⃗</span>, &nbsp;&nbsp; μ0 = 4π×10⁻⁷ H/m</div>
+      </div>
+
+      <p>The sign convention is the right-hand rule: choose a direction around <span class="v">C</span>, curl the fingers of your right hand that way, and your thumb points along the positive current. A current flowing with the thumb counts as positive; one flowing the other way counts as negative. The enclosed current is the <em>net</em> current through any surface bounded by <span class="v">C</span>.</p>
+
+      <div class="note">
+        <strong>When Ampère is useful.</strong> You need enough symmetry that <span class="v">H</span> is either constant on the path and parallel to <span class="mono">dℓ⃗</span>, or perpendicular to it. Then the integral becomes <span class="mono">H × (path length)</span> or zero. The four standard cases are the infinite wire, the coaxial cable, the long solenoid, and the toroid. If the source is a short wire or a loop, use Biot–Savart instead.
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Geometry</th><th>Amperian path</th><th>H</th><th>B in free space</th></tr></thead>
+          <tbody>
+            <tr><td>Infinite straight wire, current I</td><td>Circle of radius ρ centred on the wire</td><td><span class="mono">I/(2πρ)</span></td><td><span class="mono">μ0I/(2πρ)</span></td></tr>
+            <tr><td>Coax, between the conductors</td><td>Circle of radius ρ around the inner conductor</td><td><span class="mono">I/(2πρ)</span></td><td><span class="mono">μ0I/(2πρ)</span></td></tr>
+            <tr><td>Long solenoid, n turns per metre</td><td>Rectangular path, one side inside, one outside</td><td><span class="mono">nI</span></td><td><span class="mono">μ0nI</span></td></tr>
+            <tr><td>Toroid, N turns, radius ρ inside the core</td><td>Circle of radius ρ inside the core</td><td><span class="mono">NI/(2πρ)</span></td><td><span class="mono">μ0NI/(2πρ)</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Ampère's loop around a wire</span><span class="vh">change I and ρ; verify ∮H·dℓ = I every time</span></div>
+        <div class="viz-body" data-viz="ampere-loop"></div>
+      </div>
+
+      <p>For the circular path, <span class="v">H</span> is tangent everywhere and has the same magnitude at every point. Therefore <span class="mono">H⃗ · dℓ⃗ = H dℓ</span>, and</p>
+      <div class="eqbox">
+        <div class="eq">∮ H⃗ · dℓ⃗ = H ∮ dℓ = H(2πρ) = [I/(2πρ)](2πρ) = <span class="hl">I</span></div>
+      </div>
+      <p>The radius cancels. That is why the 1/ρ in <span class="v">H</span> is not an independent experimental fact: it is forced by the geometry of the circular path.</p>
+
+      <h3>Worked example — coaxial cable</h3>
+      <p>An inner conductor of radius <span class="mono">a = 1 mm</span> carries <span class="mono">I = 10 A</span> out of the page. A thin outer conductor at <span class="mono">b = 4 mm</span> carries the return current into the page. Find <span class="v">H</span> and <span class="v">B</span> at <span class="mono">ρ = 0.5 mm</span>, <span class="mono">2.5 mm</span> and <span class="mono">5 mm</span>.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Region</th><th>I<sub>enc</sub></th><th>H</th><th>B at the stated point</th></tr></thead>
+          <tbody>
+            <tr><td>Inside the inner conductor, ρ &lt; a</td><td><span class="mono">I(ρ²/a²)</span></td><td><span class="mono">Iρ/(2πa²)</span></td><td><span class="mono">H = 10(0.0005)/(2π×10⁻⁶) = 795.8 A/m</span><br><span class="mono">B = μ0H = 1.00 mT</span></td></tr>
+            <tr><td>Between the conductors, a &lt; ρ &lt; b</td><td><span class="mono">I</span></td><td><span class="mono">I/(2πρ)</span></td><td><span class="mono">H = 10/(2π×0.0025) = 636.6 A/m</span><br><span class="mono">B = 0.800 mT</span></td></tr>
+            <tr><td>Outside the outer conductor, ρ &gt; b</td><td><span class="mono">I − I = 0</span></td><td><span class="mono">0</span></td><td><span class="mono">H = 0, B = 0</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Check the middle region directly: <span class="mono">H(2πρ) = 636.6 × 2π × 0.0025 = 10.0 A</span>, which is exactly the enclosed current. At <span class="mono">ρ = 5 mm</span> the path encloses +10 A and −10 A, so the net is zero and the field outside is zero. If the outer conductor were thick, you would subtract only the fraction of the return current enclosed by the path; at a radius inside the metal, the field is generally not zero.</p>
+
+      <h3>Worked example — solenoid check</h3>
+      <p>A solenoid has <span class="mono">N = 500</span> turns over <span class="mono">L = 20 cm</span> and carries <span class="mono">I = 3 A</span>. Find <span class="v">n</span>, <span class="v">H</span> and <span class="v">B</span> inside, far from the ends.</p>
+      <div class="eqbox">
+        <div class="eq">n = N/L = 500 / 0.20 = 2500 turns/m</div>
+        <div class="eq">H = nI = 2500 × 3 = <span class="hl">7500 A/m</span></div>
+        <div class="eq">B = μ0H = 4π×10⁻⁷ × 7500 = <span class="hl">9.42×10⁻³ T</span> = 9.42 mT</div>
+      </div>
+      <p>For a toroid with the same 500 turns, carrying 3 A at <span class="mono">ρ = 5 cm</span>: <span class="mono">B = μ0NI/(2πρ) = (4π×10⁻⁷)(500)(3)/(2π×0.05) = 6.0 mT</span>. The toroid confines the field to its core; the solenoid has a weak return field outside.</p>
+
+      <div class="warn">
+        <strong>Common mistakes with Ampère.</strong>
+        <ul class="clean">
+          <li><b>Using the total current instead of the enclosed current.</b> The path must be closed, and only current through a surface bounded by that path counts. For a coax outside both conductors, <span class="mono">I<sub>enc</sub> = I − I = 0</span>.</li>
+          <li><b>Assuming symmetry that is not there.</b> Ampère gives one algebraic equation only when <span class="v">H</span> is constant on the path and tangent to it. A finite wire does not qualify; a circular path around its midpoint does not have constant <span class="v">H</span>.</li>
+          <li><b>Writing <span class="mono">∮B·dℓ = I</span>.</b> The law is <span class="mono">∮H·dℓ = I<sub>enc</sub></span>. If you use <span class="v">B</span>, the right side becomes <span class="mono">μ0I<sub>enc</sub></span> in free space.</li>
+          <li><b>Forgetting the return current.</b> A coax is not an infinite wire plus a separate shell; the outer conductor carries the return current, and that changes <span class="mono">I<sub>enc</sub></span> outside it.</li>
+        </ul>
+      </div>
+
+      <div class="exam">
+        <strong>Exam pattern · final-style coax/solenoid question.</strong> The marker looks for three things: the correct Amperian path, the correct <span class="mono">I<sub>enc</sub></span>, and the region-by-region answer. Write the regions explicitly, even when the answer is zero. The same skill is drilled in <a href="practice.html">the mixed practice set</a>.
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FORCE
+         ============================================================ -->
+    <section class="topic" id="force">
+      <h2><span class="kicker">4.3</span>Magnetic force on a charge and on a current</h2>
+
+      <p>A magnetic field does not push a stationary charge. It pushes a charge only when the charge moves, and the push is sideways to both the velocity and the field. The defining equation is</p>
+
+      <div class="eqbox">
+        <div class="eq"><span class="hl">F⃗<sub>m</sub> = q v⃗ × B⃗</span> &nbsp;&nbsp; (N)</div>
+        <div class="eq">|F<sub>m</sub>| = |q| v B sin θ</div>
+      </div>
+
+      <p>For a positive charge, <span class="v">F⃗</span> is along <span class="mono">v⃗ × B⃗</span>. For a negative charge, reverse it. The force is perpendicular to <span class="v">v⃗</span>, so it does no work and cannot change the speed; it only bends the path. It is also perpendicular to <span class="v">B⃗</span>, so a charge moving parallel to <span class="v">B</span> feels nothing. The maximum force occurs at <span class="mono">θ = 90°</span>.</p>
+
+      <p>If an electric field is also present, add the electric force:</p>
+      <div class="eqbox">
+        <div class="eq">F⃗ = q(E⃗ + v⃗ × B⃗) &nbsp;&nbsp; (Lorentz force)</div>
+      </div>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">F = qv × B in three dimensions</span><span class="vh">change Δ, then flip the sign of q</span></div>
+        <div class="viz-body" data-viz="magnetic-force"></div>
+      </div>
+
+      <p>For a current-carrying wire, each charge carrier contributes. The net result for a straight segment of length <span class="v">L</span> is</p>
+      <div class="eqbox">
+        <div class="eq"><span class="hl">F⃗ = I L⃗ × B⃗</span> &nbsp;&nbsp; or &nbsp;&nbsp; dF⃗ = I dℓ⃗ × B⃗</div>
+      </div>
+      <p><span class="v">L⃗</span> points in the direction of the current, with magnitude equal to the length. For a curved wire in a uniform field, the total force depends only on the vector from the start to the end of the wire; the shape cancels. That is why a semicircular arc has the same force as the straight chord joining its endpoints.</p>
+      <p>A quick numerical check: a straight wire of length <span class="mono">0.50 m</span> carries <span class="mono">8 A</span> perpendicular to a uniform <span class="mono">0.20 T</span> field. Then <span class="mono">F = ILB = (8)(0.50)(0.20) = 0.80 N</span>, with the direction from <span class="mono">L⃗ × B⃗</span>. If the wire were parallel to <span class="v">B</span>, the force would be zero.</p>
+
+      <h3>Worked example — the 2024–25 control, Question 3</h3>
+      <p>A point charge <span class="mono">q = 30 nC</span> moves with speed <span class="mono">2×10⁶ m/s</span> in the direction <span class="mono">v̂ = 0.60x̂ + 0.75ŷ + 0.30ẑ</span>. The magnetic flux density is <span class="mono">B⃗ = 2x̂ − 4ŷ + 3ẑ mT</span>. Find <span class="v">v⃗ × B⃗</span>, <span class="v">F⃗</span> and <span class="mono">|F|</span>.</p>
+
+      <p><b>Step 1 — write the vectors with their powers of ten.</b></p>
+      <div class="eqbox">
+        <div class="eq">v⃗ = 2×10⁶ (0.60x̂ + 0.75ŷ + 0.30ẑ) = (1.20x̂ + 1.50ŷ + 0.60ẑ)×10⁶ m/s</div>
+        <div class="eq">B⃗ = (2x̂ − 4ŷ + 3ẑ)×10⁻³ T</div>
+      </div>
+
+      <p><b>Step 2 — expand the determinant.</b> The powers combine as <span class="mono">10⁶ × 10⁻³ = 10³</span>.</p>
+      <div class="eqbox">
+        <div class="eq">v⃗ × B⃗ = x̂[(1.50)(3) − (0.60)(−4)]×10³</div>
+        <div class="eq">+ ŷ[(0.60)(2) − (1.20)(3)]×10³</div>
+        <div class="eq">+ ẑ[(1.20)(−4) − (1.50)(2)]×10³</div>
+        <div class="eq">= x̂(4.50 + 2.40)×10³ + ŷ(1.20 − 3.60)×10³ + ẑ(−4.80 − 3.00)×10³</div>
+        <div class="eq">= <span class="hl">(6.90x̂ − 2.40ŷ − 7.80ẑ)×10³ T·m/s</span></div>
+      </div>
+
+      <p><b>Step 3 — multiply by q.</b> <span class="mono">q = 30×10⁻⁹ C</span>, so <span class="mono">q × 10³ = 30×10⁻⁶</span>.</p>
+      <div class="eqbox">
+        <div class="eq">F⃗ = 30×10⁻⁶ (6.90x̂ − 2.40ŷ − 7.80ẑ)</div>
+        <div class="eq">= (2.07x̂ − 0.720ŷ − 2.34ẑ)×10⁻⁴ N</div>
+        <div class="eq">= <span class="hl">(207x̂ − 72ŷ − 234ẑ) µN</span></div>
+      </div>
+
+      <p><b>Step 4 — magnitude.</b></p>
+      <div class="eqbox">
+        <div class="eq">|F| = √(207² + 72² + 234²) µN = √(42849 + 5184 + 54756) µN</div>
+        <div class="eq">= √102789 µN = <span class="hl">320.6 µN</span></div>
+      </div>
+
+      <p><b>Step 5 — check the directions.</b> The force must be perpendicular to both <span class="v">v</span> and <span class="v">B</span>:</p>
+      <div class="eqbox">
+        <div class="eq">F⃗ · v⃗ ∝ (207)(0.60) + (−72)(0.75) + (−234)(0.30) = 124.2 − 54.0 − 70.2 = 0 ✓</div>
+        <div class="eq">F⃗ · B⃗ = (207)(2) + (−72)(−4) + (−234)(3) = 414 + 288 − 702 = 0 ✓</div>
+      </div>
+      <p>The unit direction is <span class="mono">F⃗/|F| = 0.646x̂ − 0.225ŷ − 0.730ẑ</span>. Notice that the force is <em>not</em> along <span class="v">B</span> and not along <span class="v">v</span>. That is the most common conceptual error in this question.</p>
+
+      <div class="warn">
+        <strong>Two traps in the printed question and key.</strong>
+        <p>The vector <span class="mono">(0.60, 0.75, 0.30)</span> has length <span class="mono">√1.0125 = 1.0062</span>, so it is not exactly a unit vector even though the paper calls it <span class="v">v̂</span>. The official key multiplies <span class="mono">2×10⁶</span> by the printed components directly; that convention gives the official <span class="mono">320.6 µN</span>. If you first normalize the direction to unit length, you get <span class="mono">318.6 µN</span>. In an exam, state which convention you used; here we follow the key so the number matches.</p>
+        <p style="margin-top:8px">The key's bracket <span class="mono">(3.45, −1.2, −3.9)</span> still carries the millitesla factor. Multiplying it by <span class="mono">qv = 60×10⁻³</span> alone gives <span class="mono">(0.207, −0.072, −0.234) N</span>, which is 320.6 mN. Include the <span class="mono">10⁻³</span> from <span class="mono">B</span> and the components become <span class="mono">(207, −72, −234) µN</span>, with magnitude <span class="mono">320.6 µN</span>.</p>
+      </div>
+
+      <h3>Cyclotron motion</h3>
+      <p>When <span class="v">v</span> is perpendicular to a uniform <span class="v">B</span>, the magnetic force is always perpendicular to <span class="v">v</span> and has constant magnitude. It supplies the centripetal force:</p>
+      <div class="eqbox">
+        <div class="eq">|q|vB = mv²/r &nbsp;&nbsp;→&nbsp;&nbsp; <span class="hl">r = mv/(|q|B)</span></div>
+        <div class="eq">T = 2πm/(|q|B), &nbsp;&nbsp; ω = |q|B/m</div>
+      </div>
+      <p>For a proton (<span class="mono">m = 1.67×10⁻²⁷ kg</span>, <span class="mono">q = 1.60×10⁻¹⁹ C</span>) at <span class="mono">v = 2.0×10⁶ m/s</span> in <span class="mono">B = 0.50 T</span>: <span class="mono">r = (1.67×10⁻²⁷)(2.0×10⁶)/[(1.60×10⁻¹⁹)(0.50)] = 4.2 cm</span>. The period is independent of speed in the non-relativistic limit, which is the principle of the cyclotron.</p>
+
+      <h3>Force between parallel wires</h3>
+      <p>Wire 1 creates a field at wire 2. Wire 2 then feels a force. For two long parallel wires separated by <span class="v">d</span>,</p>
+      <div class="eqbox">
+        <div class="eq">B<sub>1</sub> = μ0I<sub>1</sub>/(2πd)</div>
+        <div class="eq">F/L = I<sub>2</sub>B<sub>1</sub> = <span class="hl">μ0 I<sub>1</sub>I<sub>2</sub>/(2πd)</span></div>
+      </div>
+      <p>Same-direction currents attract; opposite-direction currents repel. This is the opposite of the rule for point charges, and it is a favourite true/false trap.</p>
+
+      <div class="viz">
+        <div class="viz-head"><span class="vt">Two parallel wires: attract or repel?</span><span class="vh">flip the second current, then change d</span></div>
+        <div class="viz-body" data-viz="parallel-wires"></div>
+      </div>
+
+      <h3>Worked example — parallel wires</h3>
+      <p>Two long parallel wires carry <span class="mono">I<sub>1</sub> = I<sub>2</sub> = 10 A</span> in the same direction, separated by <span class="mono">d = 4 cm</span>. Find the field of wire 1 at wire 2 and the force per unit length.</p>
+      <div class="eqbox">
+        <div class="eq">B<sub>1</sub> = μ0I<sub>1</sub>/(2πd) = (4π×10⁻⁷)(10)/(2π×0.04) = 5×10⁻⁵ T = 50 µT</div>
+        <div class="eq">F/L = I<sub>2</sub>B<sub>1</sub> = 10 × 5×10⁻⁵ = <span class="hl">5×10⁻⁴ N/m</span> = 500 µN/m</div>
+      </div>
+      <p>Because the currents are in the same direction, the force is attractive. Doubling <span class="v">d</span> to 8 cm halves the force to 250 µN/m.</p>
+
+      <div class="warn">
+        <strong>Common mistakes with magnetic force.</strong>
+        <ul class="clean">
+          <li><b>Putting <span class="v">F</span> along <span class="v">B</span>.</b> The magnetic force is perpendicular to <span class="v">B</span> and to <span class="v">v</span>. Only the electric force is parallel to its field.</li>
+          <li><b>Forgetting the sign of q.</b> A negative charge feels the force opposite to <span class="mono">v × B</span>. Electrons curve the other way.</li>
+          <li><b>Dropping the milli.</b> <span class="mono">1 mT = 10⁻³ T</span>. In the control question, the factor <span class="mono">10⁻³</span> is exactly what turns the raw cross product into <span class="mono">320.6 µN</span> rather than <span class="mono">320.6 mN</span>.</li>
+          <li><b>Reversing the cross product.</b> <span class="mono">v × B</span> is not <span class="mono">B × v</span>. The latter flips the force direction.</li>
+          <li><b>Using the charge rule for currents.</b> Same-direction currents attract; opposite-direction currents repel. Like charges repel; opposite charges attract.</li>
+        </ul>
+      </div>
+
+      <div class="exam">
+        <strong>Exam pattern · Control 2024–25, Question 3.</strong> This is a pure <span class="mono">qv×B</span> calculation with a 3D determinant. The paper awards marks for the cross product, the multiplication by <span class="mono">q</span>, the magnitude, and the unit conversion from mT. Reproduce it from a blank page in <a href="practice.html#control24">the control set</a>.
+      </div>
+    </section>
+
+    <!-- ============================================================
+         GAUSS FOR B
+         ============================================================ -->
+    <section class="topic" id="gauss-b">
+      <h2><span class="kicker">4.4</span>Magnetic flux and Gauss's law for B</h2>
+
+      <p>Magnetic flux is the amount of <span class="v">B</span> passing through a surface. For an open surface <span class="v">S</span> with a chosen normal,</p>
+      <div class="eqbox">
+        <div class="eq">Φ = ∫<sub>S</sub> <span class="hl">B⃗ · dS⃗</span> &nbsp;&nbsp; (Wb)</div>
+        <div class="eq">Φ = BA cos θ &nbsp;&nbsp; (uniform B, flat area A)</div>
+      </div>
+      <p>The unit is the weber: <span class="mono">1 Wb = 1 T·m²</span>. The angle θ is between <span class="v">B</span> and the surface normal <span class="v">dS⃗</span>, not between <span class="v">B</span> and the surface itself. If <span class="v">B</span> is parallel to the surface, no flux passes through it; if <span class="v">B</span> is parallel to the normal, the flux is maximum.</p>
+
+      <p>Now close the surface. Every field line that enters must leave, because there is no magnetic charge for it to terminate on. The net flux through any closed surface is therefore zero:</p>
+      <div class="eqbox">
+        <div class="eq">∮<sub>S</sub> <span class="hl">B⃗ · dS⃗ = 0</span> &nbsp;&nbsp;→&nbsp;&nbsp; ∇ · B⃗ = 0</div>
+      </div>
+      <p>This is Gauss's law for magnetic fields. Its physical content is the absence of magnetic monopoles. <span class="v">B</span> lines have no starts or ends: they close on themselves. The differential form <span class="mono">∇·B = 0</span> says the same thing locally — the magnetic field is solenoidal.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>Electric flux</th><th>Magnetic flux</th></tr></thead>
+          <tbody>
+            <tr><td>Source</td><td>Electric charge</td><td>Current; no magnetic monopoles</td></tr>
+            <tr><td>Closed-surface law</td><td><span class="mono">∮D·dS = Q<sub>enc</sub></span></td><td><span class="mono">∮B·dS = 0</span></td></tr>
+            <tr><td>Differential form</td><td><span class="mono">∇·D = ρ<sub>v</sub></span></td><td><span class="mono">∇·B = 0</span></td></tr>
+            <tr><td>Field lines</td><td>Start on + charge, end on − charge</td><td>Close on themselves</td></tr>
+            <tr><td>Use</td><td>Find <span class="v">E</span> when symmetry is high</td><td>Prove no monopoles; compute flux, not <span class="v">B</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Worked example — flux through a loop</h3>
+      <p>A uniform field <span class="mono">B = 0.25 T</span> passes through a circular loop of radius <span class="mono">5 cm</span>. The normal to the loop makes <span class="mono">60°</span> with <span class="v">B</span>. Find the flux.</p>
+      <div class="eqbox">
+        <div class="eq">A = πr² = π(0.05)² = 7.854×10⁻³ m²</div>
+        <div class="eq">Φ = BA cos 60° = (0.25)(7.854×10⁻³)(0.5)</div>
+        <div class="eq">= <span class="hl">9.82×10⁻⁴ Wb</span> = 0.982 mWb</div>
+      </div>
+      <p>If the same loop is closed by a flat cap to form a closed surface, the flux through the cap is <span class="mono">−0.982 mWb</span> and the net flux through the closed surface is zero. That minus sign is not a fudge; it comes from choosing the outward normal on every patch of a closed surface.</p>
+
+      <h3>Worked example — open hemisphere</h3>
+      <p>A hemispherical bowl of radius <span class="mono">a = 5 cm</span> sits in a uniform field <span class="mono">B = 0.25 T</span>, with its axis along <span class="v">B</span>. The curved surface and the flat circular rim together form a closed surface, and the net flux through that closed surface is zero. Therefore the flux through the curved open surface equals the flux through the flat rim:</p>
+      <div class="eqbox">
+        <div class="eq">Φ<sub>curved</sub> = B(πa²) = (0.25)π(0.05)² = <span class="hl">1.96×10⁻³ Wb</span></div>
+      </div>
+      <p>Close the bowl with its flat base and the two contributions cancel: <span class="mono">+1.96 mWb</span> through the curved part and <span class="mono">−1.96 mWb</span> through the base. Net flux through the closed surface: zero, as Gauss's law for <span class="v">B</span> requires.</p>
+
+      <div class="warn">
+        <strong>Common mistakes with magnetic flux.</strong>
+        <ul class="clean">
+          <li><b>Thinking zero flux means zero field.</b> A closed surface can have zero net flux while <span class="v">B</span> is strong everywhere on it. The field lines enter and leave; the <em>net</em> count is zero.</li>
+          <li><b>Using the angle with the surface.</b> <span class="mono">Φ = BA cos θ</span> uses the angle between <span class="v">B</span> and the normal. If <span class="v">B</span> is 30° above the plane, the angle with the normal is 60°.</li>
+          <li><b>Forgetting the sign on a closed surface.</b> <span class="mono">dS⃗</span> points outward everywhere. On a closed surface, outward flux is positive and inward flux is negative.</li>
+          <li><b>Trying to find <span class="v">B</span> from <span class="mono">∮B·dS = 0</span>.</b> The law gives no information about the magnitude of <span class="v">B</span>; it only constrains its divergence. Use Ampère for <span class="v">B</span>.</li>
+        </ul>
+      </div>
+
+      <div class="exam">
+        <strong>Exam pattern · short question and final.</strong> The short-questions block likes <span class="mono">∇·B = 0</span> and the statement that magnetic field lines are closed. A final flux question usually gives a uniform field and a tilted flat surface; compute <span class="mono">BA cos θ</span> and watch the normal. See <a href="formulas.html">the formula sheet</a> for the side-by-side electric and magnetic laws.
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CHECK
+         ============================================================ -->
+    <section class="topic" id="check">
+      <h2><span class="kicker">4.5</span>Check yourself</h2>
+      <p>Three questions, one per exam skill. Answer first, then open the solution.</p>
+
+      <div class="quiz" data-quiz="ch4-q1" data-answer="b">
+        <div class="tag">Biot–Savart · 1 min</div>
+        <p class="q">A long straight wire carries <span class="mono">10 A</span>. What is the magnitude of <span class="v">B</span> at a distance of <span class="mono">2 cm</span> from the wire in free space?</p>
+        <div class="opts">
+          <button type="button" data-opt="a">25 µT</button>
+          <button type="button" data-opt="b">100 µT</button>
+          <button type="button" data-opt="c">200 µT</button>
+          <button type="button" data-opt="d">50 µT</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol">
+          <span class="mono">B = μ0I/(2πρ) = (4π×10⁻⁷)(10)/(2π×0.02) = 2×10⁻⁶/0.02 = 1.0×10⁻⁴ T = 100 µT.</span> The direction is <span class="v">φ̂</span>, circling the wire according to the right-hand rule.
+        </div></details>
+      </div>
+
+      <div class="quiz" data-quiz="ch4-q2" data-answer="c">
+        <div class="tag">Ampère · 1 min</div>
+        <p class="q">A long solenoid has <span class="mono">2000 turns/m</span> and carries <span class="mono">3 A</span>. What is <span class="v">B</span> inside, far from the ends?</p>
+        <div class="opts">
+          <button type="button" data-opt="a">2.51 mT</button>
+          <button type="button" data-opt="b">15.1 mT</button>
+          <button type="button" data-opt="c">7.54 mT</button>
+          <button type="button" data-opt="d">0.754 mT</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol">
+          <span class="mono">B = μ0nI = (4π×10⁻⁷)(2000)(3) = 7.54×10⁻³ T = 7.54 mT.</span> First compute <span class="mono">H = nI = 6000 A/m</span>, then <span class="mono">B = μ0H</span>. Do not multiply by the length unless you are using <span class="mono">N</span> instead of <span class="mono">n</span>.
+        </div></details>
+      </div>
+
+      <div class="quiz" data-quiz="ch4-q3" data-answer="a">
+        <div class="tag">Magnetic force · 2 min</div>
+        <p class="q">A charge <span class="mono">q = 2 µC</span> moves along <span class="mono">+x̂</span> at <span class="mono">3×10⁵ m/s</span> in a uniform field <span class="mono">B⃗ = 0.4 ẑ T</span>. What is the magnetic force?</p>
+        <div class="opts">
+          <button type="button" data-opt="a">0.24 N in −ŷ</button>
+          <button type="button" data-opt="b">0.24 N in +ŷ</button>
+          <button type="button" data-opt="c">0.24 N in +x̂</button>
+          <button type="button" data-opt="d">0 N</button>
+        </div>
+        <details><summary>Show answer</summary><div class="sol">
+          <span class="mono">F⃗ = qv⃗ × B⃗ = (2×10⁻⁶)(3×10⁵)(0.4)(x̂ × ẑ) = 0.24(−ŷ) N.</span> The magnitude is <span class="mono">qvB = 0.24 N</span>; the direction is <span class="mono">x̂ × ẑ = −ŷ</span>. The force is perpendicular to both <span class="v">v</span> and <span class="v">B</span>, so options (b) and (c) are impossible.
+        </div></details>
+      </div>
+
+      <div class="done-row">
+        <input type="checkbox" id="p-ch4" data-progress="ch4-core">
+        <label for="p-ch4">I can compute <span class="v">B</span> for a wire, apply Ampère to a coax or solenoid, and evaluate <span class="mono">qv×B</span> without a sign error.
+          <span class="done-meta">Chapter 4 · core skill</span></label>
+      </div>
+
+      <div class="exam" style="margin-top:22px">
+        <strong>Next: Chapter 5 — Maxwell's equations.</strong> Faraday turns a changing magnetic flux into an electric field; the displacement current repairs Ampère's law. That is where the steady rules on this page become the full set. <a href="ch5.html">Continue to Chapter 5 →</a>
+      </div>
+
+      <p style="margin-top:20px">
+        <a class="btn btn-primary" href="ch5.html">Chapter 5 — Maxwell →</a>
+        <a class="btn btn-outline" href="practice.html#control24">Practice the 2024–25 control</a>
+      </p>
+    </section>
+
+    <footer class="foot">EE361 EMF Companion · Chapter 4 synthesises K. Djafri's magnetostatics chapter, the 2024–25 control and its solution key, and the standard worked patterns. Prose and diagrams are original; source PDFs are not redistributed. <a href="../index.html">Computer Architecture companion ↗</a></footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+<script src="js/viz-common.js"></script>
+<script src="js/viz-ch4.js"></script>
+</body>
+</html>
